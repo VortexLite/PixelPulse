@@ -25,7 +25,6 @@
     <ItemGroup>
       <Folder Include="Content\Configurations\" />
       <Folder Include="Content\Seeds\" />
-      <Folder Include="Content\Services\" />
     </ItemGroup>
 
     <ItemGroup>
