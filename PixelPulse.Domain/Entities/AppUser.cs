@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PixelPulse.Infrastructure.Identity.Models;
+namespace PixelPulse.Domain.Entities;
 
 public class AppUser : IdentityUser
 {

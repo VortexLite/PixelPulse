@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PixelPulse.Infrastructure.Identity.Enums;
-using PixelPulse.Infrastructure.Identity.Models;
+using PixelPulse.Domain.Entities;
+using PixelPulse.Domain.Enums;
+
 
 namespace PixelPulse.Infrastructure.Identity.Seeds;
 
@@ -75,24 +76,24 @@ public class DefaultUsers
         }
         #endregion
         
-        #region Client
-        var client = new AppUser()
+        #region Customer
+        var customer = new AppUser()
         {
-            UserName = "Client",
-            Email = "Client@pixelpulse.com",
+            UserName = "Customer",
+            Email = "Customer@pixelpulse.com",
             FirstName = "Roman",
             LastName = "Yahodka",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true
         };
 
-        if (await userManager.Users.AllAsync(u => u.Id != client.Id))
+        if (await userManager.Users.AllAsync(u => u.Id != customer.Id))
         {
-            var user = await userManager.FindByEmailAsync(client.Email);
+            var user = await userManager.FindByEmailAsync(customer.Email);
             if (user == null)
             {
-                await userManager.CreateAsync(client, "12345678");
-                await userManager.AddToRoleAsync(client, Roles.Client.ToString());
+                await userManager.CreateAsync(customer, "12345678");
+                await userManager.AddToRoleAsync(customer, Roles.Customer.ToString());
             }
         }
         #endregion

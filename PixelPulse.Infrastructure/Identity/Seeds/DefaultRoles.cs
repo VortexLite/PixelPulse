@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using PixelPulse.Infrastructure.Identity.Enums;
+using PixelPulse.Domain.Enums;
 
 namespace PixelPulse.Infrastructure.Identity.Seeds;
 
@@ -10,6 +10,6 @@ public class DefaultRoles
         await roleManager.CreateAsync(new IdentityRole(Roles.SuperAdmin.ToString()));
         await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
         await roleManager.CreateAsync(new IdentityRole(Roles.Employee.ToString()));
-        await roleManager.CreateAsync(new IdentityRole(Roles.Client.ToString()));
+        await roleManager.CreateAsync(new IdentityRole(Roles.Customer.ToString()));
     }
 }

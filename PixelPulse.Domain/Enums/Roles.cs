@@ -1,9 +1,9 @@
-namespace PixelPulse.Infrastructure.Identity.Enums;
+namespace PixelPulse.Domain.Enums;
 
 public enum Roles
 {
     SuperAdmin,
     Admin,
     Employee,
-    Client
+    Customer
 }

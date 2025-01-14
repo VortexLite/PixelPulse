@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using PixelPulse.Domain.Entities;
+using PixelPulse.Infrastructure.Content.Data;
 using PixelPulse.Infrastructure.Identity.Data;
-using PixelPulse.Infrastructure.Identity.Models;
 using PixelPulse.Infrastructure.Identity.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContext<AppIdentityContext>(options =>
     options.UseSqlServer(connectionString));
@@ -27,7 +32,10 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "PixelPulse", Version = "v1"});
+});
 
 var app = builder.Build();
 
@@ -55,7 +63,8 @@ using (IServiceScope scope = app.Services.CreateAsyncScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
@@ -68,14 +77,10 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 //app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseStaticFiles();
 
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+app.MapControllers();
 
 app.Run();

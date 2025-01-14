@@ -9,11 +9,10 @@ public class AppIdentityContext : IdentityDbContext
     {
         
     }
-    
-    /*public DbSet<> - {get; set;}*/
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppIdentityContext).Assembly);
     }
 }
