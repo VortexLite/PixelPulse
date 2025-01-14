@@ -10,6 +10,7 @@
     <ItemGroup>
       <Folder Include="Content\Configurations\" />
       <Folder Include="Content\Seeds\" />
+      <Folder Include="Migrations\AppIdentity\" />
     </ItemGroup>
 
     <ItemGroup>

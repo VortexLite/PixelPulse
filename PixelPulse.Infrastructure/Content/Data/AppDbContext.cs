@@ -23,6 +23,22 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        
+        // Composite key for OrderDetail
+        modelBuilder.Entity<OrderDetail>()
+            .HasKey(od => new { od.OrderId, od.ProductId });
+
+        // Hierarchy for Categories
+        modelBuilder.Entity<Category>()
+            .HasMany(c => c.SubCategories)
+            .WithOne(c => c.ParentCategory)
+            .HasForeignKey(c => c.ParentCategoryId);
+
+        // Decimal precision for prices
+        modelBuilder.Entity<Product>()
+            .Property(p => p.Price)
+            .HasPrecision(18, 2);
     }
 }
