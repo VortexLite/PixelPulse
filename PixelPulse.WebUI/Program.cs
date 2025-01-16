@@ -3,17 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Infrastructure.Content.Data;
-using PixelPulse.Infrastructure.Identity.Data;
-using PixelPulse.Infrastructure.Identity.Seeds;
+using PixelPulse.Infrastructure.Content.Seeds;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContext<AppIdentityContext>(options =>
     options.UseSqlServer(connectionString));

@@ -2,11 +2,11 @@ using PixelPulse.Domain.Entities;
 
 namespace PixelPulse.Application.Interfaces.Repositories;
 
-public interface IBaseRepository<T> where T : BaseEntity
+public interface IBaseRepository<T>
 {
-    Task Create(T entity);
-    Task Update(T entity);
+    Task CreateAsync(T entity);
+    Task GetAsync(Guid id);
+    Task<List<T>> SelectAsync();
+    Task<T> Update(T entity);
     Task Delete(T entity);
-    Task<T> Get(Guid id, CancellationToken cancellationToken);
-    Task<List<T>> GetAll(CancellationToken cancellationToken);
 }

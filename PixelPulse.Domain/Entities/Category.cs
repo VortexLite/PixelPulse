@@ -1,9 +1,14 @@
 namespace PixelPulse.Domain.Entities;
 
-public class Category : BaseEntity
+public class Category
 {
-    public string Name { get; set; }
+    public Guid CategoryId { get; set; }
+    public string CategoryName { get; set; }
     public Guid? ParentCategoryId { get; set; }
-    public Category ParentCategory { get; set; }
-    public ICollection<Category> SubCategories { get; set; }
+    public virtual Category ParentCategory { get; set; }
+    public virtual ICollection<Category> SubCategories { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public virtual ICollection<Product> Products { get; set; }
 }
