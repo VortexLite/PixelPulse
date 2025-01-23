@@ -10,5 +10,5 @@ public class Cart
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<CartItem> CartItems { get; set; }
+    public virtual ICollection<CartItem>? CartItems { get; set; }
 }

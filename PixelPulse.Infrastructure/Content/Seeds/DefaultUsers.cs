@@ -17,6 +17,7 @@ public class DefaultUsers
             Email = "SAdmin@pixelpulse.com",
             FirstName = "Roman",
             LastName = "Yahodka",
+            Address = "123 Main Street",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true
         };
@@ -39,6 +40,7 @@ public class DefaultUsers
             Email = "Admin@pixelpulse.com",
             FirstName = "Roman",
             LastName = "Yahodka",
+            Address = "123 Main Street",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true
         };
@@ -61,6 +63,7 @@ public class DefaultUsers
             Email = "Employee@pixelpulse.com",
             FirstName = "Roman",
             LastName = "Yahodka",
+            Address = "123 Main Street",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true
         };
@@ -83,6 +86,7 @@ public class DefaultUsers
             Email = "Customer@pixelpulse.com",
             FirstName = "Roman",
             LastName = "Yahodka",
+            Address = "123 Main Street",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true
         };

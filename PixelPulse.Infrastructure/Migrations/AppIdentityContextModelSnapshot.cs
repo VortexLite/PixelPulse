@@ -1301,8 +1301,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     b.Navigation("Payments");
 
-                    b.Navigation("Return")
-                        .IsRequired();
+                    b.Navigation("Return");
                 });
 
             modelBuilder.Entity("PixelPulse.Domain.Entities.Product", b =>

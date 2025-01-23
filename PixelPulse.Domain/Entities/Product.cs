@@ -12,7 +12,7 @@ public class Product
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     
-    public virtual ICollection<Review> Reviews { get; set; }
-    public virtual ICollection<ProductImage> ProductImages { get; set; }
-    public virtual ICollection<ProductSpecification> ProductSpecifications { get; set; }
+    public virtual ICollection<Review>? Reviews { get; set; }
+    public virtual ICollection<ProductImage>? ProductImages { get; set; }
+    public virtual ICollection<ProductSpecification>? ProductSpecifications { get; set; }
 }

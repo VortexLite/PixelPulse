@@ -11,7 +11,7 @@ public class Order
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<OrderItem> OrderItems { get; set; }
-    public virtual ICollection<Payment> Payments { get; set; }
-    public virtual Return Return { get; set; }
+    public virtual ICollection<OrderItem>? OrderItems { get; set; }
+    public virtual ICollection<Payment>? Payments { get; set; }
+    public virtual Return? Return { get; set; }
 }

@@ -10,5 +10,5 @@ public class Wishlist
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<WishlistItem> WishlistItems { get; set; }
+    public virtual ICollection<WishlistItem>? WishlistItems { get; set; }
 }

@@ -12,9 +12,8 @@ public class AppUser : IdentityUser
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     
-    public virtual ICollection<Cart> Carts { get; set; }
-    public virtual ICollection<Order> Orders { get; set; }
-    public virtual ICollection<Review> Reviews { get; set; }
-    public virtual ICollection<Wishlist> Wishlists { get; set; }
-    
+    public virtual ICollection<Cart>? Carts { get; set; }
+    public virtual ICollection<Order>? Orders { get; set; }
+    public virtual ICollection<Review>? Reviews { get; set; }
+    public virtual ICollection<Wishlist>? Wishlists { get; set; }
 }

@@ -8,5 +8,5 @@ public class ProductBundle
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<ProductBundleItem> ProductBundleItems { get; set; }
+    public virtual ICollection<ProductBundleItem>? ProductBundleItems { get; set; }
 }

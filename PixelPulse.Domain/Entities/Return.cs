@@ -10,5 +10,5 @@ public class Return
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<ReturnItem> ReturnItems { get; set; }
+    public virtual ICollection<ReturnItem>? ReturnItems { get; set; }
 }
