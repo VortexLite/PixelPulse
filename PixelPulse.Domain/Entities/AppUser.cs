@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using PixelPulse.Domain.Settings;
 
 namespace PixelPulse.Domain.Entities;
 
@@ -16,4 +17,5 @@ public class AppUser : IdentityUser
     public virtual ICollection<Order>? Orders { get; set; }
     public virtual ICollection<Review>? Reviews { get; set; }
     public virtual ICollection<Wishlist>? Wishlists { get; set; }
+    public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
 }

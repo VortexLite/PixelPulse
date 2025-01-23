@@ -1,4 +1,4 @@
-namespace PixelPulse.Application.DTOs.Account;
+namespace PixelPulse.Domain.Settings;
 
 public class RefreshToken
 {
