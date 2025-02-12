@@ -4,6 +4,8 @@ namespace PixelPulse.Application.Interfaces.Repositories;
 
 public interface ICategoryRepository : IBaseRepository<Category>
 {
-    Task<Category> GetCategoryByNameAsync(string name);
-    Task<IEnumerable<Category>> GetCategoriesWithSubCategoriesAsync();
+    Task CreateRangeAsync(List<Category> categories, CancellationToken cancellationToken = default);
+    Task DeleteRangeAsync(List<Category> categories, CancellationToken cancellationToken = default);
+
+    
 }

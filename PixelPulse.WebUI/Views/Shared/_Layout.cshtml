@@ -3,44 +3,309 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - PixelPulse.WebUI</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <title>@ViewData["Title"] - PixelPulse</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/PixelPulse.WebUI.styles.css" asp-append-version="true"/>
+    <meta name="theme-color" content="#03b7d8">
+    <meta name="description" content="PixelPulse online electronics store">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="generator" content="ASP.NET CORE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="~/favicon.ico">
+    <link rel="apple-touch-icon" href="~/favicon.ico">
+    <link rel="mask-icon" href="~/favicon.ico" color="blue">
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PixelPulse.WebUI</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
+    <span class="logo">PixelPulse</span>
+    <button class="catalog">Каталог</button>
+    <div class="search">
+        <input type="text" placeholder="Пошук товарів">
+        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+        </svg>
+    </div>
+
+    <ul class="menu">
+        <li>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+            </svg>
+        </li>
+        <li>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 21h13M12 21V7m0 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2-1.8c3.073.661 2.467 2.8 5 2.8M5 8c3.359 0 2.192-2.115 5.012-2.793M7 9.556V7.75m0 1.806-1.95 4.393a.773.773 0 0 0 .37.962.785.785 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.776.776 0 0 0 .09-.716L7 9.556Zm10 0V7.313m0 2.243-1.95 4.393a.773.773 0 0 0 .37.962.786.786 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.775.775 0 0 0 .09-.716L17 9.556Z"/>
+            </svg>
+
+        </li>
+        <li>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+            </svg>
+
+        </li>
+        <li>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+            </svg>
+        </li>
+    </ul>
+    <ul class="menu" style="display: none;">
+        <li>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+            </svg>
+        </li>
+    </ul>
+    <div class="menu2" style="display: none;">
+        <ul>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd"/>
+                </svg>
+            </li>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 21h13M12 21V7m0 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2-1.8c3.073.661 2.467 2.8 5 2.8M5 8c3.359 0 2.192-2.115 5.012-2.793M7 9.556V7.75m0 1.806-1.95 4.393a.773.773 0 0 0 .37.962.785.785 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.776.776 0 0 0 .09-.716L7 9.556Zm10 0V7.313m0 2.243-1.95 4.393a.773.773 0 0 0 .37.962.786.786 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.775.775 0 0 0 .09-.716L17 9.556Z"/>
+                </svg>
+
+            </li>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                </svg>
+
+            </li>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+                </svg>
+            </li>
+        </ul>
+    </div>
+
+    <div class="menuAccount" style="display: none;">
+        <ul class="account">
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M9 8h10M9 12h10M9 16h10M4.99 8H5m-.02 4h.01m0 4H5"/>
+                </svg>
+                <span>My Orders</span>
+            </li>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                </svg>
+                <span>Personal Information</span>
+            </li>
+            <li>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
+                </svg>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="catalogMenu">
+        <ul class="mainCategory">
+            <li>Смартфони</li>
+            <li>Ноутбуки</li>
+            <li>Навушнки</li>
+            <li>Монітори</li>
+            <li>Мишки</li>
+            <li>Клавіатури</li>
+        </ul>
+        <div class="phoneCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>Samsung</span>
+                    <ul>
+                        <li>Samsung Galaxy S23 Ultra</li>
+                        <li>Samsung Galaxy A54</li>
+                        <li>Samsung Galaxy Z Fold5</li>
+                        <li>Samsung Galaxy S22</li>
+                        <li>Samsung Galaxy M14</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Apple</span>
+                    <ul>
+                        <li>iPhone 14 Pro</li>
+                        <li>iPhone 14</li>
+                        <li>iPhone SE (3rd Gen)</li>
+                        <li>iPhone 13 Mini</li>
+                        <li>iPhone 15 Pro Max</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Xiaomi</span>
+                    <ul>
+                        <li>Xiaomi 13 Pro</li>
+                        <li>Xiaomi Redmi Note 12</li>
+                        <li>Xiaomi Poco X5 Pro</li>
+                        <li>Xiaomi Redmi 12C</li>
+                        <li>Xiaomi Black Shark 5</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Oppo</span>
+                    <ul>
+                        <li>Oppo Find X6 Pro</li>
+                        <li>Oppo Reno 10</li>
+                        <li>Oppo A78</li>
+                        <li>Oppo Find N2 Flip</li>
+                        <li>Oppo A58</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Poco</span>
+                    <ul>
+                        <li>Poco F5</li>
+                        <li>Poco X5 GT</li>
+                        <li>Poco M5</li>
+                        <li>Poco C55</li>
+                        <li>Poco M6 Pro</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Honor</span>
+                    <ul>
+                        <li>Honor Magic5 Pro</li>
+                        <li>Honor 90</li>
+                        <li>Honor X9a</li>
+                        <li>Honor 70 Lite</li>
+                        <li>Honor V Purse</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+        <div class="laptopCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>Apple</span>
+                    <ul>
+                        <li>MacBook Air M2</li>
+                        <li>MacBook Pro M2</li>
+                        <li>MacBook Air M1</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Dell</span>
+                    <ul>
+                        <li>Dell XPS 15</li>
+                        <li>Dell Inspiron 15</li>
+                        <li>Dell Latitude 7420</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>HP</span>
+                    <ul>
+                        <li>HP Spectre x360</li>
+                        <li>HP Pavilion 14</li>
+                        <li>HP Envy 13</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2025 - PixelPulse.WebUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="headphoneCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>Sony</span>
+                    <ul>
+                        <li>Sony WH-1000XM5</li>
+                        <li>Sony WF-1000XM4</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Apple</span>
+                    <ul>
+                        <li>AirPods Pro 2</li>
+                        <li>AirPods Max</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Bose</span>
+                    <ul>
+                        <li>Bose QuietComfort 45</li>
+                        <li>Bose Sport Earbuds</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="monitorCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>LG</span>
+                    <ul>
+                        <li>LG UltraGear 27GN950</li>
+                        <li>LG 32UN880-B</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Samsung</span>
+                    <ul>
+                        <li>Samsung Odyssey G7</li>
+                        <li>Samsung Smart Monitor M8</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Dell</span>
+                    <ul>
+                        <li>Dell UltraSharp U2723QE</li>
+                        <li>Dell P3223DE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="mouseCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>Logitech</span>
+                    <ul>
+                        <li>Logitech MX Master 3S</li>
+                        <li>Logitech G Pro X Superlight</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Razer</span>
+                    <ul>
+                        <li>Razer DeathAdder V3 Pro</li>
+                        <li>Razer Basilisk V3</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="keyboardCatalog">
+            <div class="models">
+                <div class="model">
+                    <span>Logitech</span>
+                    <ul>
+                        <li>Logitech MX Keys</li>
+                        <li>Logitech G915 TKL</li>
+                    </ul>
+                </div>
+                <div class="model">
+                    <span>Razer</span>
+                    <ul>
+                        <li>Razer Huntsman V2</li>
+                        <li>Razer BlackWidow V4 Pro</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+</header>
+@RenderBody()
+<footer>
+    <span class="footerText">&copy Всі ваші права захищено.</span>
+    <a href="https://shorturl.at/rkVM3" class="linkConfidence">
+        <span>Політика конфеденційності.</span>
+    </a>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

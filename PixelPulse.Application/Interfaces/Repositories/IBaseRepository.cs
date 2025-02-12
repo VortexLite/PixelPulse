@@ -1,12 +1,10 @@
-using PixelPulse.Domain.Entities;
-
 namespace PixelPulse.Application.Interfaces.Repositories;
 
 public interface IBaseRepository<T>
 {
-    Task CreateAsync(T entity);
-    Task<T> GetByIdAsync(Guid id);
-    Task<List<T>> SelectAsync();
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    Task CreateAsync(T entity, CancellationToken cancellationToken = default);
+    Task<T> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
+    Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
 }

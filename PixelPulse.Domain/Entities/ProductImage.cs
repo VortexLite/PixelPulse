@@ -2,11 +2,10 @@ namespace PixelPulse.Domain.Entities;
 
 public class ProductImage
 {
-    public Guid ProductImageId { get; set; }
-    public Guid ProductId { get; set; }
-    public virtual Product Product { get; set; }
-    public string ImageUrl { get; set; }
-    public bool IsMain { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public int Id { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
+    public bool isMain { get; set; }
+    public byte[] ImageData { get; set; }
+    public string ImageType { get; set; }
 }

@@ -4,6 +4,8 @@ namespace PixelPulse.Application.Interfaces.Repositories;
 
 public interface IProductRepository : IBaseRepository<Product>
 {
-    Task<Product> GetProductByNameAsync(string name);
-    Task<List<Product>> GetProductsByCategoryIdAsync(Guid categoryId);
+    Task<Product?> GetProductByNameAsync(string name, CancellationToken cancellationToken = default);
+    Task<Product?> GetProductWithImageByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task DeleteRangeAsync(List<Product> products, CancellationToken cancellationToken = default);
+
 }

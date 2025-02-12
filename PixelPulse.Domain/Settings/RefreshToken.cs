@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace PixelPulse.Domain.Settings;
 
+[NotMapped]
 public class RefreshToken
 {
     public string Token { get; set; }
