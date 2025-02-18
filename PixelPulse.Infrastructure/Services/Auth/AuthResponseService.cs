@@ -10,23 +10,25 @@ using PixelPulse.Application.DTOs.Account;
 using PixelPulse.Application.Interfaces.Authentication;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Domain.Settings;
+using PixelPulse.Infrastructure.Content.Data;
 
 namespace PixelPulse.Infrastructure.Services.Auth;
 
 public class AuthResponseService : IAuthResponse, IJWT
 {
+    private readonly AppIdentityContext _context;
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JWT _jwt;
 
-    public AuthResponseService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
+    public AuthResponseService(AppIdentityContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
     {
+        _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
         _jwt = jwt.Value;
     }
-
-
+    
     public async Task<JwtSecurityToken> CreateJwtAsync(AppUser user)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
@@ -41,7 +43,7 @@ public class AuthResponseService : IAuthResponse, IJWT
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("userId", user.Id)
+            new Claim("UserId", user.Id)
         }
         .Union(userClaims)
         .Union(roleClaims);
@@ -52,7 +54,7 @@ public class AuthResponseService : IAuthResponse, IJWT
             issuer: _jwt.Issuer,
             audience: _jwt.Audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_jwt.DurationInDays),
+            expires: DateTime.Now.AddMinutes(_jwt.DurationInMinutes),
             signingCredentials: signingCredentials);
         
         return jwtSecurityToken;
@@ -82,52 +84,61 @@ public class AuthResponseService : IAuthResponse, IJWT
         var username = await _userManager.FindByNameAsync(model.Username);
         
         if (userEmail != null)
-            return new AuthResponse { Messege = "Email is already used" };
+            return new AuthResponse { Message = "Email is already used" };
         
         if (username != null)
-            return new AuthResponse { Messege = "Username is already used" };
+            return new AuthResponse { Message = "Username is already used" };
 
         var user = new AppUser
         {
-            FirstName = model.Firstname,
-            LastName = model.Lastname,
             UserName = model.Username,
-            Email = model.Email
+            Email = model.Email,
+            RefreshTokens = new List<RefreshToken>()
         };
-        
-        var result = await _userManager.CreateAsync(user, model.Password);
 
-        if (!result.Succeeded)
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            var errors = string.Empty;
-            foreach (var error in result.Errors)
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
             {
-                errors += $"{error.Code}: {error.Description}\n";
-            }
+                var errors = string.Empty;
+                foreach (var error in result.Errors)
+                {
+                    errors += $"{error.Code}: {error.Description}\n";
+                }
             
-            return new AuthResponse { Messege = errors };
+                return new AuthResponse { Message = errors };
+            }
+        
+            await _userManager.AddToRoleAsync(user, "Customer");
+
+            var jwtSecurityKey = await CreateJwtAsync(user);
+        
+            auth.Email = user.Email;
+            auth.Roles = new List<string> { "Customer" };
+            auth.IsAuthenticated = true;
+            auth.Username = user.UserName;
+            auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey);
+            auth.TokenExpiresOn = jwtSecurityKey.ValidTo.ToLocalTime();
+            auth.Message = "SignUp Succeeded";
+        
+            var newRefreshToken = await GenerateRefreshToken();
+            auth.RefreshToken = newRefreshToken.Token;
+            auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
+        
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+            await transaction.CommitAsync();
+
+            return auth;
         }
-        
-        await _userManager.AddToRoleAsync(user, "User");
-
-        var jwtSecurityKey = await CreateJwtAsync(user);
-        
-        auth.Email = user.Email;
-        auth.Roles = new List<string> { "User" };
-        auth.IsAuthenticated = true;
-        auth.Username = user.UserName;
-        auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey);
-        auth.TokenExpiresOn = jwtSecurityKey.ValidTo.ToLocalTime();
-        auth.Messege = "SignUp Succeeded";
-        
-        var newRefreshToken = await GenerateRefreshToken();
-        auth.RefreshToken = newRefreshToken.Token;
-        auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
-        
-        user.RefreshTokens.Add(newRefreshToken);
-        await _userManager.UpdateAsync(user);
-
-        return auth;
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return new AuthResponse { Message = ex.Message };
+        }
     }
 
     public async Task<AuthResponse> LoginAsync(Login model)
@@ -135,12 +146,13 @@ public class AuthResponseService : IAuthResponse, IJWT
         var auth = new AuthResponse();
         
         var user = await _userManager.FindByEmailAsync(model.Email);
-        var userPass = await _userManager.CheckPasswordAsync(user, model.Password);
-        if (user == null || !userPass)
+        var userpass = await _userManager.CheckPasswordAsync(user, model.Password);
+        if (user == null || !userpass)
         {
-            auth.Messege = "Email or Password is incorrect";
+            auth.Message = "Email or Password is incorrect";
             return auth;
         }
+        
         
         var jwtSecurityKey = await CreateJwtAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
@@ -151,9 +163,9 @@ public class AuthResponseService : IAuthResponse, IJWT
         auth.Username = user.UserName;
         auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey);
         auth.TokenExpiresOn = jwtSecurityKey.ValidTo;
-        auth.Messege = "Login Succeeded";
+        auth.Message = "Login Succeeded";
 
-        if (user.RefreshTokens.Any(t => t.isActive))
+        if (user.RefreshTokens != null && user.RefreshTokens.Any(t => t.isActive))
         {
             var activeRefreshTokens = user.RefreshTokens
                 .FirstOrDefault(t => t.isActive);
@@ -165,6 +177,9 @@ public class AuthResponseService : IAuthResponse, IJWT
             var newRefreshToken = await GenerateRefreshToken();
             auth.RefreshToken = newRefreshToken.Token;
             auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
+            
+            if (user.RefreshTokens == null)
+                user.RefreshTokens = new List<RefreshToken>();
             
             user.RefreshTokens.Add(newRefreshToken);
             await _userManager.UpdateAsync(user);
@@ -178,7 +193,7 @@ public class AuthResponseService : IAuthResponse, IJWT
         var user = await _userManager.FindByIdAsync(model.UserId);
         var role = await _roleManager.RoleExistsAsync(model.Role);
 
-        if (user == null || !role)
+        if (user == null || !role || string.IsNullOrWhiteSpace(model.Role))
             return "Invalid ID or Role";
 
         if (await _userManager.IsInRoleAsync(user, model.Role))
@@ -200,7 +215,7 @@ public class AuthResponseService : IAuthResponse, IJWT
 
         if (user == null)
         {
-            auth.Messege = "Invalid Token";
+            auth.Message = "Invalid Token";
             return auth;
         }
         
@@ -209,7 +224,7 @@ public class AuthResponseService : IAuthResponse, IJWT
 
         if (!refreshToken.isActive)
         {
-            auth.Messege = "Inactive Token";
+            auth.Message = "Inactive Token";
             return auth;
         }
         

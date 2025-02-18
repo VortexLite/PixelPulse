@@ -1,0 +1,259 @@
+@model PixelPulse.Application.DTOs.Account.Login
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#03b7d8">
+	<meta name="description" content="PixelPulse online electronics store">
+	<meta name="robots" content="index,follow">
+	<meta name="googlebot" content="index,follow">
+	<meta name="generator" content="ASP.NET CORE">
+	<meta name="mobile-web-app-capable" content="yes">
+	
+	<style>
+		:root
+		{
+			--color-background: linear-gradient(to right bottom, #151516, #181819, #1b1b1c, #1e1e20, #212123);
+			--color-background-main: linear-gradient(to right bottom, #282829, #2b2b2d, #2e2e31, #313135, #343439);
+			--color-primary: #03b7d8;
+			--color-text: #f8ffff;
+			--color-backgroundButton: linear-gradient(to right bottom, #03b7d8, #03b3d3, #04aece, #04aac9, #04a6c4);
+			--color-backgroundButtonHover: linear-gradient(to right bottom, #00d1f8, #01ccf2, #03c7ec, #04c2e6, #05bde0);
+			--color-backgroundMain: linear-gradient(to right bottom, #1a1a1a, #202020, #262626, #2c2c2c, #323232);
+
+			font-family: sans-serif;
+		}
+
+		::-webkit-scrollbar-track
+		{
+			-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+			background: var(--color-background);
+			border-radius: 10px;
+		}
+
+		::-webkit-scrollbar
+		{
+			width: 0.3vw;
+			background-color: #F5F5F5;
+		}
+
+		::-webkit-scrollbar-thumb
+		{
+			background: var(--color-backgroundButton);
+		}
+
+
+		@@media screen and (min-width: 1024px)
+		{
+			body
+			{
+				display: grid;
+				width: 100vw;
+				height: 100vh;
+				background: url("/images/image.webp") no-repeat center;
+				background-size: cover;
+				margin: 0;
+				padding: 0;
+				overflow-x: hidden;
+			}
+
+			.overlay
+			{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.7);
+				display: grid;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+			}
+
+			.mainInfoText
+			{
+				color: var(--color-text);
+				text-shadow: 0.1vw 0.1vw 0.26vw rgba(0, 0, 0, 0.7);
+			}
+
+			.mainInfoText h1
+			{
+				font-size: 2.5vw;
+				margin: 0;
+				color: var(--color-primary);
+				font-weight: 800;
+			}
+
+			.mainInfoText p
+			{
+				font-size: 1.25vw;
+				margin: 0.75vw 0 0.75vw 0;
+				font-weight: bold;
+			}
+
+			.mainInfoText input[type="email"]
+			{
+				outline: none;
+				border: none;
+				line-height: 1.2;
+				font-size: 0.85vw;
+				font-weight: 500;
+				padding: 1.4vh 1vw;
+				border-radius: 0.5vw;
+				border: 0;
+				width: 70%;
+			}
+
+			.mainInfoText input[type="password"]
+			{
+				outline: none;
+				border: none;
+				line-height: 1.2;
+				font-size: 0.85vw;
+				font-weight: 500;
+				padding: 1.4vh 1vw;
+				border-radius: 0.5vw;
+				border: 0;
+				width: 70%;
+				margin-top: 2vh;
+			}
+
+			.mainInfoText button
+			{
+				background: var(--color-backgroundButton);
+				color: var(--color-text);
+				border-radius: 0.5vw;
+				border: 0;
+				margin-top: 2vh;
+				padding: 1.2vh 2vw;
+				font-size: 1vw;
+				font-weight: 600;
+				cursor: pointer;
+				transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+			}
+
+			.mainInfoText button:hover
+			{
+				background: var(--color-backgroundButtonHover);
+				box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+			}
+		}
+
+
+		@@media screen and (max-width: 767px)
+		{
+			body
+			{
+				width: 100vw;
+				height: 100vh;
+				background: url("/images/image.webp") no-repeat center;
+				background-size: cover;
+				margin: 0;
+				padding: 0;
+				overflow-x: hidden;
+			}
+
+			.overlay
+			{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.7);
+				display: grid;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+			}
+
+			.mainInfoText
+			{
+				color: var(--color-text);
+				text-shadow: 0.1vw 0.1vw 0.26vw rgba(0, 0, 0, 0.7);
+			}
+
+			.mainInfoText h1
+			{
+				font-size: 10vw;
+				margin: 0;
+				color: var(--color-primary);
+				font-weight: 800;
+			}
+
+			.mainInfoText p
+			{
+				font-size: 8vw;
+				margin: 0.75vw 0 0.75vw 0;
+				font-weight: bold;
+			}
+			.mainInfoText input[type="email"]
+			{
+				outline: none;
+				border: none;
+				line-height: 1.2;
+				font-size: 5vw;
+				font-weight: 500;
+				padding: 1.4vh 2vw;
+				border-radius: 2vw;
+				border: 0;
+				width: 70%;
+				margin: 2vh 0;
+			}
+
+			.mainInfoText input[type="password"]
+			{
+				outline: none;
+				border: none;
+				line-height: 1.2;
+				font-size: 5vw;
+				font-weight: 500;
+				padding: 1.4vh 2vw;
+				border-radius: 2vw;
+				border: 0;
+				width: 70%;
+			}
+
+			.mainInfoText button
+			{
+				background: var(--color-backgroundButton);
+				color: var(--color-text);
+				border-radius: 2vw;
+				border: 0;
+				margin-top: 2vh;
+				padding: 1.2vh 2vw;
+				font-size: 5.5vw;
+				font-weight: 600;
+				cursor: pointer;
+				transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+			}
+
+			.mainInfoText button:hover
+			{
+				background: var(--color-backgroundButtonHover);
+				box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="overlay">
+	<div class="mainInfoText">
+		<form method="post" asp-action="Login">
+			<h1>Welcome to PixelPulse</h1>
+			<p>Login</p>
+			<input type="email" asp-for="Email" placeholder="Email" required="required">
+			<input type="password" asp-for="Password" placeholder="Password" required="required">
+			<button type="submit">Authorization</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>
+

@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Content\Configurations\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 
@@ -19,7 +18,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />

@@ -7,8 +7,12 @@ public class AppUser : IdentityUser
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-    public string? Address { get; set; }
+    public Address? Address { get; set; }
+    public Cart? Cart { get; set; }
+    public List<Review>? Reviews { get; set; }
+    public Wishlist? Wishlist { get; set; }
+    public List<Order>? Orders { get; set; }
+
+    public List<RefreshToken>? RefreshTokens { get; set; }
     
-    public virtual ICollection<RefreshToken>? RefreshTokens { get; set; }
-    public virtual ICollection<Order>? Orders { get; set; }
 }

@@ -9,7 +9,10 @@ public class Product
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public int CategoryId { get; set; }
-    public virtual Category Category { get; set; }
-    public virtual ICollection<OrderItem>? OrderItems { get; set; }
-    public virtual ICollection<ProductImage>? ProductImages { get; set; }
+    public Category Category { get; set; }
+    public Review? Review { get; set; }
+    public WishlistItem? WishlistItem { get; set; }
+    
+    public OrderItem? OrderItem { get; set; }
+    public List<ProductImage>? ProductImages { get; set; }
 }

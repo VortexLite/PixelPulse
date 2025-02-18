@@ -1,98 +1,60 @@
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using PixelPulse.Application.DTOs.Account;
-using PixelPulse.Application.Interfaces.Authentication;
 
 namespace PixelPulse.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
+[Route("[controller]")]
 public class AuthController : Controller
 {
-    private readonly IAuthResponse _authService;
+    private readonly HttpClient _httpClient;
+    private readonly ILogger<AuthController> _logger;
+    
+    private const string Address = "http://localhost:5144/api/Auth/";
 
-    public AuthController(IAuthResponse authResponse)
+    public AuthController(HttpClient httpClient, ILogger<AuthController> logger)
     {
-        _authService = authResponse;
+        _httpClient = httpClient;
+        _logger = logger;
     }
-
-    private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
+    
+    [HttpGet("login")]
+    public async Task<IActionResult> LoginAsync()
     {
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Expires = expires.ToLocalTime()
-        };
-        
-        Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-    }
-
-    [HttpPost("signUp")]
-    public async Task<IActionResult> SignUpAsync([FromForm] SignUp model)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        var origin = Request.Headers["origin"];
-        var result = await _authService.SignUpAsync(model, origin);
-        if (!result.IsAuthenticated)
-            return BadRequest(result.Messege);
-        
-        SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
-        
-        return Ok(result);
+        return View();
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync([FromForm] Login model)
+    public async Task<IActionResult> LoginAsync([FromBody]Login model)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return View(model);
         
-        var result = await _authService.LoginAsync(model);
-        if (!result.IsAuthenticated)
-            return BadRequest(result.Messege);
+        var result = await _httpClient.PostAsJsonAsync(Address + "login", model);
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            return RedirectToAction("Index", "Home");
         
-        if (!string.IsNullOrEmpty(result.RefreshToken))
-            SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
-        
-        return Ok(result);
+        ModelState.AddModelError(string.Empty, "Invalid login attempt");
+        return View(model);
     }
 
-    [HttpPost("AddRole")]
-    public async Task<IActionResult> AddRoleAsync(AssignRolesDTO model)
+    [HttpGet("register")]
+    public async Task<IActionResult> RegisterAsync()
+    {
+        return View();
+    }
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterAsync(SignUp model)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return View(model);
         
-        var result = await _authService.AssignRolesAsync(model);
+        var result = await _httpClient.PostAsJsonAsync(Address + "signUp", model);
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            return RedirectToAction("Index", "Home");
         
-        if (!string.IsNullOrEmpty(result))
-            return BadRequest(result);
-        
-        return Ok(result);
-    }
-
-    [HttpGet("refreshToken")]
-    public async Task<IActionResult> RefreshTokenCheckAsync()
-    {
-        var refreshToken = Request.Cookies["refreshTokenKey"];
-        var result = await _authService.RefreshTokenCheckAsync(refreshToken);
-        if (!result.IsAuthenticated)
-            return BadRequest(result);
-        
-        return Ok(result);
-    }
-
-    [HttpPost("revokeToken")]
-    public async Task<IActionResult> RevokeTokenAsync(RevokeToken model)
-    {
-        var refreshToken = model.Token ?? Request.Cookies["refreshTokenKey"];
-        
-        if (string.IsNullOrEmpty(refreshToken))
-            return BadRequest("Token is required");
-        
-        var result = await _authService.RevokeTokenAsync(refreshToken);
-        
-        return Ok("Done Revoke");
+        ModelState.AddModelError(string.Empty, "Invalid register attempt");
+        return View(model);
     }
 }

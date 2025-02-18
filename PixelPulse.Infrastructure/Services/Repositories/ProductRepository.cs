@@ -24,23 +24,21 @@ public class ProductRepository : IProductRepository
 
     public async Task CreateAsync(Product entity, CancellationToken cancellationToken = default)
     {
-        using (var transaction = await _context.Database.BeginTransactionAsync(cancellationToken))
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        try
         {
-            try
-            {
-                await _context.Products.AddAsync(entity, cancellationToken);
-                await _context.SaveChangesAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
-                _cache.Remove(_cacheKeyAll);
-                _cache.Set(_cacheKeyPrefix + entity.Id, entity);
-                _logger.LogInformation($"Product created: {entity.Id}");
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                _logger.LogError($"Product creation failed, name {entity.Name}. {ex.Message}");
-                throw;
-            }
+            await _context.Products.AddAsync(entity, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            _cache.Remove(_cacheKeyAll);
+            _cache.Set(_cacheKeyPrefix + entity.Id, entity);
+            _logger.LogInformation($"Product created: {entity.Id}");
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            _logger.LogError($"Product creation failed, name {entity.Name}. {ex.Message}");
+            throw;
         }
     }
 
@@ -168,6 +166,7 @@ public class ProductRepository : IProductRepository
         {
             cachedProduct = await _context.Products
                     .Include(p => p.ProductImages)
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
             
             _logger.LogInformation($"Product found: {cachedProduct.Id} {cachedProduct.Name}");
@@ -178,6 +177,32 @@ public class ProductRepository : IProductRepository
                 _logger.LogInformation($"Product cache created: {_cacheKeyPrefix + id}");
             }
         
+            return cachedProduct;
+        }
+    }
+
+    public async Task<IReadOnlyList<Product>> GetAllProductWithImageTake20Async(CancellationToken cancellationToken = default)
+    {
+        if (_cache.TryGetValue(_cacheKeyAll, out IReadOnlyList<Product> cachedProduct))
+        {
+            _logger.LogInformation($"Product found: {_cacheKeyAll}");
+            return cachedProduct;
+        }
+        else
+        {
+            cachedProduct = await _context.Products
+                .Include(p => p.ProductImages)
+                .AsNoTracking()
+                .Take(20)
+                .ToListAsync(cancellationToken);
+            _logger.LogInformation($"Product founds");
+
+            if (cachedProduct != null)
+            {
+                _cache.Set(_cacheKeyAll, cachedProduct, TimeSpan.FromMinutes(30));
+                _logger.LogInformation($"Product cache created: {_cacheKeyAll}");
+            }
+            
             return cachedProduct;
         }
     }

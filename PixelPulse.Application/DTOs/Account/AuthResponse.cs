@@ -4,7 +4,7 @@ namespace PixelPulse.Application.DTOs.Account;
 
 public class AuthResponse
 {
-    public string? Messege { get; set; }
+    public string? Message { get; set; }
 
     public bool IsAuthenticated { get; set; }
     public string? Username { get; set; }

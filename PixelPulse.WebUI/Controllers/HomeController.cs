@@ -1,21 +1,25 @@
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using PixelPulse.Application.DTOs.Product;
 
 namespace PixelPulse.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly HttpClient _httpClient;
     private readonly ILogger<HomeController> _logger;
-    private readonly IMapper _mapper;
 
-    public HomeController(ILogger<HomeController> logger, IMapper mapper)
+    private const string Address = "http://localhost:5144/api/Product/";
+    public HomeController(HttpClient httpClient, ILogger<HomeController> logger)
     {
+        _httpClient = httpClient;
         _logger = logger;
-        _mapper = mapper;
     }
-
+    
     public async Task<IActionResult> Index()
     {
-        return View();
+        var response = await _httpClient.GetStringAsync(Address + "GetProductsForMain");
+        var products = JsonConvert.DeserializeObject<List<ProductMainDTO>>(response);
+        return View(products);
     }
 }

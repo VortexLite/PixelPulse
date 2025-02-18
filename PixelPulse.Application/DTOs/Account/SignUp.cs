@@ -4,12 +4,6 @@ namespace PixelPulse.Application.DTOs.Account;
 
 public class SignUp
 {
-    [Required]
-    public string Firstname { get; set; }
-    
-    [Required]
-    public string Lastname { get; set; }
-    
     public string Username { get; set; }
     
     [Required]
@@ -18,4 +12,8 @@ public class SignUp
     
     [Required]
     public string Password { get; set; }
+    
+    [Required]
+    [Compare("Password", ErrorMessage = "Passwords do not match")]
+    public string ConfirmPassword { get; set; }
 }

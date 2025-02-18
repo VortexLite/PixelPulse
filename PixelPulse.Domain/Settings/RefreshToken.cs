@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using PixelPulse.Domain.Entities;
 
 namespace PixelPulse.Domain.Settings;
 
-[NotMapped]
+[Owned]
 public class RefreshToken
 {
+    public int Id { get; set; }
     public string Token { get; set; }
     public DateTime ExpireOn { get; set; }
     public bool IsExpired => DateTime.UtcNow >= ExpireOn;
