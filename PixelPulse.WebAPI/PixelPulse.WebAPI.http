@@ -1,0 +1,6 @@
+@PixelPulse.WebAPI_HostAddress = http://localhost:5111
+
+GET {{PixelPulse.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
