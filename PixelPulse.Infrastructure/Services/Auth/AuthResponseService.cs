@@ -14,21 +14,18 @@ using PixelPulse.Infrastructure.Content.Data;
 
 namespace PixelPulse.Infrastructure.Services.Auth;
 
-public class AuthResponseService : IAuthResponse, IJWT
+public class AuthResponseService(
+    AppIdentityContext context,
+    UserManager<AppUser> userManager,
+    RoleManager<IdentityRole> roleManager,
+    IOptions<JWT> jwt)
+    : IAuthResponse, IJWT
 {
-    private readonly AppIdentityContext _context;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly JWT _jwt;
+    private readonly AppIdentityContext _context = context;
+    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly JWT _jwt = jwt.Value;
 
-    public AuthResponseService(AppIdentityContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
-    {
-        _context = context;
-        _userManager = userManager;
-        _roleManager = roleManager;
-        _jwt = jwt.Value;
-    }
-    
     public async Task<JwtSecurityToken> CreateJwtAsync(AppUser user)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
@@ -210,8 +207,9 @@ public class AuthResponseService : IAuthResponse, IJWT
     {
         var auth = new AuthResponse();
         var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens
-                    .Any(t => t.Token == token));
+                .Any(t => t.Token == token));
 
         if (user == null)
         {
@@ -250,8 +248,10 @@ public class AuthResponseService : IAuthResponse, IJWT
     public async Task<bool> RevokeTokenAsync(string token)
     {
         var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens
                 .Any(t => t.Token == token));
+        
         if (user == null)
             return false;
         

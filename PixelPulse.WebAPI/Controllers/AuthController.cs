@@ -17,13 +17,13 @@ public class AuthController : ControllerBase
 
     private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
     {
-        var cookieOptions = new CookieOptions
+        Response.Cookies.Delete("refreshTokenKey");
+        Response.Cookies.Append("refreshTokenKey", refreshToken, new CookieOptions
         {
             HttpOnly = true,
+            Secure = true,
             Expires = expires.ToLocalTime()
-        };
-        
-        Response.Cookies.Append("refreshTokenKey", refreshToken, cookieOptions);
+        });
     }
 
     [HttpPost("signUp")]
@@ -72,7 +72,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("refreshToken")]
-    public async Task<IActionResult> RefreshTokenCheckAsync()
+    public async Task<IActionResult> RefreshTokenAsync()
     {
         var refreshToken = Request.Cookies["refreshTokenKey"];
         var result = await _authService.RefreshTokenCheckAsync(refreshToken);
@@ -82,6 +82,18 @@ public class AuthController : ControllerBase
         SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
         return Ok(result);
     }
+    
+    [HttpPost("refreshTokenCheck")]
+    public async Task<IActionResult> RefreshTokenCheckAsync([FromBody] Dictionary<string, string> token)
+    {
+        var result = await _authService.RefreshTokenCheckAsync(token.GetValueOrDefault("refreshTokenKey"));
+        if (!result.IsAuthenticated)
+            return BadRequest(result);
+        
+        SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
+        return Ok(result);
+    }
+    
 
     [HttpPost("revokeToken")]
     public async Task<IActionResult> RevokeTokenAsync(RevokeToken model)
