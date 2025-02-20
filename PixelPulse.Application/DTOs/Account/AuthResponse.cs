@@ -14,7 +14,6 @@ public class AuthResponse
     public List<string>? Roles { get; set; } = new();
     public string? Token { get; set; }
     public DateTime? TokenExpiresOn { get; set; }
-    
     public string? RefreshToken { get; set; }
 
     public DateTime RefreshTokenExpiration { get; set; } 

@@ -60,14 +60,19 @@ public class AuthResponseService(
     public async Task<RefreshToken> GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
-
-        using var generator = new RNGCryptoServiceProvider();
+        /*using var generator = new RNGCryptoServiceProvider();
         
-        generator.GetBytes(randomNumber);
-
+        generator.GetBytes(randomNumber);*/
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+        }
         return new RefreshToken
         {
-            Token = Convert.ToBase64String(randomNumber),
+            Token = Convert.ToBase64String(randomNumber)
+                .Replace("+", "-")
+                .Replace("/", "_")
+                .TrimEnd('='),
             ExpireOn = DateTime.UtcNow.AddDays(10),
             CreatedOn = DateTime.UtcNow
         };
@@ -144,7 +149,7 @@ public class AuthResponseService(
         
         var user = await _userManager.FindByEmailAsync(model.Email);
         var userpass = await _userManager.CheckPasswordAsync(user, model.Password);
-        if (user == null || !userpass)
+        if (!userpass)
         {
             auth.Message = "Email or Password is incorrect";
             return auth;
@@ -203,7 +208,7 @@ public class AuthResponseService(
         return string.Empty;
     }
 
-    public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
+    /*public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
     {
         var auth = new AuthResponse();
         var user = await _userManager.Users
@@ -243,11 +248,58 @@ public class AuthResponseService(
         auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
         
         return auth;
+    }*/
+    public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
+    {
+        var auth = new AuthResponse();
+        if (string.IsNullOrEmpty(token))
+        {
+            auth.Message = "Token is required";
+            return auth;
+        }
+        
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.RefreshTokens
+                .Any(t => t.Token == token));
+
+        if (user == null)
+        {
+            auth.Message = "Invalid Token";
+            return auth;
+        }
+        
+        var refreshToken = user.RefreshTokens.FirstOrDefault(t => t.Token == token);
+        if (refreshToken == null || !refreshToken.isActive)
+        {
+            auth.Message = "Inactive Token";
+            return auth;
+        }
+        
+        user.RefreshTokens.Remove(refreshToken);
+        
+        var newRefreshToken = await GenerateRefreshToken();
+        user.RefreshTokens.Add(newRefreshToken);
+        await _userManager.UpdateAsync(user);
+        
+        var jwtSecurityKey = await CreateJwtAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        
+        auth.Email = user.Email;
+        auth.Roles = roles.ToList();
+        auth.Username = user.UserName;
+        auth.IsAuthenticated = true;
+        auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey);
+        auth.TokenExpiresOn = jwtSecurityKey.ValidTo;
+        auth.RefreshToken = newRefreshToken.Token;
+        auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
+        
+        return auth;
     }
 
     public async Task<bool> RevokeTokenAsync(string token)
     {
-        var user = await _userManager.Users
+        /*var user = await _userManager.Users
             .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens
                 .Any(t => t.Token == token));
@@ -264,6 +316,22 @@ public class AuthResponseService(
         var newRefreshToken = await GenerateRefreshToken();
         await _userManager.UpdateAsync(user);
         
+        return true;*/
+        var user = await _userManager.Users
+            .Include(u => u.RefreshTokens)
+            .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
+    
+        if (user == null)
+            return false;
+
+        var refreshToken = user.RefreshTokens.SingleOrDefault(t => t.Token == token);
+        if (refreshToken == null || !refreshToken.isActive)
+            return false;
+        
+        user.RefreshTokens.Remove(refreshToken);
+    
+        await _userManager.UpdateAsync(user);
+    
         return true;
     }
 }

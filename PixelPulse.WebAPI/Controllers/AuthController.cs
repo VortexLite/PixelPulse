@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
         var origin = Request.Headers["origin"];
         var result = await _authService.SignUpAsync(model, origin);
         if (!result.IsAuthenticated)
-            return BadRequest(result.Message);
+            return Unauthorized(result.Message);
         
         SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
         
@@ -104,6 +104,7 @@ public class AuthController : ControllerBase
             return BadRequest("Token is required");
         
         var result = await _authService.RevokeTokenAsync(refreshToken);
+        Response.Cookies.Delete("refreshTokenKey");
         
         return Ok("Done revoke");
     }

@@ -115,7 +115,24 @@ public class AuthController : Controller
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        Response.Cookies.Delete("refreshTokenKey");
+        /*Response.Cookies.Delete("refreshTokenKey");
+        var response = await _httpClient.PostAsync(Address + "revokeToken", null);
+        if (response.IsSuccessStatusCode)
+            return RedirectToAction("Index", "Home");
+            
+        ModelState.AddModelError("", "Не вдалося вийти з системи");
+        return RedirectToAction("Index", "Home");*/
+        var refreshToken = Request.Cookies["refreshTokenKey"];
+        if (!string.IsNullOrEmpty(refreshToken))
+        {
+            var response = await _httpClient.PostAsJsonAsync(Address + "revokeToken", refreshToken);
+            if (response.IsSuccessStatusCode)
+            {
+                Response.Cookies.Delete("refreshTokenKey");
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        
         return RedirectToAction("Index", "Home");
     }
 
