@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - PixelPulse</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <meta name="theme-color" content="#03b7d8">
+    @await RenderSectionAsync("styles", required: false)
+    @*<meta name="theme-color" content="#03b7d8">
     <meta name="description" content="PixelPulse online electronics store">
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
@@ -13,7 +14,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="icon" sizes="192x192" href="~/favicon.ico">
     <link rel="apple-touch-icon" href="~/favicon.ico">
-    <link rel="mask-icon" href="~/favicon.ico" color="blue">
+    <link rel="mask-icon" href="~/favicon.ico" color="blue">*@
 </head>
 <body>
 <header>
@@ -50,14 +51,14 @@
             </svg>
         </li>
     </ul>
-    <ul class="menu" style="display: none;">
+    <ul class="menu1" >
         <li>
             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
             </svg>
         </li>
     </ul>
-    <div class="menu2" style="display: none;">
+    <div class="menu2">
         <ul>
             <li>
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -109,12 +110,12 @@
 
     <div class="catalogMenu">
         <ul class="mainCategory">
-            <li>Смартфони</li>
-            <li>Ноутбуки</li>
-            <li>Навушнки</li>
-            <li>Монітори</li>
-            <li>Мишки</li>
-            <li>Клавіатури</li>
+            <li id="phone">Смартфони</li>
+            <li id="laptop">Ноутбуки</li>
+            <li id="headphone">Навушнки</li>
+            <li id="monitor">Монітори</li>
+            <li id="mouse">Мишки</li>
+            <li id="keyboard">Клавіатури</li>
         </ul>
         <div class="phoneCatalog">
             <div class="models">
@@ -307,9 +308,115 @@
         <span>Політика конфеденційності.</span>
     </a>
 </footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("script", required: false)
+<script type="text/javascript">
+    window.addEventListener("load", toggleMenuClasses);
+    window.addEventListener("resize", toggleMenuClasses);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setupCatalogMenu(".catalog", ".catalogMenu");
+        const categories = document.querySelectorAll(".mainCategory li");
+
+        categories.forEach(category => {
+            category.addEventListener("click", function () {
+                if (!isMobile()) {
+                    toggleCatalog(category.id);
+                }
+            });
+        });
+
+        setupMenuToggle(".menu1", ".menu2");
+    });
+
+    function isMobile() {
+        return window.matchMedia("(max-width: 767px)").matches;
+    }
+
+    function setupCatalogMenu(buttonSelector, menuSelector) {
+        const catalogButton = document.querySelector(buttonSelector);
+        const catalogMenu = document.querySelector(menuSelector);
+
+        if (!catalogButton || !catalogMenu) return;
+
+        catalogButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            if (catalogMenu.classList.contains("active")) {
+                closeMenu(catalogMenu);
+            } else {
+                openMenu(catalogMenu);
+            }
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!catalogButton.contains(event.target) && !catalogMenu.contains(event.target)) {
+                closeMenu(catalogMenu);
+            }
+        });
+    }
+
+    function openMenu(menu) {
+        menu.classList.add("active");
+    }
+
+    function closeMenu(menu) {
+        menu.classList.add("hiding");
+        setTimeout(() => {
+            menu.classList.remove("active", "hiding");
+        }, 300);
+    }
+
+    function toggleCatalog(categoryId) {
+        const catalogs = document.querySelectorAll(".catalogMenu > div");
+
+        catalogs.forEach(catalog => {
+            catalog.style.display = "none";
+        });
+
+        const activeCatalog = document.querySelector("." + categoryId + "Catalog");
+        if (activeCatalog) {
+            activeCatalog.style.display = "grid";
+        }
+    }
+
+    function toggleMenuClasses() {
+        const menu = document.querySelector("ul.menu");
+        const menu1 = document.querySelector("ul.menu1");
+
+        if (!menu || !menu1) return;
+
+        if (window.matchMedia("(max-width: 767px)").matches) {
+            menu.style.display = "none";
+            menu1.style.display = "grid";
+        } else {
+            menu.style.display = "grid";
+            menu1.style.display = "none";
+        }
+    }
+
+    function setupMenuToggle(toggleSelector, menuSelector) {
+        const toggleButton = document.querySelector(toggleSelector);
+        const menu = document.querySelector(menuSelector);
+
+        if (!toggleButton || !menu) return;
+
+        toggleButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            if (menu.classList.contains("active")) {
+                closeMenu(menu);
+            } else {
+                openMenu(menu);
+            }
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!toggleButton.contains(event.target) && !menu.contains(event.target)) {
+                closeMenu(menu);
+            }
+        });
+    }
+
+</script>
 </body>
 </html>

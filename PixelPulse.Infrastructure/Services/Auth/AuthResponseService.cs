@@ -14,18 +14,20 @@ using PixelPulse.Infrastructure.Content.Data;
 
 namespace PixelPulse.Infrastructure.Services.Auth;
 
-public class AuthResponseService(
-    AppIdentityContext context,
-    UserManager<AppUser> userManager,
-    RoleManager<IdentityRole> roleManager,
-    IOptions<JWT> jwt)
-    : IAuthResponse, IJWT
+public class AuthResponseService : IAuthResponse, IJWT
 {
-    private readonly AppIdentityContext _context = context;
-    private readonly UserManager<AppUser> _userManager = userManager;
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-    private readonly JWT _jwt = jwt.Value;
+    private readonly AppIdentityContext _context;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly JWT _jwt;
 
+    public AuthResponseService(AppIdentityContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt)
+    {
+        _context = context;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _jwt = jwt.Value;
+    }
     public async Task<JwtSecurityToken> CreateJwtAsync(AppUser user)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
@@ -207,48 +209,7 @@ public class AuthResponseService(
 
         return string.Empty;
     }
-
-    /*public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
-    {
-        var auth = new AuthResponse();
-        var user = await _userManager.Users
-            .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(u => u.RefreshTokens
-                .Any(t => t.Token == token));
-
-        if (user == null)
-        {
-            auth.Message = "Invalid Token";
-            return auth;
-        }
-        
-        var refreshToken = user.RefreshTokens
-            .Single(t => t.Token == token);
-
-        if (!refreshToken.isActive)
-        {
-            auth.Message = "Inactive Token";
-            return auth;
-        }
-        
-        refreshToken.RevokedOn = DateTime.UtcNow;
-        var newRefreshToken = await GenerateRefreshToken();
-        user.RefreshTokens.Add(newRefreshToken);
-        await _userManager.UpdateAsync(user);
-        
-        var jwtSecurityKey = await CreateJwtAsync(user);
-        var roles = await _userManager.GetRolesAsync(user);
-        
-        auth.Email = user.Email;
-        auth.Roles = roles.ToList();
-        auth.IsAuthenticated = true;
-        auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey);
-        auth.TokenExpiresOn = jwtSecurityKey.ValidTo;
-        auth.RefreshToken = newRefreshToken.Token;
-        auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
-        
-        return auth;
-    }*/
+    
     public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
     {
         var auth = new AuthResponse();
@@ -299,24 +260,6 @@ public class AuthResponseService(
 
     public async Task<bool> RevokeTokenAsync(string token)
     {
-        /*var user = await _userManager.Users
-            .Include(u => u.RefreshTokens)
-            .FirstOrDefaultAsync(u => u.RefreshTokens
-                .Any(t => t.Token == token));
-        
-        if (user == null)
-            return false;
-        
-        var refreshToken = user.RefreshTokens
-            .Single(t => t.Token == token);
-        if (!refreshToken.isActive)
-            return false;
-        
-        refreshToken.RevokedOn = DateTime.UtcNow;
-        var newRefreshToken = await GenerateRefreshToken();
-        await _userManager.UpdateAsync(user);
-        
-        return true;*/
         var user = await _userManager.Users
             .Include(u => u.RefreshTokens)
             .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));

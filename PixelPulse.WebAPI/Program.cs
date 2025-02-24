@@ -8,11 +8,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PixelPulse.Application.Interfaces.Authentication;
 using PixelPulse.Application.Interfaces.Repositories;
+using PixelPulse.Application.Interfaces.Service;
 using PixelPulse.Application.Mappers;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Domain.Settings;
 using PixelPulse.Infrastructure.Content.Data;
 using PixelPulse.Infrastructure.Content.Seeds;
+using PixelPulse.Infrastructure.Services.Accounts;
 using PixelPulse.Infrastructure.Services.Auth;
 using PixelPulse.Infrastructure.Services.Repositories;
 
@@ -34,7 +36,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 var config = TypeAdapterConfig.GlobalSettings;
-config.Scan(typeof(ProductMappingConfig).Assembly);
+config.Scan(typeof(RegisterMapper).Assembly);
 
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
@@ -42,6 +44,7 @@ builder.Services.AddScoped<IMapper, ServiceMapper>();
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddAuthentication(options =>
     {

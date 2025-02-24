@@ -1,0 +1,908 @@
+@media screen and (min-width: 1024px)
+{
+    body
+    {
+        background: var(--color-background-main);
+        height: 100vh;
+    }
+    
+    main
+    {
+        display: grid;
+        grid-template-columns: 15vw 1fr;
+        margin: 0 10vw;
+    }
+
+    .customerTab
+    {
+        color: var(--color-text);
+        border-right: 1px solid var(--color-backgroundButton);
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        border-right: 2px solid var(--color-primary);
+    }
+
+    .customerTab li
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-content: center;
+        justify-content: start;
+        align-items: center;
+        padding: 0.5vh 0.6vw 0.5vh 0.2vw;
+        border-radius: 0.5vw;
+        font-size: 1vw;
+    }
+
+    .customerTab li:hover
+    {
+        background: var(--color-primary);
+    }
+
+    .customerTab button
+    {
+        display: grid;
+        grid-auto-flow: column;
+        /*background: transparent;*/
+        border: none;
+        color: var(--color-text);
+        align-items: center;
+    }
+
+    .customerTab li a
+    {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .customerTab svg
+    {
+        width: 2.5vw;
+        height: 2.5vh;
+    }
+
+    .customerAccount
+    {
+        display: grid;
+        align-items: center;
+        align-content: center;
+        padding: 1vh 2vw;
+        color: var(--color-text);
+        
+    }
+
+    .customerAccount h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+    }
+
+    .customerAccount div
+    {
+        display: grid;
+        grid-template-columns: 10% 40%;
+        padding: 1vh 0;
+        font-weight: 500;
+        font-size: 1vw;
+    }
+
+    .customerAccount span
+    {
+        padding-right: 0.5vw;
+    }
+
+    .customerAccount input
+    {
+        outline: none;
+        border: none;
+        font-size: 1vw;
+        border-radius: 0.5vw;
+        padding: 0.3vh 0.3vw;
+    }
+
+    .customerAccount button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        justify-self: start;
+        align-self: center;
+        padding: 1.2vh 2.5vw;
+        margin-top: 1vh;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerAccount button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerOrders
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+        color: var(--color-text);
+        
+    }
+
+    .customerOrders h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+    }
+
+    .customerOrders table
+    {
+        text-align: center;
+        font-size: 1vw;
+    }
+
+    .customerOrders button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        justify-self: center;
+        align-self: center;
+        padding: 0.3vh 0.6vw;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerOrders button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerCart
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+        
+    }
+
+    .customerCart h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+    }
+
+    .customerCart div
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-items: center;
+        padding: 1vw;
+        border-top: 1px solid var(--color-primary);
+        border-bottom: 1px solid var(--color-primary);
+    }
+
+    .customerCart div:last-child
+    {
+        justify-self: end;
+        grid-gap: 1vw;
+        border: none;
+    }
+
+    .customerCart span
+    {
+        color: var(--color-text);
+    }
+
+    .customerCart img
+    {
+        width: 5vw;
+    }
+
+    .customerCart svg
+    {
+        color: var(--color-text);
+        width: 2vw;
+        height: 2vh;
+        padding: 0.2vh 0.2vw;
+        border-radius: 0.5vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerCart svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+
+    .customerCart input
+    {
+        width: 2.5vw;
+        outline: none;
+        border: none;
+        padding: 0.4vh 0.4vw;
+        border-radius: 0.2vw;
+    }
+
+    .customerCart .cartName
+    {
+        text-wrap: wrap;
+    }
+
+    .cartDiscount
+    {
+        text-decoration: line-through;
+    }
+
+    .cartPrice
+    {
+        color: var(--color-primary) !important;
+    }
+
+    .placeOrder
+    {
+        font-size: 1.3vw;
+        font-weight: 600;
+    }
+
+    .placeOrder button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.7vh 0.7vw;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .placeOrder button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerWishlist
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+        
+    }
+
+    .customerWishlist h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+    }
+
+    .randomProductList
+    {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(10vw, 1fr));
+        grid-gap: 1vh;
+    }
+
+    .productCard
+    {
+        background: var(--color-background);
+        color: var(--color-text);
+        padding: 0.8vw;
+        border-radius: 0.5vw;
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    .productCard:hover
+    {
+        cursor: pointer;
+        transform: translateY(-1vh);
+        box-shadow: 0 0 0.26vw rgba(0,209,248,0.8);
+    }
+
+    .productImage
+    {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .productInfo
+    {
+        font-size: 0.75vw;
+    }
+
+    .productReview
+    {
+        padding-bottom: 2vh;
+    }
+
+    .productReview span
+    {
+        font-size: 1vw;
+    }
+
+    .productReview svg
+    {
+        width: 1.25vw;
+        height: 2.6vh;
+    }
+
+    .productDiscount
+    {
+        margin-bottom: 1.6vh;
+        font-size: 0.85vw;
+    }
+
+    .productDiscount span:first-child
+    {
+        color: gray;
+        text-decoration: line-through;
+    }
+
+    .productDiscount span:last-child
+    {
+        color: var(--color-text);
+        background: var(--color-primary);
+        padding: 0.052vw;
+        border-radius: 0.26vw;
+        margin-left: 1vw;
+    }
+
+    .productFooter
+    {
+        display: grid;
+        border-top: 0.052vw solid var(--color-primary);
+        grid-auto-flow: column;
+        padding-top: 1.6vh;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .priceProduct
+    {
+        font-size: 1vw;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .cartProduct
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: 0;
+        border-radius: 0.5vw;
+        align-self: center;
+        justify-self: center;
+        padding: 0.4vh 1.2vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .cartProduct:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .cartProduct svg
+    {
+        width: 1.25vw;
+        height: 2.6vh;
+    }
+
+    .customerReview
+    {
+        display: none;
+        padding: 1vh 2vw;
+        grid-gap: 1vw;
+        
+        color: var(--color-text);
+    }
+
+    .customerReview h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+    }
+
+    .customerReview svg
+    {
+        cursor: pointer;
+        width: 2vw;
+        height: 2vh;
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerReview svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerReview img
+    {
+        width: 5vw;
+    }
+
+    .customerReview div
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+    }
+
+    .customerReview span
+    {
+        text-wrap: wrap;
+    }
+
+    .customerReview button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.3vh 0.3vw;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerReview button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        align-items: start;
+        background: var(--color-background-main);
+        
+    }
+
+    .customerTab
+    {
+        color: var(--color-text);
+        display: none;
+        justify-content: start;
+        align-content: center;
+        margin-top: 5vh;
+    }
+
+    .customerTab li
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-content: center;
+        justify-content: start;
+        align-items: center;
+        padding: 0.5vh 0.6vw 0.5vh 0.2vw;
+        border-radius: 0.5vw;
+        font-size: 4vw;
+    }
+
+    .customerTab li:hover
+    {
+        background: var(--color-primary);
+    }
+
+    .customerTab svg
+    {
+        width: 4.5vw;
+        height: 4.5vh;
+    }
+
+    .customerAccount
+    {
+        display: grid;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        padding: 2vh 3vw;
+        color: var(--color-text);
+        
+    }
+
+    .customerAccount h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 6vw;
+    }
+
+    .customerAccount div
+    {
+        display: grid;
+        align-items: center;
+        grid-template-columns: 30% 70%;
+        padding: 1vh 0;
+        font-weight: 500;
+        font-size: 4vw;
+    }
+
+    .customerAccount span
+    {
+        padding-right: 0.5vw;
+    }
+
+    .customerAccount input
+    {
+        outline: none;
+        border: none;
+        font-size: 4vw;
+        border-radius: 0.5vw;
+        padding: 0.7vh 1vw;
+    }
+
+    .customerOrders
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 3vw;
+        color: var(--color-text);
+        
+    }
+
+    .customerOrders h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 5vw;
+    }
+
+    .customerOrders table
+    {
+        text-align: center;
+        font-size: 2.2vw;
+    }
+
+    .customerOrders button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        justify-self: center;
+        align-self: center;
+        padding: 0.3vh 0.6vw;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerOrders button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerCart
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+        
+    }
+
+    .customerCart h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 5vw;
+    }
+
+    .customerCart div
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-items: center;
+        padding: 2vw;
+        text-align: center;
+        border-top: 1px solid var(--color-primary);
+        border-bottom: 1px solid var(--color-primary);
+    }
+
+    .customerCart div:last-child
+    {
+        justify-self: end;
+        grid-gap: 1vw;
+        border: none;
+    }
+
+    .customerCart span
+    {
+        color: var(--color-text);
+        font-size: 2.5vw;
+    }
+
+    .customerCart img
+    {
+        width: 7vw;
+        padding: 0 2vw;
+    }
+
+    .customerCart svg
+    {
+        color: var(--color-text);
+        width: 4vw;
+        height: 4vh;
+        padding: 0.2vh 0.2vw;
+        border-radius: 0.5vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerCart svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+
+    .customerCart input
+    {
+        width: 3.5vw;
+        text-align: center;
+        outline: none;
+        border: none;
+        margin: 0 1vw;
+        padding: 0.4vh 0.4vw;
+        border-radius: 0.5vw;
+    }
+
+    .customerCart .cartName
+    {
+        text-wrap: wrap;
+    }
+
+    .cartDiscount
+    {
+        text-decoration: line-through;
+        margin-right: 1vw;
+    }
+
+    .cartPrice
+    {
+        color: var(--color-primary) !important;
+    }
+
+    .placeOrder span
+    {
+        font-size: 4vw;
+        font-weight: 600;
+    }
+
+    .placeOrder button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.7vh 0.7vw;
+        font-size: 3vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .placeOrder button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerWishlist
+    {
+        display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+        
+    }
+
+    .customerWishlist h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 4vw;
+    }
+
+    .randomProductList
+    {
+        display: grid;
+        grid-template-rows: repeat(auto-fill, minmax(10vh, 1fr));
+        grid-gap: 1vh;
+    }
+
+    .productCard
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        text-align: center;
+        background: var(--color-background);
+        color: var(--color-text);
+        padding: 0.8vw;
+        border-radius: 0.5vw;
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    .productImage
+    {
+        width: 20vw;
+        object-fit: cover;
+    }
+
+    .productInfo
+    {
+        font-size: 2vw;
+    }
+
+    .productReview span
+    {
+        font-size: 2vw;
+    }
+
+    .productReview svg
+    {
+        width: 2vw;
+        height: 2vh;
+    }
+
+    .productDiscount
+    {
+        font-size: 2vw;
+    }
+
+    .productDiscount span:first-child
+    {
+        color: gray;
+        text-decoration: line-through;
+    }
+
+    .productDiscount span:last-child
+    {
+        color: var(--color-text);
+        background: var(--color-primary);
+        padding: 0.052vw;
+        border-radius: 0.26vw;
+        margin-left: 1vw;
+    }
+
+    .productFooter
+    {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .priceProduct
+    {
+        font-size: 2vw;
+        font-weight: bold;
+        color: var(--color-primary);
+        margin-right: 1vw;
+    }
+
+    .cartProduct
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: 0;
+        border-radius: 0.5vw;
+        align-self: center;
+        justify-self: center;
+        padding: 0.2vh 1.2vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .cartProduct:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .cartProduct svg
+    {
+        width: 2vw;
+        height: 2vh;
+    }
+
+    .customerReview
+    {
+        display: none;
+        padding: 1vh 2vw;
+        grid-gap: 1vw;
+        
+        color: var(--color-text);
+    }
+
+    .customerReview h1
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 4vw;
+    }
+
+    .customerReview svg
+    {
+        cursor: pointer;
+        width: 3vw;
+        height: 3vh;
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerReview svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .customerReview img
+    {
+        width: 10vw;
+        padding: 0 1vw;
+    }
+
+    .customerReview div
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .customerReview span
+    {
+        text-wrap: wrap;
+        font-size: 2.5vw;
+    }
+
+    .customerReview button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.5vh 0.5vw;
+        font-size: 2.5vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .customerReview button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+}
