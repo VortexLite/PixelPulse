@@ -40,16 +40,6 @@
         background: var(--color-primary);
     }
 
-    .customerTab button
-    {
-        display: grid;
-        grid-auto-flow: column;
-        /*background: transparent;*/
-        border: none;
-        color: var(--color-text);
-        align-items: center;
-    }
-
     .customerTab li a
     {
         color: var(--color-text);
@@ -126,11 +116,10 @@
 
     .customerOrders
     {
-        display: none;
+        display: grid;
         align-content: center;
         padding: 1vh 2vw;
         color: var(--color-text);
-        
     }
 
     .customerOrders h1
@@ -144,6 +133,14 @@
     {
         text-align: center;
         font-size: 1vw;
+        width: 100%;
+    }
+
+    .customerOrders td
+    {
+        border: 1px solid var(--color-primary);
+        padding: 0.3vw;
+        cursor: pointer;
     }
 
     .customerOrders button
@@ -167,9 +164,47 @@
         box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
     }
 
+    .customerOrdersDetails
+    {
+        display: table-row;
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+    }
+
+    .customerOrdersDetails.active
+    {
+        opacity: 1;
+        transform: scaleY(1);
+        visibility: visible;
+    }
+
+    .customerOrdersDetails td
+    {
+        cursor: auto;
+        border-top: none;
+    }
+
+    .customerOrdersDetails img
+    {
+        width: 5vw;
+    }
+
+    .hidden
+    {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+        display: none;
+    }
+
     .customerCart
     {
-        display: none;
+        display: grid;
         align-content: center;
         padding: 1vh 2vw;
         
@@ -279,7 +314,7 @@
 
     .customerWishlist
     {
-        display: none;
+        display: grid;
         align-content: center;
         padding: 1vh 2vw;
         
@@ -406,7 +441,7 @@
 
     .customerReview
     {
-        display: none;
+        display: grid;
         padding: 1vh 2vw;
         grid-gap: 1vw;
         
@@ -560,11 +595,10 @@
 
     .customerOrders
     {
-        display: none;
+        display: grid;
         align-content: center;
         padding: 1vh 3vw;
         color: var(--color-text);
-        
     }
 
     .customerOrders h1
@@ -578,6 +612,7 @@
     {
         text-align: center;
         font-size: 2.2vw;
+        width: 100%;
     }
 
     .customerOrders button
@@ -604,6 +639,51 @@
     .customerCart
     {
         display: none;
+        align-content: center;
+        padding: 1vh 2vw;
+    }
+
+    .customerOrdersDetails
+    {
+        display: table-row;
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+    }
+
+    .customerOrdersDetails.active
+    {
+        opacity: 1;
+        transform: scaleY(1);
+        visibility: visible;
+    }
+
+    .customerOrdersDetails td
+    {
+        cursor: auto;
+        border-top: none;
+    }
+
+    .customerOrdersDetails img
+    {
+        width: 10vw;
+    }
+
+    .hidden
+    {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+        display: none;
+    }
+
+    .customerCart
+    {
+        display: grid;
         align-content: center;
         padding: 1vh 2vw;
         
@@ -719,7 +799,7 @@
 
     .customerWishlist
     {
-        display: none;
+        display: grid;
         align-content: center;
         padding: 1vh 2vw;
         
@@ -836,7 +916,7 @@
 
     .customerReview
     {
-        display: none;
+        display: grid;
         padding: 1vh 2vw;
         grid-gap: 1vw;
         

@@ -1,0 +1,176 @@
+@model TModel
+
+@{
+    ViewBag.Title = "Monitor";
+    Layout = "_Layout";
+}
+
+@section styles
+{
+    <link rel="stylesheet" href="~/css/product.css"/>
+}
+
+<main>
+    <div class="productDetail">
+        <img src="testMonitor.png">
+        <div class="productInfo">
+            <h2 class="productName">Монітор Philips 27M2N5500/00</h2>
+            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+				</span>
+            <h3 class="productCharacteristic">Характеристика</h3>
+            <ul class="productSpecs">
+                <li>Дисплей: <span>IPS</span></li>
+                <li>Частота оновлення: <span>180 Гц</span></li>
+                <li>Максимальна яскравість: <span>350 кд/м</span></li>
+                <li>Регулювання по висоті (мм): <span>130</span></li>
+                <li>Відеоінтерфейси: <span>HDMI (2x);DisplayPort;</span></li>
+            </ul>
+            <div class="productPriceBtn">
+                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
+                <button class="addToCart">Додати в кошик</button>
+            </div>
+        </div>
+    </div>
+    <div class="productCharacteristicFull">
+        <h3>Характеристики</h3>
+        <table class="productTable">
+            <tbody>
+            <tr>
+                <td>Бренд:</td>
+                <td>Philips</td>
+            </tr>
+            <tr>
+                <td>Тип:</td>
+                <td>Монітор</td>
+            </tr>
+            <tr>
+                <td>Діагональ екрану, дюймів:</td>
+                <td>27</td>
+            </tr>
+            <tr>
+                <td>Тип РК-матриці:</td>
+                <td>IPS</td>
+            </tr>
+            <tr>
+                <td>Формат зображення:</td>
+                <td>16:9</td>
+            </tr>
+            <tr>
+                <td>Роздільна здатність, точок:</td>
+                <td>2560x1440</td>
+            </tr>
+            <tr>
+                <td>Крок точок, мм:</td>
+                <td>0,2331</td>
+            </tr>
+            <tr>
+                <td>Час реакції, мс:</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>Кут огляду, гор/верт:</td>
+                <td>178/178</td>
+            </tr>
+            <tr>
+                <td>Тип системи підсвітки:</td>
+                <td>WLED</td>
+            </tr>
+            <tr>
+                <td>Максимальна яскравість, кд/м:</td>
+                <td>350</td>
+            </tr>
+            <tr>
+                <td>Контрастність:</td>
+                <td>1200:1 (Mega)</td>
+            </tr>
+            <tr>
+                <td>HDR</td>
+                <td>+ (HDR400)</td>
+            </tr>
+            <tr>
+                <td>Колірна гама DCI-P3, %:</td>
+                <td>98</td>
+            </tr>
+            <tr>
+                <td>Глибина кольору:</td>
+                <td>8 біт + FRC</td>
+            </tr>
+            <tr>
+                <td>Покриття екрану:</td>
+                <td>антиблікове</td>
+            </tr>
+            <tr>
+                <td>Частота оновлення, Гц:</td>
+                <td>180</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h3 class="borderTopCharacteristicFull">Інтерфейси відеосигналу</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>DisplayPort:</td>
+                <td>є</td>
+            </tr>
+            <tr>
+                <td>HDMI:</td>
+                <td> (2x)</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h3 class="borderTopCharacteristicFull">Додаткові можливості</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>Засоби мультимедіа:</td>
+                <td>аудіовихід</td>
+            </tr>
+            <tr>
+                <td>Концентратор USB:</td>
+                <td>+ (4xUSB 3.2)</td>
+            </tr>
+            <tr>
+                <td>Регулювання підставки по висоті (діапазон регулювання, мм):</td>
+                <td>+ (130)</td>
+            </tr>
+            <tr>
+                <td>Поворотний екран:</td>
+                <td>є</td>
+            </tr>
+            <tr>
+                <td>Адаптивна синхронізація:</td>
+                <td>Adaptive-Sync</td>
+            </tr>
+            <tr>
+                <td>Flicker-Free:</td>
+                <td>є</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <h3 class="borderTopCharacteristicFull">Загальні характеристики</h3>
+                </td>
+            </tr>
+            <tr>
+                <td>Споживана потужність, Вт:</td>
+                <td>29,8</td>
+            </tr>
+            <tr>
+                <td>Тип блоку живлення монітора:</td>
+                <td>вбудований</td>
+            </tr>
+            <tr>
+                <td>Розміри, мм:</td>
+                <td>614x519x261</td>
+            </tr>
+            <tr>
+                <td>Вага, кг:</td>
+                <td>5,68</td>
+            </tr>
+            <tr>
+                <td>Підтримка VESA-кріплень:</td>
+                <td>+ (VESA 100)</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>

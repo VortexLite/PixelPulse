@@ -3,6 +3,7 @@ using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.DTOs.Review;
+using PixelPulse.Application.DTOs.Shipping;
 using PixelPulse.Application.DTOs.Wishlist;
 using PixelPulse.Domain.Entities;
 
@@ -23,12 +24,37 @@ public class RegisterMapper : IRegister
                     : null);
         
         config.NewConfig<Order, OrderDTO>()
+            .Map(dest => dest.Id, src => src.Id)
+            .Map(dest => dest.OrderDate, src => src.OrderDate)
+            .Map(dest => dest.Status, src => src.Status)
             .Map(dest => dest.TotalItems, src => src.OrderItems.Sum(oi => oi.Quantity))
-            .Map(dest => dest.TotalPrice, src => src.OrderItems.Sum(oi => oi.Quantity * oi.Price))
+            .Map(dest => dest.TotalPrice, src => src.TotalPrice)
+            .Map(dest => dest.Shipping, src => src.Shipping.Adapt<ShippingDTO>())
             .Map(dest => dest.OrderItems, src => src.OrderItems.Adapt<List<OrderItemDTO>>());
 
         config.NewConfig<OrderItem, OrderItemDTO>()
-            .Map(dest => dest.ProductName, src => src.Product.Name);
+            .Map(dest => dest.Id, src => src.Id)
+            .Map(dest => dest.OrderId, src => src.OrderId)
+            .Map(dest => dest.ProductName, src => src.Product.Name)
+            .Map(dest => dest.ProductPrice, src => src.Product.Price)
+            .Map(dest => dest.Quantity, src => src.Quantity)
+            .Map(dest => dest.TotalPrice, src => src.Price * src.Quantity)
+            .Map(dest => dest.ImageType, 
+                src => src.Product.ProductImages
+                    .Where(img => img.isMain)
+                    .Select(img => img.ImageType)
+                    .FirstOrDefault())
+            .Map(dest => dest.ImageData, 
+                src => src.Product.ProductImages
+                    .Where(img => img.isMain)
+                    .Select(img => img.ImageData)
+                    .FirstOrDefault());
+
+        config.NewConfig<Shipping, ShippingDTO>()
+            .Map(dest => dest.TrackingNumber, src => src.TrackingNumber)
+            .Map(dest => dest.ShippedDate, src => src.ShippedDate)
+            .Map(dest => dest.Address, 
+                src => $"{src.Address.Street}, {src.Address.City}, {src.Address.State}, {src.Address.ZipCode}");
         
         config.NewConfig<CartItem, CartItemDTO>()
             .Map(dest => dest.Id, src => src.Id)

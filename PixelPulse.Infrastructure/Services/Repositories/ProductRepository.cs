@@ -181,6 +181,33 @@ public class ProductRepository : IProductRepository
         }
     }
 
+    public async Task<Product?> GetProductWithImageAndCategoriesByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        if (_cache.TryGetValue(_cacheKeyPrefix + id, out Product cachedProduct))
+        {
+            _logger.LogInformation($"Product found: {_cacheKeyPrefix + id}");
+            return cachedProduct;
+        }
+        else
+        {
+            cachedProduct = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+            
+            _logger.LogInformation($"Product found: {cachedProduct.Id} {cachedProduct.Name}");
+
+            if (cachedProduct != null)
+            {
+                _cache.Set(_cacheKeyPrefix + id, cachedProduct, TimeSpan.FromMinutes(30));
+                _logger.LogInformation($"Product cache created: {_cacheKeyPrefix + id}");
+            }
+        
+            return cachedProduct;
+        }
+    }
+
     public async Task<IReadOnlyList<Product>> GetAllProductWithImageTake20Async(CancellationToken cancellationToken = default)
     {
         if (_cache.TryGetValue(_cacheKeyAll, out IReadOnlyList<Product> cachedProduct))

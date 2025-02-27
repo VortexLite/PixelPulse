@@ -18,16 +18,23 @@ public class ProductController : ControllerBase
         _productRepository = productRepository;
         _logger = logger;
     }
-    
+
     [HttpGet("GetProductsForMain")]
     public async Task<IActionResult> GetProductsForMain()
     {
         var products = await _productRepository.GetAllProductWithImageTake20Async();
-        if (products is null) 
+        if (products is null)
             return NotFound();
-        
+
         var productDTO = products.Adapt<List<ProductMainDTO>>();
         _logger.LogInformation($"Converting productMainDTO {productDTO.Count} products");
         return Ok(productDTO);
     }
+
+    [HttpPost("GetDetailsProduct")]
+    public async Task<IActionResult> GetDetailsProduct([FromBody] ProductMainDTO product)
+    {
+        return Ok();
+    }
+
 }

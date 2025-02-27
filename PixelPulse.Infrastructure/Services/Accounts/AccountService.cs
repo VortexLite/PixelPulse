@@ -68,10 +68,12 @@ public class AccountService : IAccountService
     {
         var user = await FindUserByRefreshToken(token);
         var ordersDTO = await _context.Orders
-            .Where(o => o.AppUserId == user.Id)
             .Include(o => o.OrderItems)
-            .ThenInclude(oi => oi.Product)
-            .ProjectToType<OrderDTO>()
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(p => p.ProductImages)
+            .Include(o => o.Shipping)
+                .ThenInclude(s => s.Address)
+            .ProjectToType<OrderDTO>()  
             .ToListAsync();
         
         return ordersDTO;

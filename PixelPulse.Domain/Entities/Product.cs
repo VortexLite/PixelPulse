@@ -15,4 +15,5 @@ public class Product
     
     public OrderItem? OrderItem { get; set; }
     public List<ProductImage>? ProductImages { get; set; }
+    public List<ProductSpecification> ProductSpecifications { get; set; }
 }
