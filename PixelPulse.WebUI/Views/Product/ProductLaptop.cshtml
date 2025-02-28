@@ -1,4 +1,4 @@
-@model TModel
+@model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
     ViewBag.Title = "title";
@@ -12,23 +12,46 @@
 
 <main>
     <div class="productDetail">
-        <img src="testLaptop.png">
+        @if (Model.ProductImages.Any())
+        {
+            foreach (var image in Model.ProductImages)
+            {
+                if (image.ImageData != null)
+                {
+                    <img src="data:@image.ImageType;base64,@Convert.ToBase64String(image.ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+            }
+        }
+        else
+        {
+            <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+        }
         <div class="productInfo">
-            <h2 class="productName">Ноутбук ASUS VivoBook Pro 15 OLED N6506MV Cool Silver (N6506MV-MA022)</h2>
-            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</span>
+            <h2 class="productName">@Model.Name</h2>
+            <span class="productDescription">@Model.Description</span>
             <h3 class="productCharacteristic">Характеристика</h3>
             <ul class="productSpecs">
-                <li>Дисплей: <span>OLED"</span></li>
-                <li>Розширення екрану: <span>2880x1620</span></li>
-                <li>Гц: <span>120</span></li>
-                <li>Процесор: <span>Intel Core Ultra 7 155H</span></li>
-                <li>Відеокарта: <span>NVIDIA GeForce RTX 4060</span></li>
-                <li>ОЗП: <span>16 ГБ; DDR5</span></li>
+                <li>Дисплей: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Дисплей")?.Value ?? "-")</span></li>
+                <li>Розширення екрану: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Розширення екрану")?.Value ?? "-")</span></li>
+                <li>Гц: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Гц")?.Value ?? "-")</span></li>
+                <li>Процесор: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Процесор")?.Value ?? "-")</span></li>
+                <li>Відеокарта: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Відеокарта")?.Value ?? "-")</span></li>
+                <li>ОЗП: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "ОЗП")?.Value ?? "-")</span></li>
             </ul>
             <div class="productPriceBtn">
-                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
-                <button class="addToCart">Додати в кошик</button>
+                <span class="productPrice">Ціна: <span>@Model.Price ₴</span></span>
+                @if (Model.Stock != 0)
+                {
+                    <button class="addToCart">Додати в кошик</button>
+                }
+                else
+                {
+                    <button class="addToCart" disabled>Додати в кошик</button>
+                }
             </div>
         </div>
     </div>
@@ -36,305 +59,25 @@
         <h3>Характеристики</h3>
         <table class="productTable">
             <tbody>
-            <tr>
-                <td>Бренд:</td>
-                <td>ASUS</td>
-            </tr>
-            <tr>
-                <td>Лінійка:</td>
-                <td>VivoBook Pro 15 OLED N6506MV</td>
-            </tr>
-            <tr>
-                <td>Тип:</td>
-                <td>Ноутбук</td>
-            </tr>
-            <tr>
-                <td>Конструкція:</td>
-                <td>класичний</td>
-            </tr>
-            <tr>
-                <td>Операційна система:</td>
-                <td>DOS</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Дисплей</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Діагональ, дюймів:</td>
-                <td>15,6</td>
-            </tr>
-            <tr>
-                <td>Тип матриці:</td>
-                <td>OLED</td>
-            </tr>
-            <tr>
-                <td>Тип покриття:</td>
-                <td>глянцеве</td>
-            </tr>
-            <tr>
-                <td>Роздільна здатність:</td>
-                <td>2880x1620</td>
-            </tr>
-            <tr>
-                <td>HDR:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Частота оновлення, Гц:</td>
-                <td>120</td>
-            </tr>
-            <tr>
-                <td>Яскравість, кд/м2:</td>
-                <td>400</td>
-            </tr>
-            <tr>
-                <td>Колірне охоплення (DCI P3), %:</td>
-                <td>100</td>
-            </tr>
-            <tr>
-                <td>Додаткові дані про дисплей:</td>
-                <td>600nits HDR peak brightness, TUV Rheinland-certified</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Процесор</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Модель процесора:</td>
-                <td>Intel Core Ultra 7 155H</td>
-            </tr>
-            <tr>
-                <td>Базова частота продуктивних ядер, ГГц:</td>
-                <td>1,4</td>
-            </tr>
-            <tr>
-                <td>Максимальна частота продуктивних ядер, ГГц:</td>
-                <td>4,8</td>
-            </tr>
-            <tr>
-                <td>Базова частота енергоефективних ядер, ГГц:</td>
-                <td>0,9</td>
-            </tr>
-            <tr>
-                <td>Максимальна частота енергоефективних ядер, ГГц:</td>
-                <td>3,8</td>
-            </tr>
-            <tr>
-                <td>Загальна кількість ядер процесора:</td>
-                <td>16</td>
-            </tr>
-            <tr>
-                <td>Кількість продуктивних ядер процесора:</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td>Кількість енергоефективних ядер процесора:</td>
-                <td>10</td>
-            </tr>
-            <tr>
-                <td>Кількість потоків процесора:</td>
-                <td>22</td>
-            </tr>
-            <tr>
-                <td>Тепловиділення (CPU TDP):</td>
-                <td>65</td>
-            </tr>
-            <tr>
-                <td>Нейронний процесор (NPU):</td>
-                <td>Intel AI Boost</td>
-            </tr>
-            <tr>
-                <td>Чіпсет:</td>
-                <td>Intel SoC</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Відеокарта</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Графічний адаптер:</td>
-                <td>NVIDIA GeForce RTX 4060</td>
-            </tr>
-            <tr>
-                <td>Об'єм пам'яті відеокарти, ГБ:</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>Тип пам'яті відеокарти:</td>
-                <td>GDDR6</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Оперативна пам'ять</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Обсяг оперативної пам'яті, ГБ:</td>
-                <td>16</td>
-            </tr>
-            <tr>
-                <td>Максимальний обсяг оперативної пам'яті, ГБ:</td>
-                <td>24</td>
-            </tr>
-            <tr>
-                <td>Тип оперативної пам'яті:</td>
-                <td>DDR5</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Накопичувач</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>SSD, ГБ:</td>
-                <td>1000</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Роз'єми</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>USB4:</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>USB Type-C (USB 3.2 Gen 2):</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>Thunderbolt 4:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>USB Type-C (DisplayPort Alt Mode):</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>USB Power Delivery:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>USB 3.2 Gen 1 Type-A:</td>
-                <td>2</td>
-            </tr>
-            <tr>
-                <td>HDMI 2.1:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Зовнішні порти:</td>
-                <td>комбінований роз'єм для навушників/мікрофону</td>
-            </tr>
-            <tr>
-                <td>Картрідер:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Комунікації</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Мережевий адаптер (Ethernet):</td>
-                <td>10/100/1000</td>
-            </tr>
-            <tr>
-                <td>Wi-Fi:</td>
-                <td>802.11ax (Wi-Fi 6/6E)</td>
-            </tr>
-            <tr>
-                <td>Bluetooth:</td>
-                <td>5.3</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Оснащення</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Web-камера:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Шторка для WEB-камери:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Підсвічування клавіатури:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Клавіатура з цифровим блоком:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Фізичні параметри</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Вага, кг:</td>
-                <td>1,8</td>
-            </tr>
-            <tr>
-                <td>Розмір, мм:</td>
-                <td>355,7x235,3x19,9</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Комунікації</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Матеріал корпусу:</td>
-                <td>алюміній, пластик</td>
-            </tr>
-            <tr>
-                <td>Колір кришки:</td>
-                <td>сріблястий</td>
-            </tr>
-            <tr>
-                <td>Колір корпусу:</td>
-                <td>сріблястий</td>
-            </tr>
-            <tr>
-                <td>Захищений ноутбук:</td>
-                <td>+ (MIL-STD-810H)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Батарея та живлення</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Ємність, Вт·год:</td>
-                <td>75</td>
-            </tr>
-            <tr>
-                <td>Зарядка по USB Type-C:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Потужність блоку живлення, Вт:</td>
-                <td>200</td>
-            </tr>
-            <tr>
-                <td>Тип акумулятора:</td>
-                <td>Li-ion</td>
-            </tr>
+                @{
+                    string? lastCategory = null;
+                }
+                @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.Category))
+                {
+                    if (lastCategory != spec.Category)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <h3 class="borderTopCharacteristicFull">@spec.Category</h3>
+                            </td>
+                        </tr>
+                        lastCategory = spec.Category;
+                    }
+                    <tr>
+                        <td>@spec.Name: </td>
+                        <td>@spec.Value</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

@@ -31,10 +31,15 @@ public class ProductController : ControllerBase
         return Ok(productDTO);
     }
 
-    [HttpPost("GetDetailsProduct")]
-    public async Task<IActionResult> GetDetailsProduct([FromBody] ProductMainDTO product)
+    [HttpGet("GetDetailsProduct/{id}")]
+    public async Task<IActionResult> GetDetailsProduct(int id)
     {
-        return Ok();
+        var productsDtos = await _productRepository.GetProductWithImageAndCategoriesByIdAsync(id);
+        if (productsDtos is null)
+            return NotFound();
+        
+        
+        return Ok (productsDtos);
     }
 
 }

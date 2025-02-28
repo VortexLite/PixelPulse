@@ -1,4 +1,4 @@
-@model TModel
+@model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
     ViewBag.Title = "Keyboard";
@@ -12,20 +12,43 @@
 
 <main>
     <div class="productDetail">
-        <img src="testKeyboard.png">
+        @if (Model.ProductImages.Any())
+        {
+            foreach (var image in Model.ProductImages)
+            {
+                if (image.ImageData != null)
+                {
+                    <img src="data:@image.ImageType;base64,@Convert.ToBase64String(image.ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+            }
+        }
+        else
+        {
+            <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+        }
         <div class="productInfo">
-            <h2 class="productName">Клавіатура Logitech MX Keys S Graphite UA (920-011593)</h2>
-            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</span>
+            <h2 class="productName">@Model.Name</h2>
+            <span class="productDescription">@Model.Description</span>
             <h3 class="productCharacteristic">Характеристика</h3>
             <ul class="productSpecs">
-                <li>Призначення: <span>для настільних ПК</span></li>
-                <li>Бездротове підключення: <span>є</span></li>
-                <li>Підсвічування: <span>є</span></li>
+                <li>Призначення: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Призначення")?.Value ?? "-")</span></li>
+                <li>Бездротове підключення: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Бездротове підключення")?.Value ?? "-")</span></li>
+                <li>Підсвічування: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Підсвічування")?.Value ?? "-")</span></li>
             </ul>
             <div class="productPriceBtn">
-                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
-                <button class="addToCart">Додати в кошик</button>
+                <span class="productPrice">Ціна: <span>@Model.Price ₴</span></span>
+                @if (Model.Stock != 0)
+                {
+                    <button class="addToCart">Додати в кошик</button>
+                }
+                else
+                {
+                    <button class="addToCart" disabled>Додати в кошик</button>
+                }
             </div>
         </div>
     </div>
@@ -33,79 +56,25 @@
         <h3>Характеристики</h3>
         <table class="productTable">
             <tbody>
-            <tr>
-                <td>Бренд:</td>
-                <td>Logitech</td>
-            </tr>
-            <tr>
-                <td>Тип:</td>
-                <td>Клавіатура</td>
-            </tr>
-            <tr>
-                <td>Призначення:</td>
-                <td>для настільних ПК</td>
-            </tr>
-            <tr>
-                <td>Бездротове підключення:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Інтерфейс комунікації з ПК:</td>
-                <td>Bluetooth, радіоінтерфейс</td>
-            </tr>
-            <tr>
-                <td>Приймач (розмір):</td>
-                <td>мініатюрний</td>
-            </tr>
-            <tr>
-                <td>Живлення маніпулятора (для бездротових):</td>
-                <td>вбудований акумулятор</td>
-            </tr>
-            <tr>
-                <td>Настроювані клавіші:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Підсвічування:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Колір корпусу:</td>
-                <td>сірий</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Клавіатура</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Тип клавіатури:</td>
-                <td>стандартна</td>
-            </tr>
-            <tr>
-                <td>Тип клавіш:</td>
-                <td>мембранний</td>
-            </tr>
-            <tr>
-                <td>Цифровий блок:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Колір символів кирилиці:</td>
-                <td>білий</td>
-            </tr>
-            <tr>
-                <td>Клавіатура для Apple:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Розмір клавіатури, мм:</td>
-                <td>430x132x21</td>
-            </tr>
-            <tr>
-                <td>Вага клавіатури, г:</td>
-                <td>810</td>
-            </tr>
+                @{
+                    string? lastCategory = null;
+                }
+                @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.Category))
+                {
+                    if (lastCategory != spec.Category)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <h3 class="borderTopCharacteristicFull">@spec.Category</h3>
+                            </td>
+                        </tr>
+                        lastCategory = spec.Category;
+                    }
+                    <tr>
+                        <td>@spec.Name: </td>
+                        <td>@spec.Value</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

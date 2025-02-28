@@ -1,4 +1,4 @@
-@model TModel
+@model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
     ViewBag.Title = "Monitor";
@@ -12,22 +12,45 @@
 
 <main>
     <div class="productDetail">
-        <img src="testMonitor.png">
+        @if (Model.ProductImages.Any())
+        {
+            foreach (var image in Model.ProductImages)
+            {
+                if (image.ImageData != null)
+                {
+                    <img src="data:@image.ImageType;base64,@Convert.ToBase64String(image.ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+            }
+        }
+        else
+        {
+            <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+        }
         <div class="productInfo">
-            <h2 class="productName">Монітор Philips 27M2N5500/00</h2>
-            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</span>
+            <h2 class="productName">@Model.Name</h2>
+            <span class="productDescription">@Model.Description</span>
             <h3 class="productCharacteristic">Характеристика</h3>
             <ul class="productSpecs">
-                <li>Дисплей: <span>IPS</span></li>
-                <li>Частота оновлення: <span>180 Гц</span></li>
-                <li>Максимальна яскравість: <span>350 кд/м</span></li>
-                <li>Регулювання по висоті (мм): <span>130</span></li>
-                <li>Відеоінтерфейси: <span>HDMI (2x);DisplayPort;</span></li>
+                <li>Дисплей: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Дисплей")?.Value ?? "-")</span></li>
+                <li>Частота оновлення: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Частота оновлення")?.Value ?? "-")</span></li>
+                <li>Максимальна яскравість: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Максимальна яскравість")?.Value ?? "-")</span></li>
+                <li>Регулювання по висоті (мм): <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Регулювання по висоті (мм)")?.Value ?? "-")</span></li>
+                <li>Відеоінтерфейси: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Відеоінтерфейси")?.Value ?? "-")</span></li>
             </ul>
             <div class="productPriceBtn">
-                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
-                <button class="addToCart">Додати в кошик</button>
+                <span class="productPrice">Ціна: <span>@Model.Price ₴</span></span>
+                @if (Model.Stock != 0)
+                {
+                    <button class="addToCart">Додати в кошик</button>
+                }
+                else
+                {
+                    <button class="addToCart" disabled>Додати в кошик</button>
+                }
             </div>
         </div>
     </div>
@@ -35,141 +58,25 @@
         <h3>Характеристики</h3>
         <table class="productTable">
             <tbody>
-            <tr>
-                <td>Бренд:</td>
-                <td>Philips</td>
-            </tr>
-            <tr>
-                <td>Тип:</td>
-                <td>Монітор</td>
-            </tr>
-            <tr>
-                <td>Діагональ екрану, дюймів:</td>
-                <td>27</td>
-            </tr>
-            <tr>
-                <td>Тип РК-матриці:</td>
-                <td>IPS</td>
-            </tr>
-            <tr>
-                <td>Формат зображення:</td>
-                <td>16:9</td>
-            </tr>
-            <tr>
-                <td>Роздільна здатність, точок:</td>
-                <td>2560x1440</td>
-            </tr>
-            <tr>
-                <td>Крок точок, мм:</td>
-                <td>0,2331</td>
-            </tr>
-            <tr>
-                <td>Час реакції, мс:</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>Кут огляду, гор/верт:</td>
-                <td>178/178</td>
-            </tr>
-            <tr>
-                <td>Тип системи підсвітки:</td>
-                <td>WLED</td>
-            </tr>
-            <tr>
-                <td>Максимальна яскравість, кд/м:</td>
-                <td>350</td>
-            </tr>
-            <tr>
-                <td>Контрастність:</td>
-                <td>1200:1 (Mega)</td>
-            </tr>
-            <tr>
-                <td>HDR</td>
-                <td>+ (HDR400)</td>
-            </tr>
-            <tr>
-                <td>Колірна гама DCI-P3, %:</td>
-                <td>98</td>
-            </tr>
-            <tr>
-                <td>Глибина кольору:</td>
-                <td>8 біт + FRC</td>
-            </tr>
-            <tr>
-                <td>Покриття екрану:</td>
-                <td>антиблікове</td>
-            </tr>
-            <tr>
-                <td>Частота оновлення, Гц:</td>
-                <td>180</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Інтерфейси відеосигналу</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>DisplayPort:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>HDMI:</td>
-                <td> (2x)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Додаткові можливості</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Засоби мультимедіа:</td>
-                <td>аудіовихід</td>
-            </tr>
-            <tr>
-                <td>Концентратор USB:</td>
-                <td>+ (4xUSB 3.2)</td>
-            </tr>
-            <tr>
-                <td>Регулювання підставки по висоті (діапазон регулювання, мм):</td>
-                <td>+ (130)</td>
-            </tr>
-            <tr>
-                <td>Поворотний екран:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Адаптивна синхронізація:</td>
-                <td>Adaptive-Sync</td>
-            </tr>
-            <tr>
-                <td>Flicker-Free:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Загальні характеристики</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Споживана потужність, Вт:</td>
-                <td>29,8</td>
-            </tr>
-            <tr>
-                <td>Тип блоку живлення монітора:</td>
-                <td>вбудований</td>
-            </tr>
-            <tr>
-                <td>Розміри, мм:</td>
-                <td>614x519x261</td>
-            </tr>
-            <tr>
-                <td>Вага, кг:</td>
-                <td>5,68</td>
-            </tr>
-            <tr>
-                <td>Підтримка VESA-кріплень:</td>
-                <td>+ (VESA 100)</td>
-            </tr>
+                @{
+                    string? lastCategory = null;
+                }
+                @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.Category))
+                {
+                    if (lastCategory != spec.Category)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <h3 class="borderTopCharacteristicFull">@spec.Category</h3>
+                            </td>
+                        </tr>
+                        lastCategory = spec.Category;
+                    }
+                    <tr>
+                        <td>@spec.Name: </td>
+                        <td>@spec.Value</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

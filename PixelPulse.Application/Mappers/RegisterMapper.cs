@@ -106,5 +106,15 @@ public class RegisterMapper : IRegister
                     .Where(img => img.isMain)
                     .Select(img => img.ImageData)
                     .FirstOrDefault());
+        
+        config.NewConfig<Product, ProductCategoryDTO>()
+            .Map(dest => dest.Id, src => src.Id)
+            .Map(dest => dest.Name, src => src.Name)
+            .Map(dest => dest.Description, src => src.Description)
+            .Map(dest => dest.Price, src => src.Price)
+            .Map(dest => dest.Stock, src => src.Stock)
+            .Map(dest => dest.CategoryName, src => src.Category.Name)
+            .Map(dest => dest.ProductImages, src => src.ProductImages ?? new List<ProductImage>())
+            .Map(dest => dest.ProductSpecifications, src => src.ProductSpecifications.Adapt<List<ProductSpecificationDTO>>() ?? new List<ProductSpecificationDTO>());
     }
 }

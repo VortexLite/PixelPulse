@@ -1,7 +1,7 @@
-@model TModel
+@model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Phone";
     Layout = "_Layout";
 }
 
@@ -10,24 +10,82 @@
     <link rel="stylesheet" href="~/css/product.css"/>
 }
 
+@section script
+{
+    <script>
+        const images = @Html.Raw(Json.Serialize(Model?.ProductImages));
+
+        let currentIndex = 0;
+        const imgElement = document.getElementById("productImage");
+        const prevBtn = document.querySelector(".prev");
+        const nextBtn = document.querySelector(".next");
+
+        prevBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            imgElement.src = images[currentIndex];
+        });
+
+        nextBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            imgElement.src = images[currentIndex];
+        });
+    </script>
+}
+
 <main>
     <div class="productDetail">
-        <img src="testCardImage.webp">
+        @if (Model.ProductImages.Any())
+        {
+            <div class="image-container">
+                <button class="prev">◀</button>
+                @if (Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData != null)
+                {
+                    <img src="data:@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageType;base64,@Convert.ToBase64String(@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+                <button class="next">▶</button>
+            </div>
+
+            @*foreach (var image in Model.ProductImages)
+            {
+                if (image.ImageData != null)
+                {
+                    <img src="data:@image.ImageType;base64,@Convert.ToBase64String(image.ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+            }*@
+        }
+        else
+        {
+            <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+        }
         <div class="productInfo">
-            <h2 class="productName">Смартфон Samsung Galaxy S24 Ultra 12/512GB Titanium Violet (SM-S928BZVH)</h2>
-            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</span>
+            <h2 class="productName">@Model.Name</h2>
+            <span class="productDescription">@Model.Description</span>
             <h3 class="productCharacteristic">Характеристика</h3>
             <ul class="productSpecs">
-                <li>Процесор: <span>Qualcomm Snapdragon 8 Gen 3</span></li>
-                <li>Оперативна пам'ять: <span>12 Gb</span></li>
-                <li>Пам'ять: <span>512 Gb</span></li>
-                <li>Камери: <span>200 (f/1.7, ширококутна) + 12 (f/2.2, надширококутна, 120 градусів) + 10 (f/2.4, 3x телефото об'єктив) + 50 (f/3.4, 5x телефото об'єктив)</span></li>
-                <li>Батарея: <span>5000 мАгод (незнімний)</span></li>
+                <li>Процесор: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Процесор")?.Value ?? "-")</span></li>
+                <li>Оперативна пам'ять: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Оперативна пам'ять")?.Value ?? "-")</span></li>
+                <li>Пам'ять: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Пам'ять")?.Value ?? "-")</span></li>
+                <li>Камери: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Камери")?.Value ?? "-")</span></li>
+                <li>Батарея: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Батарея")?.Value ?? "-")</span></li>
             </ul>
             <div class="productPriceBtn">
-                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
-                <button class="addToCart">Додати в кошик</button>
+                <span class="productPrice">Ціна: <span>@Model.Price ₴</span></span>
+                @if (Model.Stock != 0)
+                {
+                    <button class="addToCart">Додати в кошик</button>
+                }
+                else
+                {
+                    <button class="addToCart" disabled>Додати в кошик</button>
+                }
             </div>
         </div>
     </div>
@@ -35,232 +93,25 @@
         <h3>Характеристики</h3>
         <table class="productTable">
             <tbody>
-            <tr>
-                <td>Бренд:</td>
-                <td>Samsung</td>
-            </tr>
-            <tr>
-                <td>Лінійка:</td>
-                <td>Galaxy S24 Ultra</td>
-            </tr>
-            <tr>
-                <td>Тип:</td>
-                <td>Смартфон</td>
-            </tr>
-            <tr>
-                <td>Попередньо встановлена ОС:</td>
-                <td>Android 14</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Оснащення</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Оперативна пам'ять, ГБ:</td>
-                <td>12</td>
-            </tr>
-            <tr>
-                <td>Вбудована пам'ять, ГБ:</td>
-                <td>512</td>
-            </tr>
-            <tr>
-                <td>Тип SIM-карти:</td>
-                <td>Nano-SIM+eSIM</td>
-            </tr>
-            <tr>
-                <td>Кількість SIM-карт:</td>
-                <td>2 SIM</td>
-            </tr>
-            <tr>
-                <td>Процесор:</td>
-                <td>Qualcomm Snapdragon 8 Gen 3</td>
-            </tr>
-            <tr>
-                <td>Кількість ядер:</td>
-                <td>8</td>
-            </tr>
-            <tr>
-                <td>Частота, ГГц:</td>
-                <td>3,3</td>
-            </tr>
-            <tr>
-                <td>Дротова зарядка, Вт:</td>
-                <td>45 (PD 3.0)</td>
-            </tr>
-            <tr>
-                <td>Бездротова зарядка, Вт:</td>
-                <td>15</td>
-            </tr>
-            <tr>
-                <td>Реверсивна бездротова зарядка:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Акумулятор:</td>
-                <td>5000 мАгод (незнімний)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Дисплей</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Діагональ, дюйми:</td>
-                <td>6,8</td>
-            </tr>
-            <tr>
-                <td>Роздільна здатність:</td>
-                <td>3120x1440</td>
-            </tr>
-            <tr>
-                <td>Тип матриці:</td>
-                <td>AMOLED</td>
-            </tr>
-            <tr>
-                <td>PPI:</td>
-                <td>505</td>
-            </tr>
-            <tr>
-                <td>Співвідношення екран/корпус:</td>
-                <td>89</td>
-            </tr>
-            <tr>
-                <td>Датчик регулювання яскравості:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Частота оновлення, Гц:</td>
-                <td>120</td>
-            </tr>
-            <tr>
-                <td>Особливості дисплея:</td>
-                <td>пікова яскравість 2600 ніт, Corning Gorilla Glass Armor, AoD</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Камера</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Основна камера, МП:</td>
-                <td>200 (f/1.7, ширококутна) + 12 (f/2.2, надширококутна, 120 градусів) + 10 (f/2.4, 3x телефото об'єктив) + 50 (f/3.4, 5x телефото об'єктив)</td>
-            </tr>
-            <tr>
-                <td>Відеозйомка:</td>
-                <td>8K 30fps</td>
-            </tr>
-            <tr>
-                <td>Фронтальна камера, МП:</td>
-                <td>12 (f / 2.2)</td>
-            </tr>
-            <tr>
-                <td>Ультраширококутна камера:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Теле-фото об'єктив:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Оптична стабілізація:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Комунікації</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Стандарти зв'язку:</td>
-                <td>5G, 4G, 3G</td>
-            </tr>
-            <tr>
-                <td>Wi-Fi:</td>
-                <td>802.11be</td>
-            </tr>
-            <tr>
-                <td>Bluetooth:</td>
-                <td>5.3</td>
-            </tr>
-            <tr>
-                <td>GPS:</td>
-                <td>+ (GPS; GLONASS; BDS; Galileo)</td>
-            </tr>
-            <tr>
-                <td>Dual GPS:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Аудіо-кодеки:</td>
-                <td>AAC, LDAC</td>
-            </tr>
-            <tr>
-                <td>NFC:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Інтерфейсний роз'єм:</td>
-                <td>USB Type-C (3.2)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Корпус</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Висота, мм:</td>
-                <td>162,3</td>
-            </tr>
-            <tr>
-                <td>Ширина, мм:</td>
-                <td>79</td>
-            </tr>
-            <tr>
-                <td>Товщина, мм:</td>
-                <td>8,6</td>
-            </tr>
-            <tr>
-                <td>Вага, г:</td>
-                <td>233</td>
-            </tr>
-            <tr>
-                <td>Захист від пилу і вологи:</td>
-                <td>+ (IP68)</td>
-            </tr>
-            <tr>
-                <td>Тип корпусу:</td>
-                <td>моноблок (нерозбірний)</td>
-            </tr>
-            <tr>
-                <td>Матеріал кришки/рамки:</td>
-                <td>скло/титан</td>
-            </tr>
-            <tr>
-                <td>Колір корпусу:</td>
-                <td>фіолетовий</td>
-            </tr>
-            <tr>
-                <td>Тип клавіатури:</td>
-                <td>екранне введення</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Додатково</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Сканер відбитка/обличчя:</td>
-                <td>Сканер відбитків пальців в екрані</td>
-            </tr>
-            <tr>
-                <td>Стереодинаміки:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Ще:</td>
-                <td>Звук налаштований AKG, відтворення звуку Hi-Res якості 32-bit/384kHz, Samsung DeX, Samsung Wireless DeX</td>
-            </tr>
+                @{
+                    string? lastCategory = null;
+                }
+                @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.Category))
+                {
+                    if (lastCategory != spec.Category)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <h3 class="borderTopCharacteristicFull">@spec.Category</h3>
+                            </td>
+                        </tr>
+                        lastCategory = spec.Category;
+                    }
+                    <tr>
+                        <td>@spec.Name: </td>
+                        <td>@spec.Value</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

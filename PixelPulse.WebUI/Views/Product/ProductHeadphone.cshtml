@@ -1,4 +1,4 @@
-@model TModel
+@model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
     ViewBag.Title = "Headphone";
@@ -10,24 +10,90 @@
     <link rel="stylesheet" href="~/css/product.css"/>
 }
 
+@section script
+{
+    <script>
+        @*const images = [
+            "testHeadphone.png",
+            "testKeyboard.png",
+            "testLaptop.png",
+            "testMonitor.png",
+            "testMouse.png"
+        ];*@
+        
+        const images = @Html.Raw(Json.Serialize(Model?.ProductImages));
+
+        let currentIndex = 0;
+        const imgElement = document.getElementById("productImage");
+        const prevBtn = document.querySelector(".prev");
+        const nextBtn = document.querySelector(".next");
+
+        prevBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            imgElement.src = images[currentIndex];
+        });
+
+        nextBtn.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            imgElement.src = images[currentIndex];
+        });
+    </script>
+}
+
 <main>
     <div class="productDetail">
-        <img src="testHeadphone.png">
+        @if (Model.ProductImages.Any())
+        {
+            <div class="image-container">
+                <button class="prev">◀</button>
+                @if (Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData != null)
+                {
+                    <img src="data:@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageType;base64,@Convert.ToBase64String(@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+                <button class="next">▶</button>
+            </div>
+            
+            @*foreach (var image in Model.ProductImages)
+            {
+                if (image.ImageData != null)
+                {
+                    <img src="data:@image.ImageType;base64,@Convert.ToBase64String(image.ImageData)" class="productImage" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+                }
+            }*@
+        }
+        else
+        {
+            <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
+        }
         <div class="productInfo">
-            <h2 class="productName">Навушники з мікрофоном Marshall Major V Black (1006832)</h2>
-            <span class="productDescription">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</span>
+            <h2 class="productName">@Model.Name</h2>
+            <span class="productDescription">@Model.Description</span>
             <h3 class="productCharacteristic">Характеристика</h3>
             <ul class="productSpecs">
-                <li>Спосіб підключення: <span>Бездротовий</span></li>
-                <li>Конструкція: <span>Накладн</span></li>
-                <li>Акустичне оформлення: <span>Закриті</span></li>
-                <li>Складана конструкція: <span>+</span></li>
-                <li>Випромінювач: <span>Динамічні</span></li>
+                <li>Спосіб підключення: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Спосіб підключення")?.Value ?? "-")</span></li>
+                <li>Конструкція: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Конструкція")?.Value ?? "-")</span></li>
+                <li>Акустичне оформлення: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Акустичне оформлення")?.Value ?? "-")</span></li>
+                <li>Складана конструкція: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Складана конструкція")?.Value ?? "-")</span></li>
+                <li>Випромінювач: <span>@(Model.ProductSpecifications.FirstOrDefault(ps => ps.Name == "Випромінювач")?.Value ?? "-")</span></li>
             </ul>
             <div class="productPriceBtn">
-                <span class="productPrice">Ціна: <span>58 899 ₴</span></span>
-                <button class="addToCart">Додати в кошик</button>
+                <span class="productPrice">Ціна: <span>@Model.Price ₴</span></span>
+                @if (Model.Stock != 0)
+                {
+                    <button class="addToCart">Додати в кошик</button>
+                }
+                else
+                {
+                    <button class="addToCart" disabled>Додати в кошик</button>
+                }
             </div>
         </div>
     </div>
@@ -35,166 +101,25 @@
         <h3>Характеристики</h3>
         <table class="productTable">
             <tbody>
-            <tr>
-                <td>Бренд:</td>
-                <td>Marshall</td>
-            </tr>
-            <tr>
-                <td>Лінійка:</td>
-                <td>Major V</td>
-            </tr>
-            <tr>
-                <td>Тип:</td>
-                <td>Навушники з мікрофоном</td>
-            </tr>
-            <tr>
-                <td>Спосіб підключення:</td>
-                <td>Бездротовий</td>
-            </tr>
-            <tr>
-                <td>Тип бездротового підключення:</td>
-                <td>Bluetooth</td>
-            </tr>
-            <tr>
-                <td>Можливість дротового підключення:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Конструкція</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Тип конструкції:</td>
-                <td>Накладні</td>
-            </tr>
-            <tr>
-                <td>Тип акустичного оформлення:</td>
-                <td>Закриті</td>
-            </tr>
-            <tr>
-                <td>Тип кріплення:</td>
-                <td>Наголов'я</td>
-            </tr>
-            <tr>
-                <td>Матеріали (наголов'я/чаш/амбушур)</td>
-                <td>Пластик/Пластик/Шкірзам</td>
-            </tr>
-            <tr>
-                <td>Вага, г:</td>
-                <td>186</td>
-            </tr>
-            <tr>
-                <td>Колір:</td>
-                <td>Чорний</td>
-            </tr>
-            <tr>
-                <td>Складаний корпус:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Аудіо характеристики</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Конструкція випромінювача:</td>
-                <td>Динамічні</td>
-            </tr>
-            <tr>
-                <td>Мінімальна відтворювана частота, Гц:</td>
-                <td>20</td>
-            </tr>
-            <tr>
-                <td>Максимальна відтворена частота, Гц:</td>
-                <td>20000</td>
-            </tr>
-            <tr>
-                <td>Опір, Ом:</td>
-                <td>32</td>
-            </tr>
-            <tr>
-                <td>Чутливість, дБ:</td>
-                <td>106</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Bluetooth</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Специфікація Bluetooth:</td>
-                <td>A2DP, AVRCP, HFP</td>
-            </tr>
-            <tr>
-                <td>Версія Bluetooth:</td>
-                <td>5.3</td>
-            </tr>
-            <tr>
-                <td>Bluetooth кодеки:</td>
-                <td>SBC+MPEG-2/AAC+LC3</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Живлення</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Елемент живлення:</td>
-                <td>Акумулятор</td>
-            </tr>
-            <tr>
-                <td>Час роботи:</td>
-                <td>до 100 год у режимі відтворення</td>
-            </tr>
-            <tr>
-                <td>Бездротова зарядка:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Швидке заряджання:</td>
-                <td>+ (15 хв / 15 год роботи)</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Керування</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Регулятор гучності:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Кабель і роз'єм</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Знімний кабель:</td>
-                <td>є</td>
-            </tr>
-            <tr>
-                <td>Тип роз'єму:</td>
-                <td>Jack 3,5 мм</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Мікрофон</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Конструкція мікрофону:</td>
-                <td>вбудований в корпус</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <h3 class="borderTopCharacteristicFull">Додатково</h3>
-                </td>
-            </tr>
-            <tr>
-                <td>Комплектація:</td>
-                <td>кабель USB Type-C</td>
-            </tr>
+                @{
+                    string? lastCategory = null;
+                }
+                @foreach (var spec in Model.ProductSpecifications.OrderBy(s => s.Category))
+                {
+                    if (lastCategory != spec.Category)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <h3 class="borderTopCharacteristicFull">@spec.Category</h3>
+                            </td>
+                        </tr>
+                        lastCategory = spec.Category;
+                    }
+                    <tr>
+                        <td>@spec.Name: </td>
+                        <td>@spec.Value</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

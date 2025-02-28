@@ -1,6 +1,8 @@
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.Interfaces.Repositories;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Infrastructure.Content.Data;
@@ -181,9 +183,9 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<Product?> GetProductWithImageAndCategoriesByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<ProductCategoryDTO> GetProductWithImageAndCategoriesByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        if (_cache.TryGetValue(_cacheKeyPrefix + id, out Product cachedProduct))
+        if (_cache.TryGetValue(_cacheKeyPrefix + id, out ProductCategoryDTO cachedProduct))
         {
             _logger.LogInformation($"Product found: {_cacheKeyPrefix + id}");
             return cachedProduct;
@@ -193,7 +195,9 @@ public class ProductRepository : IProductRepository
             cachedProduct = await _context.Products
                 .Include(p => p.ProductImages)
                 .Include(p => p.Category)
+                .Include(p => p.ProductSpecifications)
                 .AsNoTracking()
+                .ProjectToType<ProductCategoryDTO>()
                 .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
             
             _logger.LogInformation($"Product found: {cachedProduct.Id} {cachedProduct.Name}");

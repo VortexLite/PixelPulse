@@ -508,6 +508,35 @@ namespace PixelPulse.Infrastructure.Migrations
                     b.ToTable("ProductImages", (string)null);
                 });
 
+            modelBuilder.Entity("PixelPulse.Domain.Entities.ProductSpecification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSpecifications", (string)null);
+                });
+
             modelBuilder.Entity("PixelPulse.Domain.Entities.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -831,6 +860,17 @@ namespace PixelPulse.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("PixelPulse.Domain.Entities.ProductSpecification", b =>
+                {
+                    b.HasOne("PixelPulse.Domain.Entities.Product", "Product")
+                        .WithMany("ProductSpecifications")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("PixelPulse.Domain.Entities.Review", b =>
                 {
                     b.HasOne("PixelPulse.Domain.Entities.AppUser", "AppUser")
@@ -965,6 +1005,8 @@ namespace PixelPulse.Infrastructure.Migrations
                     b.Navigation("OrderItem");
 
                     b.Navigation("ProductImages");
+
+                    b.Navigation("ProductSpecifications");
 
                     b.Navigation("Review");
 

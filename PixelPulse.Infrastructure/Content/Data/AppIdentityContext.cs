@@ -25,6 +25,7 @@ public class AppIdentityContext(DbContextOptions<AppIdentityContext> options) : 
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Wishlist> Wishlists { get; set; }
     public DbSet<WishlistItem> WishlistItems { get; set; }
+    public DbSet<ProductSpecification> ProductSpecifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,5 +48,6 @@ public class AppIdentityContext(DbContextOptions<AppIdentityContext> options) : 
         modelBuilder.ApplyConfiguration(new SupplierConfiguration());
         modelBuilder.ApplyConfiguration(new WishlistConfiguration());
         modelBuilder.ApplyConfiguration(new WishlistItemConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductSpecificationConfiguration());
     }
 }
