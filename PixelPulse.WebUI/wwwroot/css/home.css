@@ -81,21 +81,30 @@
     
     a
     {
+        color: var(--color-text);
         text-decoration: none;
     }
     
     a:link
     {
+        color: var(--color-text);
         text-decoration: none;
     }
     
     a:visited
     {
+        color: var(--color-text);
         text-decoration: none;
+    }
+    
+    .pointer
+    {
+        cursor: pointer;
     }
 
     .productCard
     {
+        cursor: auto;
         background: var(--color-background);
         color: var(--color-text);
         padding: 0.8vw;
@@ -105,7 +114,6 @@
 
     .productCard:hover
     {
-        cursor: pointer;
         transform: translateY(-1vh);
         box-shadow: 0 0 0.26vw rgba(0,209,248,0.8);
     }

@@ -12,13 +12,15 @@ public class HomeService : IHomeService
     private readonly IProductRepository _productRepository;
     private readonly ICartRepository _cartRepository;
     private readonly ICartItemRepository _cartItemRepository;
+    private readonly IWishlistRepository _wishlistRepository;
+    private readonly IWishlistItemRepository _wishlistItemRepository;
     private readonly IAccountService _accountService;
     private readonly IMemoryCache _cache;
     private readonly ILogger<HomeService> _logger;
     private readonly string _cacheProductKeyAll = "product_all";
     private readonly string _cacheProductKey = "product_";
 
-    public HomeService(IProductRepository productRepository, ICartRepository cartRepository, ICartItemRepository cartItemRepository, IMemoryCache cache, ILogger<HomeService> logger, IAccountService accountService)
+    public HomeService(IProductRepository productRepository, ICartRepository cartRepository, ICartItemRepository cartItemRepository, IMemoryCache cache, ILogger<HomeService> logger, IAccountService accountService, IWishlistRepository wishlistRepository, IWishlistItemRepository wishlistItemRepository)
     {
         _productRepository = productRepository;
         _cartRepository = cartRepository;
@@ -26,6 +28,8 @@ public class HomeService : IHomeService
         _cache = cache;
         _logger = logger;
         _accountService = accountService;
+        _wishlistRepository = wishlistRepository;
+        _wishlistItemRepository = wishlistItemRepository;
     }
 
     public async Task<List<ProductMainDTO>> GetAllProductWithImageTake20Async(CancellationToken cancellationToken = default)
@@ -86,6 +90,39 @@ public class HomeService : IHomeService
         }
         
         await _cartItemRepository.UpdateAsync(cartItem, cancellationToken);
+        
+        return true;
+    }
+
+    public async Task<bool> AddWishlistItemAsync(Dictionary<string, string> productAndToken, CancellationToken cancellationToken = default)
+    {
+        var user = await _accountService.FindUserByRefreshToken(productAndToken.GetValueOrDefault("refreshTokenKey"));
+        if (user == null)
+            return false;
+        
+        var wishlist = await _wishlistRepository.FindWishlistByUserIdAsync(user.Id, cancellationToken); 
+        if (wishlist == null)
+        {
+            wishlist = new Wishlist
+            {
+                AppUserId = productAndToken.GetValueOrDefault("refreshTokenKey"),
+            };
+
+            await _wishlistRepository.CreateAsync(wishlist, cancellationToken);
+        }
+
+        var wishlistItem = await _wishlistItemRepository.GetWishlistItemByWishlistAndProductId(wishlist.Id,
+            Convert.ToInt32(productAndToken.GetValueOrDefault("productId")));
+        if (wishlistItem == null)
+        {
+            wishlistItem = new WishlistItem
+            {
+                WishlistId = wishlist.Id,
+                ProductId = Convert.ToInt32(productAndToken.GetValueOrDefault("productId"))
+            };
+        
+            await _wishlistItemRepository.CreateAsync(wishlistItem, cancellationToken);
+        }
         
         return true;
     }

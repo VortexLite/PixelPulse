@@ -35,4 +35,11 @@ public class HomeController : ControllerBase
         var acceptCartItem = await _homeService.AddCartItemAsync(productAndToken);
         return Ok(acceptCartItem);
     }
+    
+    [HttpPost("addWishlist")]
+    public async Task<IActionResult> AddWishlist([FromBody] Dictionary<string, string> productAndToken)
+    {
+        var acceptCartItem = await _homeService.AddWishlistItemAsync(productAndToken);
+        return Ok(acceptCartItem);
+    }
 }

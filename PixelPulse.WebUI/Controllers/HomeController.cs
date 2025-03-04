@@ -34,4 +34,16 @@ public class HomeController : Controller
 
         return NoContent();
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> AddWishlist(int id)
+    {
+        var response = await _httpClient.PostAsJsonAsync(Address + "addWishlist", new Dictionary<string, string>
+        {
+            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]},
+            {"productId", id.ToString()},
+        });
+
+        return NoContent();
+    }
 }
