@@ -104,3 +104,34 @@ function setupMenuToggle(toggleSelector, menuSelector) {
         }
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const menuTrigger = document.querySelector(".menu li:first-child");
+    const menuAccount = document.querySelector(".menuAccount");
+
+    if (!menuTrigger || !menuAccount) return;
+
+    menuTrigger.addEventListener("click", function () {
+        if (window.innerWidth > 1024) {
+            if (menuAccount.classList.contains("active")) {
+                menuAccount.classList.add("hiding");
+                setTimeout(() => {
+                    menuAccount.classList.remove("active", "hiding");
+                }, 300);
+            } else {
+                menuAccount.classList.add("active");
+            }
+        }
+    });
+    
+    document.addEventListener("click", function (event) {
+        if (!menuTrigger.contains(event.target) && !menuAccount.contains(event.target)) {
+            if (menuAccount.classList.contains("active")) {
+                menuAccount.classList.add("hiding");
+                setTimeout(() => {
+                    menuAccount.classList.remove("active", "hiding");
+                }, 300);
+            }
+        }
+    });
+});

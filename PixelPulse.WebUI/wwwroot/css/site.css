@@ -82,6 +82,24 @@
     text-shadow: -0.1vw 0.05vw 0.3vw rgba(0,209,248,0.8);
   }
 
+  .logo a
+  {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .logo a:link
+  {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  
+  .logo a:visited
+  {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
   .catalog
   {
     background: var(--color-backgroundButton);
@@ -174,6 +192,23 @@
     border: 0;
     border-radius: 0.4vw;
     padding: 5%;
+  }
+
+  .menu li a
+  {
+    color: var(--color-text);
+  }
+
+  .menu li a:visited
+  {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .menu li a:link
+  {
+    color: var(--color-text);
+    text-decoration: none;
   }
 
   .menu svg
@@ -385,11 +420,32 @@
     position: absolute;
     color: var(--color-text);
     top: 8vh;
-    right: 17vw;
+    right: 21vw;
     z-index: 1;
     background: var(--color-background);;
-    
     border-radius: 0 0 0.5vw 0.5vw;
+
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: hidden;
+  }
+
+  .menuAccount.active
+  {
+    display: grid;
+    opacity: 1;
+    transform: scaleY(1);
+    visibility: visible;
+  }
+
+  .menuAccount.hiding
+  {
+    display: grid;
+    opacity: 0;
+    transform: scaleY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .account
@@ -403,6 +459,7 @@
   {
     display: grid;
     align-items: center;
+    grid-auto-flow: column;
     padding: 0.8vw;
     transition: background 0.1s ease-in-out;
     border-radius: 0.5vw;
@@ -425,6 +482,24 @@
   {
     width: 2.25vw;
     height: 2.6vh;
+  }
+
+  .account li a
+  {
+    display: grid;
+    grid-auto-flow: column;
+  }
+
+  .account li a:visited
+  {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  
+  .account li a:link
+  {
+    color: var(--color-text);
+    text-decoration: none;
   }
 
   footer
@@ -800,6 +875,11 @@
   }
 
   .consoleCatalog
+  {
+    display: none;
+  }
+  
+  .menuAccount
   {
     display: none;
   }
