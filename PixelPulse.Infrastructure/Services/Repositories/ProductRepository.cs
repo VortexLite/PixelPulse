@@ -212,9 +212,9 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<IReadOnlyList<Product>> GetAllProductWithImageTake20Async(CancellationToken cancellationToken = default)
+    public async Task<List<ProductMainDTO>> GetAllProductWithImageTake20Async(CancellationToken cancellationToken = default)
     {
-        if (_cache.TryGetValue(_cacheKeyAll, out IReadOnlyList<Product> cachedProduct))
+        if (_cache.TryGetValue(_cacheKeyAll, out List<ProductMainDTO> cachedProduct))
         {
             _logger.LogInformation($"Product found: {_cacheKeyAll}");
             return cachedProduct;
@@ -225,6 +225,7 @@ public class ProductRepository : IProductRepository
                 .Include(p => p.ProductImages)
                 .AsNoTracking()
                 .Take(20)
+                .ProjectToType<ProductMainDTO>()
                 .ToListAsync(cancellationToken);
             _logger.LogInformation($"Product founds");
 

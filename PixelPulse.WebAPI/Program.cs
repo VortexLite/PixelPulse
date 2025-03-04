@@ -16,6 +16,7 @@ using PixelPulse.Infrastructure.Content.Data;
 using PixelPulse.Infrastructure.Content.Seeds;
 using PixelPulse.Infrastructure.Services.Accounts;
 using PixelPulse.Infrastructure.Services.Auth;
+using PixelPulse.Infrastructure.Services.Home;
 using PixelPulse.Infrastructure.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,9 @@ builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 builder.Services.AddAuthentication(options =>
     {
