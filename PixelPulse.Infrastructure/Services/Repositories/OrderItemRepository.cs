@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class OrderItemRepository : IOrderItemRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<OrderItemRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _orderItemCacheKey = "orderItem_";
 
     public OrderItemRepository(AppIdentityContext context, IMemoryCache cache, ILogger<OrderItemRepository> logger)
     {
@@ -28,7 +30,8 @@ public class OrderItemRepository : IOrderItemRepository
             await _context.OrderItems.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_orderItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -59,6 +62,8 @@ public class OrderItemRepository : IOrderItemRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
+            _cache.Remove(_orderItemCacheKey + $"{entity.Id}");
+            _cache.Set(_orderItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -76,7 +81,8 @@ public class OrderItemRepository : IOrderItemRepository
             _context.OrderItems.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_orderItemCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)
@@ -95,6 +101,10 @@ public class OrderItemRepository : IOrderItemRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
+            foreach (var orderItem in orderItems)
+            {
+                _cache.Set(_orderItemCacheKey + $"{orderItem.Id}", orderItem, TimeSpan.FromMinutes(30));
+            }
             return true;
         }
         catch (Exception ex)

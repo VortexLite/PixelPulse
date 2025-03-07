@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class CategoryRepository : ICategoryRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<CategoryRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _categoryCacheKey = "category_";
 
     public CategoryRepository(AppIdentityContext context, IMemoryCache cache, ILogger<CategoryRepository> logger)
     {
@@ -28,7 +30,8 @@ public class CategoryRepository : ICategoryRepository
             await _context.Categories.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_categoryCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -58,7 +61,9 @@ public class CategoryRepository : ICategoryRepository
             _context.Categories.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_categoryCacheKey + $"{entity.Id}");
+            _cache.Set(_categoryCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -76,7 +81,8 @@ public class CategoryRepository : ICategoryRepository
             _context.Categories.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+                
+            _cache.Remove(_categoryCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)
@@ -95,6 +101,10 @@ public class CategoryRepository : ICategoryRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
+            foreach (var category in categories)
+            {
+                _cache.Set(_categoryCacheKey + $"{category.Id}", category, TimeSpan.FromMinutes(30));
+            }
             return true;
         }
         catch (Exception ex)
@@ -113,6 +123,10 @@ public class CategoryRepository : ICategoryRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
+            foreach (var category in categories)
+            {
+                _cache.Remove(_categoryCacheKey + $"{category.Id}");
+            }
             return true;
         }
         catch (Exception ex)

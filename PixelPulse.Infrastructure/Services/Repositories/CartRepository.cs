@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class CartRepository : ICartRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<CartRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _cartCacheKey = "cart_";
 
     public CartRepository(AppIdentityContext context, IMemoryCache cache, ILogger<CartRepository> logger)
     {
@@ -28,7 +30,8 @@ public class CartRepository : ICartRepository
             await _context.Carts.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_cartCacheKey + $"{entity.Id}", entity, TimeSpan.FromHours(30));
             return true;
         }
         catch (Exception ex)
@@ -59,7 +62,8 @@ public class CartRepository : ICartRepository
             _context.Carts.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            _cache.Remove(_cartCacheKey + $"{entity.Id}");
+            _cache.Set(_cartCacheKey + $"{entity.Id}", entity, TimeSpan.FromHours(30));
             return true;
         }
         catch (Exception ex)
@@ -77,7 +81,8 @@ public class CartRepository : ICartRepository
             _context.Carts.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_cartCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)

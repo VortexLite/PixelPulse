@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PixelPulse.Application.DTOs.PersonalInformation;
 using PixelPulse.Application.Interfaces.Repositories;

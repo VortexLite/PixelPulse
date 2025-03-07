@@ -1,5 +1,6 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Order;
@@ -17,14 +18,18 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IOrderItemRepository _orderItemRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IMemoryCache _cache;
+    
+    private const string _orderCacheKey = "orderItems_";
 
-    public OrderService(ILogger<OrderService> logger, IUserService userService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderItemRepository orderItemRepository)
+    public OrderService(ILogger<OrderService> logger, IUserService userService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderItemRepository orderItemRepository, IMemoryCache cache)
     {
         _logger = logger;
         _userService = userService;
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _orderItemRepository = orderItemRepository;
+        _cache = cache;
     }
 
     public async Task<List<OrderDTO>?> GetOrdersByRefreshToken(string token)
@@ -33,12 +38,19 @@ public class OrderService : IOrderService
         if (user == null)
             return null;
 
-        var orders = _orderRepository
-            .GetOrdersByUserId(user.Id);
+        if (!_cache.TryGetValue($"{_orderCacheKey}{user.Id}", out List<OrderDTO> cachedOrders))
+        {
+            var orders = _orderRepository
+                .GetOrdersByUserId(user.Id);
         
-        return await orders
-            .ProjectToType<OrderDTO>()
-            .ToListAsync();
+            cachedOrders = await orders
+                .ProjectToType<OrderDTO>()
+                .ToListAsync();
+            
+            _cache.Set($"{_orderCacheKey}{user.Id}", cachedOrders, TimeSpan.FromHours(30));
+        }
+        
+        return cachedOrders;
     }
 
     public async Task<bool> CreateOrder(ListCartItemDTOsTokenRequest cartItemDtosTokenRequest)
@@ -70,15 +82,22 @@ public class OrderService : IOrderService
         }
         
         await _orderItemRepository.AddRangeAsync(orderItems);
-
+        
         return true;
     }
 
     public async Task<List<ProductMainDTO>> GetAllProductWithImageTake20Async()
     {
-        var products = _productRepository.GetProductsWithImageTake20();
-        return await products
-            .ProjectToType<ProductMainDTO>()
-            .ToListAsync();
+        if (!_cache.TryGetValue(_orderCacheKey + "All", out List<ProductMainDTO> cachedProducts))
+        {
+            var products = _productRepository.GetProductsWithImageTake20();
+            cachedProducts = await products
+                .ProjectToType<ProductMainDTO>()
+                .ToListAsync();
+            
+            _cache.Set(_orderCacheKey + "All", cachedProducts, TimeSpan.FromHours(30));
+        }
+        
+        return cachedProducts;
     }
 }

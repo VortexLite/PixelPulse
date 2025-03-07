@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class OrderRepository : IOrderRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<OrderRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _orderCacheKey = "order_";
 
     public OrderRepository(AppIdentityContext context, IMemoryCache cache, ILogger<OrderRepository> logger)
     {
@@ -28,7 +30,8 @@ public class OrderRepository : IOrderRepository
             await _context.Orders.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_orderCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -58,7 +61,9 @@ public class OrderRepository : IOrderRepository
             _context.Orders.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_orderCacheKey + $"{entity.Id}");
+            _cache.Set(_orderCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -77,6 +82,7 @@ public class OrderRepository : IOrderRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
+            _cache.Remove(_orderCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)

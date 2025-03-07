@@ -1,5 +1,6 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Product;
@@ -15,13 +16,17 @@ public class CartService : ICartService
     private readonly IUserService _userService;
     private readonly ICartRepository _cartRepository;
     private readonly ICartItemRepository _cartItemRepository;
+    private readonly IMemoryCache _cache;
+    
+    private const string _cartCacheKey = "cartItems_";
 
-    public CartService(ILogger<CartService> logger, IUserService userService, ICartRepository cartRepository, ICartItemRepository cartItemRepository)
+    public CartService(ILogger<CartService> logger, IUserService userService, ICartRepository cartRepository, ICartItemRepository cartItemRepository, IMemoryCache cache)
     {
         _logger = logger;
         _userService = userService;
         _cartRepository = cartRepository;
         _cartItemRepository = cartItemRepository;
+        _cache = cache;
     }
 
     public async Task<List<CartItemDTO>?> GetCartsByRefreshTokenAsync(string token)
@@ -30,11 +35,20 @@ public class CartService : ICartService
         var cart = await _cartRepository.FindCartByUserId(user.Id)
             .Select(i => i.Id)
             .FirstOrDefaultAsync();
-        var cartItemsQuery = _cartItemRepository.GetCartItemsByCartId(cart);
 
-        return await cartItemsQuery
-            .ProjectToType<CartItemDTO>()
-            .ToListAsync();
+        if (!_cache.TryGetValue(_cartCacheKey + $"{cart}", out List<CartItemDTO> cachedCartItems))
+        {
+            var cartItemsQuery = _cartItemRepository.GetCartItemsByCartId(cart);
+        
+            var cartItems =  await cartItemsQuery
+                .ProjectToType<CartItemDTO>()
+                .ToListAsync();
+        
+            _cache.Set(_cartCacheKey + $"{cart}", cartItems, TimeSpan.FromMinutes(10));
+        }
+        
+        return cachedCartItems;
+        
     }
 
     public async Task<bool> DellCartItemAsync(int cartItemId)
@@ -47,6 +61,7 @@ public class CartService : ICartService
             return false;
         
         await _cartItemRepository.DeleteAsync(cartItem);
+        
         return true;
     }
     

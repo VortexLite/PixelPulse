@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class ReviewRepository : IReviewRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<ReviewRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _reviewCacheKey = "review_";
 
     public ReviewRepository(AppIdentityContext context, IMemoryCache cache, ILogger<ReviewRepository> logger)
     {
@@ -28,7 +30,8 @@ public class ReviewRepository : IReviewRepository
             await _context.Reviews.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_reviewCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -58,7 +61,9 @@ public class ReviewRepository : IReviewRepository
             _context.Reviews.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_reviewCacheKey + $"{entity.Id}");
+            _cache.Set(_reviewCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -76,7 +81,8 @@ public class ReviewRepository : IReviewRepository
             _context.Reviews.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_reviewCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)

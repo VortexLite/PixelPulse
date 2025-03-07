@@ -1,5 +1,6 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using PixelPulse.Application.DTOs.Review;
 using PixelPulse.Application.Interfaces.Repositories;
@@ -12,21 +13,33 @@ public class ReviewService : IReviewService
     private readonly ILogger<ReviewService> _logger;
     private readonly IUserService _userService;
     private readonly IReviewRepository _reviewRepository;
+    private readonly IMemoryCache _cache;
+    
+    private const string _reviewCacheKey = "reviewItems_";
 
-    public ReviewService(ILogger<ReviewService> logger, IUserService userService, IReviewRepository reviewRepository)
+    public ReviewService(ILogger<ReviewService> logger, IUserService userService, IReviewRepository reviewRepository, IMemoryCache cache)
     {
         _logger = logger;
         _userService = userService;
         _reviewRepository = reviewRepository;
+        _cache = cache;
     }
     
     public async Task<List<ReviewDTO>?> GetReviewByRefreshToken(string token)
     {
         var user = await _userService.FindUserByRefreshToken(token);
-        var reviews = _reviewRepository.GetReviewsByUserId(user.Id);
+        if (!_cache.TryGetValue(_reviewCacheKey + $"{user.Id}", out List<ReviewDTO> cachedReviews))
+        {
+            var reviews = _reviewRepository.GetReviewsByUserId(user.Id);
+            cachedReviews = await reviews
+                .ProjectToType<ReviewDTO>()
+                .ToListAsync();
+            
+            _cache.Set(_reviewCacheKey + $"{user.Id}", cachedReviews, TimeSpan.FromHours(30));
+        }
         
-        return await reviews
-            .ProjectToType<ReviewDTO>()
-            .ToListAsync();
+        return cachedReviews;
+        
+        
     }
 }

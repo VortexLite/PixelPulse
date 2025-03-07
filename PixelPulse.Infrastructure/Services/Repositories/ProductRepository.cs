@@ -10,8 +10,10 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class ProductRepository : IProductRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<ProductRepository> _logger;
+    private readonly IMemoryCache _cache;
+    
+    private const string _productCacheKey = "product_";
 
     public ProductRepository(AppIdentityContext context, IMemoryCache cache, ILogger<ProductRepository> logger)
     {
@@ -28,7 +30,9 @@ public class ProductRepository : IProductRepository
             await _context.Products.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_productCacheKey + $"{entity.Id}");
+            _cache.Set(_productCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -59,6 +63,8 @@ public class ProductRepository : IProductRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
+            _cache.Remove(_productCacheKey + $"{entity.Id}");
+            _cache.Set(_productCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -76,7 +82,8 @@ public class ProductRepository : IProductRepository
             _context.Products.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_productCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)
@@ -128,6 +135,10 @@ public class ProductRepository : IProductRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
+            foreach (var product in products)
+            {
+                _cache.Remove(_productCacheKey + $"{product.Id}");
+            }
             return true;
         }
         catch (Exception ex)

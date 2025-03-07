@@ -8,5 +8,4 @@ public interface IOrderService
 {
     Task<List<OrderDTO>?> GetOrdersByRefreshToken(string token);
     Task<bool> CreateOrder(ListCartItemDTOsTokenRequest cartItemDtosTokenRequest);
-    Task<List<ProductMainDTO>> GetAllProductWithImageTake20Async();
 }

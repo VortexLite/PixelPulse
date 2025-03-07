@@ -10,9 +10,11 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class WishlistItemRepository : IWishlistItemRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<WishlistItemRepository> _logger;
-
+    private readonly IMemoryCache _cache;
+    
+    private const string _wishlistItemCacheKey = "wishlistItem_";
+    
     public WishlistItemRepository(AppIdentityContext context, IMemoryCache cache, ILogger<WishlistItemRepository> logger)
     {
         _context = context;
@@ -28,7 +30,8 @@ public class WishlistItemRepository : IWishlistItemRepository
             await _context.WishlistItems.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_wishlistItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -58,7 +61,9 @@ public class WishlistItemRepository : IWishlistItemRepository
             _context.WishlistItems.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_wishlistItemCacheKey + $"{entity.Id}");
+            _cache.Set(_wishlistItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -76,7 +81,8 @@ public class WishlistItemRepository : IWishlistItemRepository
             _context.WishlistItems.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_wishlistItemCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)

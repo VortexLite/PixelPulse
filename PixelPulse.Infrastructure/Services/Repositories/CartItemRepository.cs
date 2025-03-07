@@ -12,9 +12,11 @@ namespace PixelPulse.Infrastructure.Services.Repositories;
 public class CartItemRepository : ICartItemRepository
 {
     private readonly AppIdentityContext _context;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<CartItemRepository> _logger;
-
+    private readonly IMemoryCache _cache;
+    
+    private const string _cartItemCacheKey = "cartItem_";
+    
     public CartItemRepository(AppIdentityContext context, IMemoryCache cache, ILogger<CartItemRepository> logger)
     {
         _context = context;
@@ -30,7 +32,9 @@ public class CartItemRepository : ICartItemRepository
             await _context.CartItems.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Set(_cartItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
+            
             return true;
         }
         catch (Exception ex)
@@ -61,7 +65,9 @@ public class CartItemRepository : ICartItemRepository
             _context.CartItems.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_cartItemCacheKey + $"{entity.Id}");
+            _cache.Set(_cartItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
         catch (Exception ex)
@@ -79,7 +85,8 @@ public class CartItemRepository : ICartItemRepository
             _context.CartItems.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
+            
+            _cache.Remove(_cartItemCacheKey + $"{entity.Id}");
             return true;
         }
         catch (Exception ex)
@@ -113,6 +120,11 @@ public class CartItemRepository : ICartItemRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
+            foreach (var cartItem in cartItemDtos)
+            {
+                _cache.Remove(_cartItemCacheKey + $"{cartItem.Id}");
+            }
+            
             return true;
         }
         catch (Exception ex)

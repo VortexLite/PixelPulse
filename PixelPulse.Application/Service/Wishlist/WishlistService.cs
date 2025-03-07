@@ -1,6 +1,8 @@
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.DTOs.Wishlist;
 using PixelPulse.Application.Interfaces.Repositories;
@@ -15,27 +17,40 @@ public class WishlistService : IWishlistService
     private readonly IUserService _userService;
     private readonly IWishlistRepository _wishlistRepository;
     private readonly IWishlistItemRepository _wishlistItemRepository;
+    private readonly IMemoryCache _cache;
+    
+    private const string _wishlistCacheKey = "wishlist_";
+    private const string _wishlistItemCacheKey = "wishlistItem_";
 
-    public WishlistService(ILogger<WishlistService> logger, IUserService userService, IWishlistRepository wishlistRepository, IWishlistItemRepository wishlistItemRepository)
+    public WishlistService(ILogger<WishlistService> logger, IUserService userService, IWishlistRepository wishlistRepository, IWishlistItemRepository wishlistItemRepository, IMemoryCache cache)
     {
         _logger = logger;
         _userService = userService;
         _wishlistRepository = wishlistRepository;
         _wishlistItemRepository = wishlistItemRepository;
+        _cache = cache;
     }
 
     public async Task<List<WishlistItemDTO>?> GetWishlistByRefreshTokenAsync(string token)
     {
         var user = await _userService.FindUserByRefreshToken(token);
-        var wishlist = await _wishlistRepository
-            .FindWishlistByUserId(user.Id)
-            .Select(w => w.Id)
-            .FirstOrDefaultAsync();
-        var wishListItems = _wishlistItemRepository.GetWishlistItemsByWishlistId(wishlist);
+        if (!_cache.TryGetValue($"{_wishlistCacheKey}{user.Id}", out List<WishlistItemDTO> cachedWishlist))
+        {
+            var wishlist = await _wishlistRepository
+                .FindWishlistByUserId(user.Id)
+                .Select(w => w.Id)
+                .FirstOrDefaultAsync();
+            
+            var wishListItemsQuery = _wishlistItemRepository.GetWishlistItemsByWishlistId(wishlist);
+            
+            cachedWishlist = await wishListItemsQuery
+                .ProjectToType<WishlistItemDTO>()
+                .ToListAsync();
+            
+            _cache.Set($"{_wishlistCacheKey}{user.Id}", cachedWishlist, TimeSpan.FromHours(30));
+        }
         
-        return await wishListItems
-            .ProjectToType<WishlistItemDTO>()
-            .ToListAsync();
+        return cachedWishlist;
     }
 
     public async Task<bool> AddWishlistItemAsync(ProductIdTokenRequest request)
@@ -70,6 +85,7 @@ public class WishlistService : IWishlistService
         
             await _wishlistItemRepository.CreateAsync(wishlistItem);
         }
+        
         
         return true;
     }
