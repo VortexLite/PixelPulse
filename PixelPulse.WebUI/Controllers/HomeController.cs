@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using PixelPulse.Application.DTOs.Product;
 
 namespace PixelPulse.Controllers;
@@ -8,40 +7,45 @@ public class HomeController : Controller
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<HomeController> _logger;
-
-    private const string Address = "http://localhost:5144/api/Home/";
+    
+    private const string CartAddress = "http://localhost:5144/api/Cart/";
+    private const string OrderAddress = "http://localhost:5144/api/Order/";
+    private const string ProductAddress = "http://localhost:5144/api/Product/";
+    private const string ReviewAddress = "http://localhost:5144/api/Home/";
+    private const string UserAddress = "http://localhost:5144/api/User/";
+    private const string WishlistAddress = "http://localhost:5144/api/Wishlist/";
+    
     public HomeController(HttpClient httpClient, ILogger<HomeController> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
     }
     
-    public async Task<IActionResult> Index()
+   public async Task<IActionResult> Index()
     {
-        var response = await _httpClient.GetStringAsync(Address + "GetProductsForMain");
-        var products = JsonConvert.DeserializeObject<List<ProductMainDTO>>(response);
+        var products = await _httpClient.GetFromJsonAsync<List<ProductMainDTO>>(ProductAddress + "GetProductsForMain");
         return View(products);
     }
-
+    
     [HttpGet]
-    public async Task<IActionResult> AddCart(int id)
+    public async Task<IActionResult> AddCart(int productId)
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "addCart", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(CartAddress + "addCart", new ProductIdTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]},
-            {"productId", id.ToString()},
+            RefreshToken = Request.Cookies["refreshTokenKey"],
+            ProductId = productId
         });
 
         return NoContent();
     }
     
     [HttpGet]
-    public async Task<IActionResult> AddWishlist(int id)
+    public async Task<IActionResult> AddWishlist(int productId)
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "addWishlist", new Dictionary<string, string>
+        await _httpClient.PostAsJsonAsync(WishlistAddress + "addWishlist", new ProductIdTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]},
-            {"productId", id.ToString()},
+            RefreshToken = Request.Cookies["refreshTokenKey"],
+            ProductId = productId
         });
 
         return NoContent();

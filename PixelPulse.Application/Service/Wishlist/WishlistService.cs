@@ -1,0 +1,76 @@
+using Mapster;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using PixelPulse.Application.DTOs.Product;
+using PixelPulse.Application.DTOs.Wishlist;
+using PixelPulse.Application.Interfaces.Repositories;
+using PixelPulse.Application.Interfaces.Service;
+using PixelPulse.Domain.Entities;
+
+namespace PixelPulse.Application.Service.Wishlist;
+
+public class WishlistService : IWishlistService
+{
+    private readonly ILogger<WishlistService> _logger;
+    private readonly IUserService _userService;
+    private readonly IWishlistRepository _wishlistRepository;
+    private readonly IWishlistItemRepository _wishlistItemRepository;
+
+    public WishlistService(ILogger<WishlistService> logger, IUserService userService, IWishlistRepository wishlistRepository, IWishlistItemRepository wishlistItemRepository)
+    {
+        _logger = logger;
+        _userService = userService;
+        _wishlistRepository = wishlistRepository;
+        _wishlistItemRepository = wishlistItemRepository;
+    }
+
+    public async Task<List<WishlistItemDTO>?> GetWishlistByRefreshTokenAsync(string token)
+    {
+        var user = await _userService.FindUserByRefreshToken(token);
+        var wishlist = await _wishlistRepository
+            .FindWishlistByUserId(user.Id)
+            .Select(w => w.Id)
+            .FirstOrDefaultAsync();
+        var wishListItems = _wishlistItemRepository.GetWishlistItemsByWishlistId(wishlist);
+        
+        return await wishListItems
+            .ProjectToType<WishlistItemDTO>()
+            .ToListAsync();
+    }
+
+    public async Task<bool> AddWishlistItemAsync(ProductIdTokenRequest request)
+    {
+        var user = await _userService.FindUserByRefreshToken(request.RefreshToken);
+        if (user == null)
+            return false;
+        
+        var wishlist = await _wishlistRepository
+            .FindWishlistByUserId(user.Id)
+            .FirstOrDefaultAsync(); 
+        if (wishlist == null)
+        {
+            wishlist = new Domain.Entities.Wishlist
+            {
+                AppUserId = user.Id,
+            };
+
+            await _wishlistRepository.CreateAsync(wishlist);
+        }
+
+        var wishlistItem = await _wishlistItemRepository
+            .GetWishlistItemByWishlistAndProductId(wishlist.Id, request.ProductId)
+            .FirstOrDefaultAsync();
+        if (wishlistItem == null)
+        {
+            wishlistItem = new WishlistItem
+            {
+                WishlistId = wishlist.Id,
+                ProductId = request.ProductId
+            };
+        
+            await _wishlistItemRepository.CreateAsync(wishlistItem);
+        }
+        
+        return true;
+    }
+}

@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using PixelPulse.Application.DTOs.Product;
-using PixelPulse.Infrastructure.Content.Data;
 
 namespace PixelPulse.Controllers;
 
@@ -20,28 +19,20 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var response = await _httpClient.GetAsync(Address + $"GetDetailsProduct/{id}");
-        if (response.IsSuccessStatusCode)
-        {
-            var responseString = await response.Content.ReadAsStringAsync();
-            var productDtos = JsonSerializer.Deserialize<ProductCategoryDTO>(responseString, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-            
-            string viewName = productDtos.CategoryName switch
-            {
-                "Навушники" => "ProductHeadphone",
-                "Клавіатура" => "ProductKeyboard",
-                "Ноутбук" => "ProductLaptop",
-                "Монітор" => "ProductMonitor",
-                "Мишка" => "ProductMouse",
-                "Смартфон" => "ProductPhone"
-            };
-            
-            return View(viewName, productDtos);
-        }
+        var response = await _httpClient.GetFromJsonAsync<ProductCategoryDTO>(Address + $"GetDetailsProduct/{id}");
+        if (response == null)
+            return NoContent();
         
-        return NoContent();
+        string viewName = response.CategoryName switch
+        {
+            "Навушники" => "ProductHeadphone",
+            "Клавіатура" => "ProductKeyboard",
+            "Ноутбук" => "ProductLaptop",
+            "Монітор" => "ProductMonitor",
+            "Мишка" => "ProductMouse",
+            "Смартфон" => "ProductPhone"
+        };
+            
+        return View(viewName, response);
     }
 }

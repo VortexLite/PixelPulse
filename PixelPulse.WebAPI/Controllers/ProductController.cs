@@ -1,8 +1,5 @@
-using Mapster;
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
-using PixelPulse.Application.DTOs.Product;
-using PixelPulse.Application.Interfaces.Repositories;
+using PixelPulse.Application.Interfaces.Service;
 
 namespace PixelPulse.WebAPI.Controllers;
 
@@ -10,36 +7,34 @@ namespace PixelPulse.WebAPI.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IProductService _productService;
     private readonly ILogger<ProductController> _logger;
 
-    public ProductController(IProductRepository productRepository, ILogger<ProductController> logger)
+
+    public ProductController(IProductService productService, ILogger<ProductController> logger)
     {
-        _productRepository = productRepository;
+        _productService = productService;
         _logger = logger;
     }
 
     [HttpGet("GetProductsForMain")]
     public async Task<IActionResult> GetProductsForMain()
     {
-        var products = await _productRepository.GetAllProductWithImageTake20Async();
-        if (products is null)
+        var productsDtos = await _productService.GetProductsWithImageTake20Async();
+        if (productsDtos == null)
             return NotFound();
-
-        var productDTO = products.Adapt<List<ProductMainDTO>>();
-        _logger.LogInformation($"Converting productMainDTO {productDTO.Count} products");
-        return Ok(productDTO);
+        
+        return Ok(productsDtos);
     }
 
     [HttpGet("GetDetailsProduct/{id}")]
     public async Task<IActionResult> GetDetailsProduct(int id)
     {
-        var productsDtos = await _productRepository.GetProductWithImageAndCategoriesByIdAsync(id);
-        if (productsDtos is null)
+        var productDtos = await _productService.GetDetailsProduct(id);
+        if (productDtos == null)
             return NotFound();
         
-        
-        return Ok (productsDtos);
+        return Ok (productDtos);
     }
 
 }

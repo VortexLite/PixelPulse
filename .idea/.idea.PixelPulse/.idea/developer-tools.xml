@@ -5,8 +5,10 @@
       <developerToolConfiguration developerToolId="jwt-encoder-decoder" id="cfc6dd44-daf7-4e10-b0c8-8e0f836d2b77" name="Workbench">
         <properties>
           <property key="headerText" type="INPUT" value="kotlin.String|{&#13;&#10;  &quot;typ&quot; : &quot;JWT&quot;,&#13;&#10;  &quot;alg&quot; : &quot;HS256&quot;&#13;&#10;}" />
+          <property key="encodedText" type="INPUT" value="kotlin.String|eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI5NjQ5MmQ1OS0wYWQ1LTRjMDAtODkyZC01OTBhZDVhYzAwZjMiLCJzdWIiOiIwMTIzNDU2Nzg5IiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjgxMDQwNTE1fQ.p8DXyu99_K1XjwQZHiD4Y7EvrZOp12zsZdPdv5tAo8I" />
         </properties>
       </developerToolConfiguration>
     </developerToolsConfigurations>
+    <expandedGroupNodeIds />
   </component>
 </project>

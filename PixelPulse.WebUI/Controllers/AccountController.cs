@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.PersonalInformation;
+using PixelPulse.Application.DTOs.RefreshToken;
 using PixelPulse.Application.DTOs.Review;
 using PixelPulse.Application.DTOs.Wishlist;
 using PixelPulse.Domain.Entities;
@@ -13,7 +14,13 @@ public class AccountController : Controller
 {
     private readonly HttpClient _httpClient;
     
-    private const string Address = "http://localhost:5144/api/Account/";
+    private const string AuthAddress = "http://localhost:5144/api/Auth/";
+    private const string CartAddress = "http://localhost:5144/api/Cart/";
+    private const string OrderAddress = "http://localhost:5144/api/Order/";
+    private const string ProductAddress = "http://localhost:5144/api/Product/";
+    private const string ReviewAddress = "http://localhost:5144/api/Review/";
+    private const string UserAddress = "http://localhost:5144/api/User/";
+    private const string WishlistAddress = "http://localhost:5144/api/Wishlist/";
 
     public AccountController(HttpClient httpClient)
     {
@@ -29,9 +36,9 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Personal_Information()
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "personal_Information", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(UserAddress + "personal_Information", new RefreshTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]}
+            RefreshToken = Request.Cookies["refreshTokenKey"]
         });
         if (response.IsSuccessStatusCode)
         {
@@ -54,7 +61,7 @@ public class AccountController : Controller
             AppUser = appUser,
             RefreshToken = Request.Cookies["refreshTokenKey"]
         };
-        var response = await _httpClient.PostAsJsonAsync(Address + "save_personal_Information", userUpdateRequest);
+        var response = await _httpClient.PostAsJsonAsync(UserAddress + "save_personal_Information", userUpdateRequest);
         if (response.IsSuccessStatusCode)
         {
             var responseString = await response.Content.ReadAsStringAsync();
@@ -62,18 +69,18 @@ public class AccountController : Controller
             {
                 PropertyNameCaseInsensitive = true
             });
-            return View(user);
+            return RedirectToAction("Personal_Information", "Account", user);
         }
         
-        return View(appUser);
+        return NoContent();
     }
 
     [HttpGet]
     public async Task<IActionResult> Order()
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "order", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(OrderAddress + "orderView", new RefreshTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]}
+            RefreshToken = Request.Cookies["refreshTokenKey"]
         });
         if (response.IsSuccessStatusCode)
         {
@@ -91,9 +98,9 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Cart()
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "cart", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(CartAddress + "cartView", new RefreshTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]}
+            RefreshToken = Request.Cookies["refreshTokenKey"]
         });
         if (response.IsSuccessStatusCode)
         {
@@ -109,11 +116,39 @@ public class AccountController : Controller
     }
     
     [HttpGet]
+    public async Task<IActionResult> DeleteCartItem(int cartItemId)
+    {
+        var response = await _httpClient.GetAsync(CartAddress + "dellCart/" + cartItemId);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction(nameof(Cart));
+        }
+        
+        return NoContent();
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> CreateOrder(List<CartItemDTO> cartItemDtos)
+    {
+        var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", new ListCartItemDTOsTokenRequest
+        {
+            RefreshToken = Request.Cookies["refreshTokenKey"],
+            CartItemDtos = cartItemDtos
+        });
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Order");
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+    
+    [HttpGet]
     public async Task<IActionResult> Wishlist()
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "wishlist", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(WishlistAddress + "wishlistView", new RefreshTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]}
+            RefreshToken = Request.Cookies["refreshTokenKey"]
         });
         if (response.IsSuccessStatusCode)
         {
@@ -131,9 +166,9 @@ public class AccountController : Controller
     [HttpGet]
     public async Task<IActionResult> Review()
     {
-        var response = await _httpClient.PostAsJsonAsync(Address + "review", new Dictionary<string, string>
+        var response = await _httpClient.PostAsJsonAsync(ReviewAddress + "reviewView", new RefreshTokenRequest
         {
-            {"refreshTokenKey", Request.Cookies["refreshTokenKey"]}
+            RefreshToken = Request.Cookies["refreshTokenKey"]
         });
         if (response.IsSuccessStatusCode)
         {
@@ -154,7 +189,7 @@ public class AccountController : Controller
         var refreshToken = Request.Cookies["refreshTokenKey"];
         if (!string.IsNullOrEmpty(refreshToken))
         {
-            var response = await _httpClient.PostAsJsonAsync(Address + "logout", refreshToken);
+            var response = await _httpClient.PostAsJsonAsync(UserAddress + "logout", refreshToken);
             if (response.IsSuccessStatusCode)
             {
                 Response.Cookies.Delete("refreshTokenKey");

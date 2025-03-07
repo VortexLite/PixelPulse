@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PixelPulse.Application.DTOs.Account;
 using PixelPulse.Application.Interfaces.Authentication;
@@ -57,7 +58,7 @@ public class AuthController : ControllerBase
         
         return Ok(result);
     }
-
+    
     [HttpPost("AddRole")]
     public async Task<IActionResult> AddRoleAsync(AssignRolesDTO model)
     {
@@ -94,18 +95,18 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
     
-
-    [HttpPost("revokeToken")]
-    public async Task<IActionResult> RevokeTokenAsync(RevokeToken model)
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> LogoutAsync(RevokeToken model)
     {
         var refreshToken = model.Token ?? Request.Cookies["refreshTokenKey"];
         
         if (string.IsNullOrEmpty(refreshToken))
             return BadRequest("Token is required");
         
-        var result = await _authService.RevokeTokenAsync(refreshToken);
+        await _authService.RevokeTokenAsync(refreshToken);
         Response.Cookies.Delete("refreshTokenKey");
         
-        return Ok("Done revoke");
+        return Ok("Done logout");
     }
 }

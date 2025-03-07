@@ -1,5 +1,3 @@
-using PixelPulse.Domain.Settings;
-
 var builder = WebApplication.CreateBuilder(args);
 
 //builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));

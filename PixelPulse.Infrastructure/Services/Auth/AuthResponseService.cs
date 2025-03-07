@@ -28,7 +28,54 @@ public class AuthResponseService : IAuthResponse, IJWT
         _roleManager = roleManager;
         _jwt = jwt.Value;
     }
+    
     public async Task<JwtSecurityToken> CreateJwtAsync(AppUser user)
+    {
+        var claims = await GetUserClaimsAsync(user);
+        var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+        var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+        var jwtSecurityToken = new JwtSecurityToken(
+            issuer: _jwt.Issuer,
+            audience: _jwt.Audience,
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(_jwt.DurationInMinutes),
+            signingCredentials: signingCredentials);
+
+        return jwtSecurityToken;
+    }
+
+    private async Task<IEnumerable<Claim>> GetUserClaimsAsync(AppUser user)
+    {
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        var roleClaims = GetRoleClaims(roles);
+
+        var basicClaims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim("UserId", user.Id)
+        };
+
+        return basicClaims
+            .Union(userClaims)
+            .Union(roleClaims);
+    }
+
+    private IEnumerable<Claim> GetRoleClaims(IEnumerable<string> roles)
+    {
+        var roleClaims = new List<Claim>();
+        foreach (var role in roles)
+        {
+            roleClaims.Add(new Claim(ClaimTypes.Role, role));
+        }
+        return roleClaims;
+    }
+
+    
+    /*public async Task<JwtSecurityToken> CreateJwtAsync(AppUser user)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
@@ -57,30 +104,110 @@ public class AuthResponseService : IAuthResponse, IJWT
             signingCredentials: signingCredentials);
         
         return jwtSecurityToken;
-    }
+    }*/
 
     public async Task<RefreshToken> GenerateRefreshToken()
     {
-        var randomNumber = new byte[32];
-        /*using var generator = new RNGCryptoServiceProvider();
-        
-        generator.GetBytes(randomNumber);*/
-        using (var rng = RandomNumberGenerator.Create())
+        return await Task.Run(() =>
         {
-            rng.GetBytes(randomNumber);
-        }
-        return new RefreshToken
-        {
-            Token = Convert.ToBase64String(randomNumber)
-                .Replace("+", "-")
-                .Replace("/", "_")
-                .TrimEnd('='),
-            ExpireOn = DateTime.UtcNow.AddDays(10),
-            CreatedOn = DateTime.UtcNow
-        };
+            var randomNumber = new byte[32];
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(randomNumber)
+                    .Replace("+", "-")
+                    .Replace("/", "_")
+                    .TrimEnd('='),
+                ExpireOn = DateTime.UtcNow.AddDays(10),
+                CreatedOn = DateTime.UtcNow
+            };
+        });
+    }
+    
+    public async Task<AuthResponse> SignUpAsync(SignUp model, string orgin)
+    {
+        var userEmail = await _userManager.FindByEmailAsync(model.Email);
+        var username = await _userManager.FindByNameAsync(model.Username);
+
+        if (userEmail != null)
+            return new AuthResponse { Message = "Email is already used" };
+
+        if (username != null)
+            return new AuthResponse { Message = "Username is already used" };
+
+        var user = await CreateUserAsync(model);
+
+        var authResponse = await CreateUserAndGenerateTokensAsync(user, model.Password);
+
+        if (authResponse != null)
+            return authResponse;
+
+        return new AuthResponse { Message = "An error occurred during sign-up" };
     }
 
-    public async Task<AuthResponse> SignUpAsync(SignUp model, string orgin)
+    private async Task<AppUser> CreateUserAsync(SignUp model)
+    {
+        var user = new AppUser
+        {
+            UserName = model.Username,
+            Email = model.Email,
+            RefreshTokens = new List<RefreshToken>()
+        };
+
+        return user;
+    }
+
+    private async Task<AuthResponse> CreateUserAndGenerateTokensAsync(AppUser user, string password)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+            {
+                await transaction.RollbackAsync();
+                var errors = string.Join("\n", result.Errors.Select(e => $"{e.Code}: {e.Description}"));
+                return new AuthResponse { Message = errors };
+            }
+
+            await _userManager.AddToRoleAsync(user, "Customer");
+
+            var jwtSecurityKey = await CreateJwtAsync(user);
+            var newRefreshToken = await GenerateRefreshToken();
+
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+
+            await transaction.CommitAsync();
+
+            return new AuthResponse
+            {
+                Email = user.Email,
+                Roles = ["Customer"],
+                IsAuthenticated = true,
+                Username = user.UserName,
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey),
+                TokenExpiresOn = jwtSecurityKey.ValidTo.ToLocalTime(),
+                Message = "SignUp Succeeded",
+                RefreshToken = newRefreshToken.Token,
+                RefreshTokenExpiration = newRefreshToken.ExpireOn
+            };
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return new AuthResponse { Message = ex.Message };
+        }
+    }
+
+
+    /*public async Task<AuthResponse> SignUpAsync(SignUp model, string orgin)
     {
         var auth = new AuthResponse();
         
@@ -143,9 +270,68 @@ public class AuthResponseService : IAuthResponse, IJWT
             await transaction.RollbackAsync();
             return new AuthResponse { Message = ex.Message };
         }
-    }
+    }*/
 
     public async Task<AuthResponse> LoginAsync(Login model)
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        var userpass = await _userManager.CheckPasswordAsync(user, model.Password);
+        if (!userpass)
+        {
+            return new AuthResponse { Message = "Email or Password is incorrect" };
+        }
+
+        var authResponse = await GenerateAuthResponseAsync(user);
+
+        return authResponse;
+    }
+
+    private async Task<AuthResponse> GenerateAuthResponseAsync(AppUser user)
+    {
+        var jwtSecurityKey = await CreateJwtAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var auth = new AuthResponse
+        {
+            Email = user.Email,
+            Roles = roles.ToList(),
+            IsAuthenticated = true,
+            Username = user.UserName,
+            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityKey),
+            TokenExpiresOn = jwtSecurityKey.ValidTo,
+            Message = "Login Succeeded"
+        };
+
+        await HandleRefreshTokenAsync(user, auth);
+
+        return auth;
+    }
+
+    private async Task HandleRefreshTokenAsync(AppUser user, AuthResponse auth)
+    {
+        var activeRefreshToken = user.RefreshTokens?.FirstOrDefault(t => t.isActive);
+
+        if (activeRefreshToken != null)
+        {
+            auth.RefreshToken = activeRefreshToken.Token;
+            auth.RefreshTokenExpiration = activeRefreshToken.ExpireOn;
+        }
+        else
+        {
+            var newRefreshToken = await GenerateRefreshToken();
+            auth.RefreshToken = newRefreshToken.Token;
+            auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
+
+            user.RefreshTokens ??= new List<RefreshToken>();
+
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+        }
+    }
+
+    
+    /*public async Task<AuthResponse> LoginAsync(Login model)
     {
         var auth = new AuthResponse();
         
@@ -156,7 +342,6 @@ public class AuthResponseService : IAuthResponse, IJWT
             auth.Message = "Email or Password is incorrect";
             return auth;
         }
-        
         
         var jwtSecurityKey = await CreateJwtAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
@@ -190,7 +375,7 @@ public class AuthResponseService : IAuthResponse, IJWT
         }
         
         return auth;
-    }
+    }*/
 
     public async Task<string> AssignRolesAsync(AssignRolesDTO model)
     {

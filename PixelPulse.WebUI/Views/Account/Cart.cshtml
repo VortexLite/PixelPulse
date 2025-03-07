@@ -13,7 +13,7 @@
 <main>
     <ul class="customerTab">
         <li>
-            <a asp-action="Personal_Information">
+            <a asp-action="">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                 </svg>
@@ -29,7 +29,7 @@
             </a>
         </li>
         <li>
-            <a asp-action="Cart" disabled="disabled">
+            <a asp-action="Cart">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
                 </svg>
@@ -63,30 +63,34 @@
     </ul>
     <div class="customerCart">
         <h1>Cart</h1> 
-        @foreach (var cartItem in Model)
-        {
-            <div>
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
-                </svg>
-                @if (cartItem.ImageData != null)
-                {
-                    <img src="data:@cartItem.ImageType;base64,@Convert.ToBase64String(cartItem.ImageData)" class="productImage" alt="@cartItem.ProductName">
-                }
-                else
-                {
-                    <img src="~/images/Null.webp" class="productImage" alt="@cartItem.ProductName">
-                }
-                <span class="cartName">@cartItem.ProductName</span>
-                <input type="number" name="counter" required value="@cartItem.Quantity">
-                <span class="cartDiscount">@cartItem.OldPrice.ToString("N1") ₴</span>
-                <span class="cartPrice">@cartItem.Price.ToString("N1") ₴</span>
-            </div>
-        }
+        <form method="post" asp-action="CreateOrder">
+            @foreach (var cartItem in Model)
+            {
+                <div>
+                    <a asp-action="DeleteCartItem" asp-route-cartItemId="@cartItem.Id">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                        </svg>
+                    </a>
+                    @if (cartItem.ImageData != null)
+                    {
+                        <img src="data:@cartItem.ImageType;base64,@Convert.ToBase64String(cartItem.ImageData)" class="productImage" alt="@cartItem.ProductName">
+                    }
+                    else
+                    {
+                        <img src="~/images/Null.webp" class="productImage" alt="@cartItem.ProductName">
+                    }
+                    <span class="cartName">@cartItem.ProductName</span>
+                    <input type="number" name="counter" required value="@cartItem.Quantity">
+                    <span class="cartDiscount">@cartItem.OldPrice.ToString("N1") ₴</span>
+                    <span class="cartPrice">@cartItem.Price.ToString("N1") ₴</span>
+                </div>
+            }
 
-        <div class="placeOrder">
-            <span>Разом: @Model.Sum(k => k.Price) ₴</span>
-            <button type="submit">Оформити замовлення</button>
-        </div>
+            <div class="placeOrder">
+                <span>Разом: @Model.Sum(k => k.Price) ₴</span>
+                <button type="submit">Оформити замовлення</button>
+            </div>
+        </form>
     </div>
 </main>

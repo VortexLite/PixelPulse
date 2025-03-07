@@ -10,13 +10,17 @@ using PixelPulse.Application.Interfaces.Authentication;
 using PixelPulse.Application.Interfaces.Repositories;
 using PixelPulse.Application.Interfaces.Service;
 using PixelPulse.Application.Mappers;
+using PixelPulse.Application.Service.Cart;
+using PixelPulse.Application.Service.Order;
+using PixelPulse.Application.Service.Product;
+using PixelPulse.Application.Service.Review;
+using PixelPulse.Application.Service.User;
+using PixelPulse.Application.Service.Wishlist;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Domain.Settings;
 using PixelPulse.Infrastructure.Content.Data;
 using PixelPulse.Infrastructure.Content.Seeds;
-using PixelPulse.Infrastructure.Services.Accounts;
 using PixelPulse.Infrastructure.Services.Auth;
-using PixelPulse.Infrastructure.Services.Home;
 using PixelPulse.Infrastructure.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,15 +46,29 @@ config.Scan(typeof(RegisterMapper).Assembly);
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
 
+#region repositories
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
 builder.Services.AddScoped<IWishlistItemRepository, WishlistItemRepository>();
-builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+#endregion
+
+#region services
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+#endregion
+
 
 builder.Services.AddAuthentication(options =>
     {

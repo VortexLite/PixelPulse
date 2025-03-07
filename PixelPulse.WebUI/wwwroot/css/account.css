@@ -163,6 +163,29 @@
         background: var(--color-backgroundButtonHover);
         box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
     }
+    
+    .customerOrders td svg
+    {
+        width: 2vw;
+    }
+
+    .customerOrders td a
+    {
+        text-decoration: none;
+        color: var(--color-text);
+    }
+
+    .customerOrders td a:link
+    {
+        text-decoration: none;
+        color: var(--color-text);
+    }
+
+    .customerOrders td a:visited
+    {
+        text-decoration: none;
+        color: var(--color-text);
+    }
 
     .customerOrdersDetails
     {

@@ -149,7 +149,7 @@ public class AuthController : Controller
             return View(model);
         
         var result = await _httpClient.PostAsJsonAsync(Address + "signUp", model);
-        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+        if (result.StatusCode == HttpStatusCode.OK)
             return RedirectToAction("Index", "Home");
         
         ModelState.AddModelError(string.Empty, "Invalid register attempt");

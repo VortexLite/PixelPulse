@@ -12,8 +12,6 @@ public class WishlistRepository : IWishlistRepository
     private readonly AppIdentityContext _context;
     private readonly IMemoryCache _cache;
     private readonly ILogger<WishlistRepository> _logger;
-    private readonly string _cacheKeyAll = "wishlist_all";
-    private readonly string _cacheKeyPrefix = "wishlist_";
 
     public WishlistRepository(AppIdentityContext context, IMemoryCache cache, ILogger<WishlistRepository> logger)
     {
@@ -22,7 +20,7 @@ public class WishlistRepository : IWishlistRepository
         _logger = logger;
     }
 
-    public async Task CreateAsync(Wishlist entity, CancellationToken cancellationToken = default)
+    public async Task<bool> CreateAsync(Wishlist entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -30,67 +28,29 @@ public class WishlistRepository : IWishlistRepository
             await _context.Wishlists.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Set(_cacheKeyPrefix + entity.Id, entity);
-            _logger.LogInformation($"Wishlist created: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError($"Wishlist creation failed. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task<Wishlist> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public IQueryable<Wishlist> GetById(int id)
     {
-        if (_cache.TryGetValue(_cacheKeyPrefix + id, out Wishlist cached))
-        {
-            _logger.LogInformation($"Wishlist found: {_cacheKeyPrefix + id}");
-            return cached;
-        }
-        else
-        {
-            cached = await _context.Wishlists
-                .AsNoTracking()
-                .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
-            _logger.LogInformation($"Wishlist found: {cached.Id}");
-
-            if (cached != null)
-            {
-                _cache.Set(_cacheKeyPrefix + id, cached, TimeSpan.FromMinutes(30));
-                _logger.LogInformation($"Wishlist cache created: {_cacheKeyPrefix + id}");
-            }
-        
-            return cached;
-        }
+        return _context.Wishlists
+            .AsNoTracking()
+            .Where(i => i.Id == id);
     }
 
-    public async Task<IReadOnlyList<Wishlist>> GetAllAsync(CancellationToken cancellationToken = default)
+    public IQueryable<Wishlist> GetAll()
     {
-        if (_cache.TryGetValue(_cacheKeyAll, out IReadOnlyList<Wishlist> cached))
-        {
-            _logger.LogInformation($"Product found: {_cacheKeyAll}");
-            return cached;
-        }
-        else
-        {
-            cached = await _context.Wishlists
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            _logger.LogInformation($"Product founds");
-
-            if (cached != null)
-            {
-                _cache.Set(_cacheKeyAll, cached, TimeSpan.FromMinutes(30));
-                _logger.LogInformation($"Wishlist cache created: {_cacheKeyAll}");
-            }
-            
-            return cached;
-        }
+        return _context.Wishlists.AsNoTracking();
     }
 
-    public async Task UpdateAsync(Wishlist entity, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Wishlist entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -98,20 +58,17 @@ public class WishlistRepository : IWishlistRepository
             _context.Wishlists.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Remove(_cacheKeyPrefix + entity.Id);
-            _cache.Set(_cacheKeyPrefix + entity.Id, entity);
-            _logger.LogInformation($"Wishlist updated: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, $"Wishlist update failed: {entity.Id}. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task DeleteAsync(Wishlist entity, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Wishlist entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -119,23 +76,19 @@ public class WishlistRepository : IWishlistRepository
             _context.Wishlists.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Remove(_cacheKeyPrefix + entity.Id);
-            _logger.LogInformation($"Wishlist deleted: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, $"Wishlist delete failed: {entity.Id}. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task<Wishlist?> FindWishlistByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+    public IQueryable<Wishlist>? FindWishlistByUserId(string userId)
     {
-        var wishlist = await _context.Wishlists
-            .FirstOrDefaultAsync(i => i.AppUserId == userId, cancellationToken);
-        
-        return wishlist;
+        return _context.Wishlists
+            .Where(i => i.AppUserId == userId);
     }
 }

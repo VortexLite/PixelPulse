@@ -12,8 +12,6 @@ public class CartRepository : ICartRepository
     private readonly AppIdentityContext _context;
     private readonly IMemoryCache _cache;
     private readonly ILogger<CartRepository> _logger;
-    private readonly string _cacheKeyAll = "cart_all";
-    private readonly string _cacheKeyPrefix = "cart_";
 
     public CartRepository(AppIdentityContext context, IMemoryCache cache, ILogger<CartRepository> logger)
     {
@@ -22,7 +20,7 @@ public class CartRepository : ICartRepository
         _logger = logger;
     }
 
-    public async Task CreateAsync(Cart entity, CancellationToken cancellationToken = default)
+    public async Task<bool> CreateAsync(Cart entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -30,67 +28,30 @@ public class CartRepository : ICartRepository
             await _context.Carts.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Set(_cacheKeyPrefix + entity.Id, entity);
-            _logger.LogInformation($"Cart created: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError($"Cart creation failed, name {entity.Id}. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task<Cart> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public IQueryable<Cart> GetById(int id)
     {
-        if (_cache.TryGetValue(_cacheKeyPrefix + id, out Cart cachedCart))
-        {
-            _logger.LogInformation($"Cart found: {_cacheKeyPrefix + id}");
-            return cachedCart;
-        }
-        else
-        {
-            cachedCart = await _context.Carts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
-            _logger.LogInformation($"Cart found: {cachedCart.Id}");
-
-            if (cachedCart != null)
-            {
-                _cache.Set(_cacheKeyPrefix + id, cachedCart, TimeSpan.FromMinutes(30));
-                _logger.LogInformation($"Cart cache created: {_cacheKeyPrefix + id}");
-            }
-        
-            return cachedCart;
-        }
+        return _context.Carts
+            .AsNoTracking()
+            .Where(c => c.Id == id);
     }
 
-    public async Task<IReadOnlyList<Cart>> GetAllAsync(CancellationToken cancellationToken = default)
+    public IQueryable<Cart> GetAll()
     {
-        if (_cache.TryGetValue(_cacheKeyAll, out IReadOnlyList<Cart> cachedCart))
-        {
-            _logger.LogInformation($"Product found: {_cacheKeyAll}");
-            return cachedCart;
-        }
-        else
-        {
-            cachedCart = await _context.Carts
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
-            _logger.LogInformation($"Product founds");
-
-            if (cachedCart != null)
-            {
-                _cache.Set(_cacheKeyAll, cachedCart, TimeSpan.FromMinutes(30));
-                _logger.LogInformation($"Cart cache created: {_cacheKeyAll}");
-            }
-            
-            return cachedCart;
-        }
+        return _context.Carts
+            .AsNoTracking();
     }
 
-    public async Task UpdateAsync(Cart entity, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Cart entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -98,20 +59,17 @@ public class CartRepository : ICartRepository
             _context.Carts.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Remove(_cacheKeyPrefix + entity.Id);
-            _cache.Set(_cacheKeyPrefix + entity.Id, entity);
-            _logger.LogInformation($"Cart updated: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, $"Cart update failed: {entity.Id}. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task DeleteAsync(Cart entity, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(Cart entity, CancellationToken cancellationToken = default)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
@@ -119,24 +77,19 @@ public class CartRepository : ICartRepository
             _context.Carts.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cacheKeyAll);
-            _cache.Remove(_cacheKeyPrefix + entity.Id);
-            _logger.LogInformation($"Cart deleted: {entity.Id}");
+
+            return true;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, $"Cart delete failed: {entity.Id}. {ex.Message}");
-            throw;
+            return false;
         }
     }
 
-    public async Task<Cart> FindCartByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+    public IQueryable<Cart> FindCartByUserId(string userId)
     {
-        var cart = await _context.Carts
-            .FirstOrDefaultAsync(i => i.AppUserId == userId, cancellationToken);
-        _logger.LogInformation($"Cart found: {cart.Id}");
-        
-         return cart;
+        return _context.Carts
+            .Where(i => i.AppUserId == userId);
     }
 }
