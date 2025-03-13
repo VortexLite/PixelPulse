@@ -64,7 +64,7 @@ public class OrderService : IOrderService
         return cachedOrders;
     }
     
-    public async Task<bool> CreateOrder(CreateOrderDTO createOrder)
+    public async Task<Domain.Entities.Order?> CreateOrder(CreateOrderDTO createOrder)
     {
         var totalPrice = createOrder.CartItemDtos.Sum(ci => ci.Price);
         
@@ -75,7 +75,7 @@ public class OrderService : IOrderService
             Status = OrderStatus.Pending.ToString(),
         };
         if (!await _orderRepository.CreateAsync(order))
-            return false;
+            return null;
 
         var payment = new Payment
         {
@@ -84,7 +84,7 @@ public class OrderService : IOrderService
             PaymentMethod = createOrder.PaymentMethod
         };
         if (!await _paymentRepository.CreateAsync(payment))
-            return false;
+            return null;
 
         var shipping = new Shipping
         {
@@ -95,7 +95,7 @@ public class OrderService : IOrderService
             Department = createOrder.Department
         };
         if (!await _shippingRepository.CreateAsync(shipping))
-            return false;
+            return null;
 
         var orderItems = createOrder.CartItemDtos
             .Select(cartItemDto => new OrderItem
@@ -106,7 +106,7 @@ public class OrderService : IOrderService
                 Price = cartItemDto.Price
             }).ToList();
         if (!await _orderItemRepository.AddRangeAsync(orderItems))
-            return false;
+            return null;
         
         var cart = await _cartRepository.FindCartByUserId(createOrder.AppUserId).FirstOrDefaultAsync();
         var cartItems = await _cartItemRepository.GetCartItemsByCartId(cart.Id).ToListAsync();
@@ -115,9 +115,9 @@ public class OrderService : IOrderService
             await _cartItemRepository.DeleteAsync(cartItem);
         
         if (!await _cartRepository.DeleteAsync(cart))
-            return false;
+            return null;
         
-        return true;
+        return order;
     }
 
     public async Task<bool> CancelOrderAsync(int orderId)

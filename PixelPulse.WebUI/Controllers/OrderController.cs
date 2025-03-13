@@ -64,8 +64,20 @@ public class OrderController : Controller
     {
         var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", createOrder);
         if (response.IsSuccessStatusCode)
-            return RedirectToAction("Order", "Account");
+        {
+            var responseString = await response.Content.ReadAsStringAsync();
+            var order = JsonSerializer.Deserialize<Order>(responseString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            return RedirectToAction("SuccessCheckout", order);
+        }
 
         return NoContent();
+    }
+    
+    public async Task<IActionResult> SuccessCheckout(Order order)
+    {
+        return View(order);
     }
 }

@@ -1,0 +1,28 @@
+@model PixelPulse.Domain.Entities.Order?
+
+@{
+    ViewBag.Title = "SuccessOrder";
+    Layout = "_Layout";
+}
+
+@section styles
+{
+    <link rel="stylesheet" href="~/css/successCheckout.css"/>
+}
+
+<main>
+    <div class="wrap">
+        <img src="/images/success.webp" alt="Success">
+        <span class="thanksOrder">Дякую за замовлення!</span>
+        <span class="thanksOrder2">Ваше замовлення <span class="orderNumber">№@Model?.Shipping?.TrackingNumber</span> успішно оформлене</span>
+        <span class="thanksOrder2">Дякую що обрали нас</span>
+        <div class="btn">
+            <a class="reviewOrder" asp-action="Order" asp-controller="Account">
+                Переглянути замовлення
+            </a>
+            <a class="continueShoping" asp-action="Index" asp-controller="Home">
+                Продовжити покупки
+            </a>
+        </div>
+    </div>
+</main>

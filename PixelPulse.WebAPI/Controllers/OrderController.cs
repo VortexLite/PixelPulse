@@ -27,8 +27,9 @@ public class OrderController : ControllerBase
     [HttpPost("createOrder")]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDTO сreateOrder)
     {
-        if (await _orderService.CreateOrder(сreateOrder))
-            return Ok();
+        var order = await _orderService.CreateOrder(сreateOrder);
+        if (order != null)
+            return Ok(order);
 
         return BadRequest();
     }

@@ -117,22 +117,6 @@ public class AccountController : Controller
     }
     
     [HttpGet]
-    public async Task<IActionResult> CreateOrder(List<CartItemDTO> cartItemDtos)
-    {
-        var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", new ListCartItemDTOsTokenRequest
-        {
-            RefreshToken = Request.Cookies["refreshTokenKey"],
-            CartItemDtos = cartItemDtos
-        });
-        if (response.IsSuccessStatusCode)
-        {
-            return RedirectToAction("Order");
-        }
-
-        return RedirectToAction("Index", "Home");
-    }
-    
-    [HttpGet]
     public async Task<IActionResult> CancelOrder(int orderId)
     {
         var response = await _httpClient.GetAsync(OrderAddress + "cancelOrder/" + orderId);

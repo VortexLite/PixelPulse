@@ -1,0 +1,169 @@
+@media screen and (min-width: 1024px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        height: 84vh;
+    }
+
+    .wrap
+    {
+        display: grid;
+        align-content: center;
+        justify-content: center;
+        justify-items: center;
+        grid-gap: 1.5vh;
+    }
+
+    .wrap img
+    {
+        width: 10vw;
+    }
+
+    .thanksOrder
+    {
+        color: var(--color-primary);
+        font-size: 2vw;
+        font-weight: 800;
+    }
+
+    .thanksOrder2
+    {
+        color: var(--color-text);
+        font-size: 1.2vw;
+    }
+
+    .orderNumber
+    {
+
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .btn
+    {
+        display: grid;
+        grid-auto-flow: column;
+        grid-gap: 3vw;
+    }
+
+    .reviewOrder
+    {
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        font-size: 1.1vw;
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .reviewOrder:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+        cursor: pointer;
+    }
+
+    .continueShoping
+    {
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        font-size: 1.1vw;
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .continueShoping:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+        cursor: pointer;
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        height: 84vh;
+    }
+
+    .wrap
+    {
+        display: grid;
+        align-content: center;
+        justify-content: center;
+        justify-items: center;
+        grid-gap: 1.5vh;
+    }
+
+    .wrap img
+    {
+        width: 50vw;
+    }
+
+    .thanksOrder
+    {
+        color: var(--color-primary);
+        font-size: 6vw;
+        font-weight: 800;
+    }
+
+    .thanksOrder2
+    {
+        color: var(--color-text);
+        font-size: 4vw;
+    }
+
+    .orderNumber
+    {
+
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    .btn
+    {
+        display: grid;
+        grid-auto-flow: column;
+        grid-gap: 5vw;
+    }
+
+    .reviewOrder
+    {
+        padding: 1vh 1vw;
+        border-radius: 1vw;
+        font-size: 4vw;
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .reviewOrder:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+        cursor: pointer;
+    }
+
+    .continueShoping
+    {
+        padding: 1vh 1vw;
+        border-radius: 1vw;
+        font-size: 4vw;
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .continueShoping:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+        cursor: pointer;
+    }
+}
