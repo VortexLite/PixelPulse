@@ -6,6 +6,6 @@ public class ProductMainDTO
     public string Name { get; set; }
     public decimal OldPrice { get; set; }
     public decimal Price { get; set; }
-    public byte[] ImageData { get; set; }
-    public string ImageType { get; set; }
+    public string? ImageData { get; set; }
+    public string? ImageType { get; set; }
 }

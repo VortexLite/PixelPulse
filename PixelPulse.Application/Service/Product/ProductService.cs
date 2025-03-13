@@ -15,7 +15,7 @@ public class ProductService : IProductService
     private readonly IProductRepository _productRepository;
     private readonly IMemoryCache _cache;
     
-    private const string _productCacheKey = "productItems_";
+    private const string _productCacheKey = "productItem_";
 
     public ProductService(ILogger<ProductService> logger, IUserService userService, IProductRepository productRepository, IMemoryCache cache)
     {
@@ -27,14 +27,16 @@ public class ProductService : IProductService
 
     public async Task<List<ProductMainDTO>?> GetProductsWithImageTake20Async()
     {
-        if (!_cache.TryGetValue(_productCacheKey + "All", out List<ProductMainDTO> cachedProducts))
+        if (!_cache.TryGetValue(_productCacheKey + "products", out List<ProductMainDTO> cachedProducts))
         {
             var products = _productRepository.GetProductsWithImageTake20();
             cachedProducts = await products
                 .ProjectToType<ProductMainDTO>()
                 .ToListAsync();
             
-            _cache.Set(_productCacheKey + "All", cachedProducts, TimeSpan.FromHours(30));
+            _cache.Set(_productCacheKey + "products", cachedProducts, TimeSpan.FromMinutes(30));
+            foreach (var product in cachedProducts)
+                _cache.Set(_productCacheKey + $"{product.Id}", product, TimeSpan.FromMinutes(30));
         }
         
         return cachedProducts;
@@ -42,14 +44,14 @@ public class ProductService : IProductService
 
     public async Task<ProductCategoryDTO>? GetDetailsProduct(int productId)
     {
-        if (!_cache.TryGetValue(_productCacheKey + $"{productId}", out ProductCategoryDTO cachedProducts))
+        if (!_cache.TryGetValue(_productCacheKey + "details" + $"{productId}", out ProductCategoryDTO cachedProducts))
         {
             var product = _productRepository.GetProductsWithImageAndCategoriesById(productId);
             cachedProducts = await product
                 .ProjectToType<ProductCategoryDTO>()
                 .FirstOrDefaultAsync();
             
-            _cache.Set(_productCacheKey + $"{productId}", cachedProducts, TimeSpan.FromHours(30));
+            _cache.Set(_productCacheKey + "details" + $"{productId}", cachedProducts, TimeSpan.FromMinutes(30));
         }
         
         return cachedProducts;

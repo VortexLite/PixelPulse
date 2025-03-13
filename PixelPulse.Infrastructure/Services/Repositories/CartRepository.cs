@@ -44,14 +44,14 @@ public class CartRepository : ICartRepository
     public IQueryable<Cart> GetById(int id)
     {
         return _context.Carts
-            .AsNoTracking()
             .Where(c => c.Id == id);
     }
 
     public IQueryable<Cart> GetAll()
     {
         return _context.Carts
-            .AsNoTracking();
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(Cart entity, CancellationToken cancellationToken = default)
@@ -62,7 +62,6 @@ public class CartRepository : ICartRepository
             _context.Carts.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-            _cache.Remove(_cartCacheKey + $"{entity.Id}");
             _cache.Set(_cartCacheKey + $"{entity.Id}", entity, TimeSpan.FromHours(30));
             return true;
         }

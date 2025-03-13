@@ -2,12 +2,12 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Order;
-using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.Interfaces.Repositories;
 using PixelPulse.Application.Interfaces.Service;
+using PixelPulse.Application.Service.OtherService;
 using PixelPulse.Domain.Entities;
+using PixelPulse.Domain.Enums;
 
 namespace PixelPulse.Application.Service.Order;
 
@@ -18,11 +18,15 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IOrderItemRepository _orderItemRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IPaymentRepository _paymentRepository;
+    private readonly IShippingRepository _shippingRepository;
+    private readonly ICartItemRepository _cartItemRepository;
+    private readonly ICartRepository _cartRepository;
     private readonly IMemoryCache _cache;
     
     private const string _orderCacheKey = "orderItems_";
 
-    public OrderService(ILogger<OrderService> logger, IUserService userService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderItemRepository orderItemRepository, IMemoryCache cache)
+    public OrderService(ILogger<OrderService> logger, IUserService userService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderItemRepository orderItemRepository, IMemoryCache cache, IPaymentRepository paymentRepository, IShippingRepository shippingRepository, ICartItemRepository cartItemRepository, ICartRepository cartRepository)
     {
         _logger = logger;
         _userService = userService;
@@ -30,6 +34,10 @@ public class OrderService : IOrderService
         _productRepository = productRepository;
         _orderItemRepository = orderItemRepository;
         _cache = cache;
+        _paymentRepository = paymentRepository;
+        _shippingRepository = shippingRepository;
+        _cartItemRepository = cartItemRepository;
+        _cartRepository = cartRepository;
     }
 
     public async Task<List<OrderDTO>?> GetOrdersByRefreshToken(string token)
@@ -38,7 +46,7 @@ public class OrderService : IOrderService
         if (user == null)
             return null;
 
-        if (!_cache.TryGetValue($"{_orderCacheKey}{user.Id}", out List<OrderDTO> cachedOrders))
+        if (!_cache.TryGetValue(_orderCacheKey + "orders" + $"{user.Id}", out List<OrderDTO> cachedOrders))
         {
             var orders = _orderRepository
                 .GetOrdersByUserId(user.Id);
@@ -47,57 +55,98 @@ public class OrderService : IOrderService
                 .ProjectToType<OrderDTO>()
                 .ToListAsync();
             
-            _cache.Set($"{_orderCacheKey}{user.Id}", cachedOrders, TimeSpan.FromHours(30));
+            _cache.Set(_orderCacheKey + "orders" + $"{user.Id}", cachedOrders, TimeSpan.FromMinutes(30));
+            foreach (var cachedOrder in cachedOrders)
+                _cache.Set(_orderCacheKey + "dto" + $"{cachedOrder.Id}", cachedOrder, TimeSpan.FromMinutes(30));
+            
         }
         
         return cachedOrders;
     }
-
-    public async Task<bool> CreateOrder(ListCartItemDTOsTokenRequest cartItemDtosTokenRequest)
+    
+    public async Task<bool> CreateOrder(CreateOrderDTO createOrder)
     {
-        var user = await _userService.FindUserByRefreshToken(cartItemDtosTokenRequest.RefreshToken);
-        if (user == null)
-            return false;
-
+        var totalPrice = createOrder.CartItemDtos.Sum(ci => ci.Price);
+        
         var order = new Domain.Entities.Order
         {
-            AppUserId = user.Id
+            AppUserId = createOrder.AppUserId,
+            TotalPrice = totalPrice,
+            Status = OrderStatus.Pending.ToString(),
         };
-        await _orderRepository.CreateAsync(order);
-        
-        var orderItems = new List<OrderItem>();
-        foreach (var cartItem in cartItemDtosTokenRequest.CartItemDtos)
+        if (!await _orderRepository.CreateAsync(order))
+            return false;
+
+        var payment = new Payment
         {
-            var orderItem = new OrderItem
+            OrderId = order.Id,
+            Amount = totalPrice,
+            PaymentMethod = createOrder.PaymentMethod
+        };
+        if (!await _paymentRepository.CreateAsync(payment))
+            return false;
+
+        var shipping = new Shipping
+        {
+            OrderId = order.Id,
+            TrackingNumber = TrackingNumberService.GenerateTrackingNumber(),
+            ShippedDate = DateTime.UtcNow.AddDays(5),
+            City = createOrder.City,
+            Department = createOrder.Department
+        };
+        if (!await _shippingRepository.CreateAsync(shipping))
+            return false;
+
+        var orderItems = createOrder.CartItemDtos
+            .Select(cartItemDto => new OrderItem
             {
-                OrderId = order.Id,
-                ProductId = _productRepository
-                    .GetProductByName(cartItem.ProductName)
-                    .FirstOrDefaultAsync().Id,
-                Quantity = cartItem.Quantity,
-                Price = cartItem.Price
-            };
-            
-            orderItems.Add(orderItem);
-        }
+                OrderId = order.Id, 
+                ProductId = cartItemDto.ProductId, 
+                Quantity = cartItemDto.Quantity, 
+                Price = cartItemDto.Price
+            }).ToList();
+        if (!await _orderItemRepository.AddRangeAsync(orderItems))
+            return false;
         
-        await _orderItemRepository.AddRangeAsync(orderItems);
+        var cart = await _cartRepository.FindCartByUserId(createOrder.AppUserId).FirstOrDefaultAsync();
+        var cartItems = await _cartItemRepository.GetCartItemsByCartId(cart.Id).ToListAsync();
+
+        foreach (var cartItem in cartItems)
+            await _cartItemRepository.DeleteAsync(cartItem);
+        
+        if (!await _cartRepository.DeleteAsync(cart))
+            return false;
         
         return true;
     }
 
-    public async Task<List<ProductMainDTO>> GetAllProductWithImageTake20Async()
+    public async Task<bool> CancelOrderAsync(int orderId)
     {
-        if (!_cache.TryGetValue(_orderCacheKey + "All", out List<ProductMainDTO> cachedProducts))
+        var order = await _orderRepository.GetById(orderId).FirstOrDefaultAsync();
+        if (order == null ||
+            order.Status == OrderStatus.Cancelled.ToString())
+            return false;
+        
+        var orderItems = await _orderItemRepository
+            .GetOrderItemsByOrderId(orderId)
+            .ToListAsync();
+        
+        if (orderItems.Count == 0)
+            return false;
+
+        foreach (var orderItem in orderItems)
         {
-            var products = _productRepository.GetProductsWithImageTake20();
-            cachedProducts = await products
-                .ProjectToType<ProductMainDTO>()
-                .ToListAsync();
-            
-            _cache.Set(_orderCacheKey + "All", cachedProducts, TimeSpan.FromHours(30));
+            var product = await _productRepository.GetById(orderItem.ProductId).FirstOrDefaultAsync();
+            if (product != null)
+            {
+                product.Stock += orderItem.Quantity;
+                await _productRepository.UpdateAsync(product);
+            }
         }
         
-        return cachedProducts;
+        order.Status = OrderStatus.Cancelled.ToString();
+        await _orderRepository.UpdateAsync(order);
+        
+        return true;
     }
 }

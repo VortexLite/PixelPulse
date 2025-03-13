@@ -28,7 +28,7 @@ public class RegisterMapper : IRegister
             .Map(dest => dest.OrderDate, src => src.OrderDate)
             .Map(dest => dest.Status, src => src.Status)
             .Map(dest => dest.TotalItems, src => src.OrderItems.Sum(oi => oi.Quantity))
-            .Map(dest => dest.TotalPrice, src => src.TotalPrice)
+            .Map(dest => dest.TotalPrice, src => src.OrderItems.Sum(item => item.Price * item.Quantity))
             .Map(dest => dest.Shipping, src => src.Shipping.Adapt<ShippingDTO>())
             .Map(dest => dest.OrderItems, src => src.OrderItems.Adapt<List<OrderItemDTO>>());
 
@@ -52,13 +52,12 @@ public class RegisterMapper : IRegister
 
         config.NewConfig<Shipping, ShippingDTO>()
             .Map(dest => dest.TrackingNumber, src => src.TrackingNumber)
-            .Map(dest => dest.ShippedDate, src => src.ShippedDate)
-            .Map(dest => dest.Address, 
-                src => $"{src.Address.Street}, {src.Address.City}, {src.Address.State}, {src.Address.ZipCode}");
+            .Map(dest => dest.ShippedDate, src => src.ShippedDate);
         
         config.NewConfig<CartItem, CartItemDTO>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.CartId, src => src.CartId)
+            .Map(dest => dest.ProductId, src => src.ProductId)
             .Map(dest => dest.ProductName, src => src.Product.Name)
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.OldPrice, src => src.Product.OldPrice)

@@ -1,0 +1,458 @@
+@media screen and (min-width: 1024px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+    }
+
+    .order
+    {
+        display: grid;
+        padding: 0 10vw;
+        grid-gap: 1vw;
+    }
+
+    .orderItem
+    {
+        display: grid;
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+        margin-top: 2vh;
+    }
+
+    .orderItem div
+    {
+        display: grid;
+        grid-template-columns: 5% 15% 45% 10% 25%;
+        align-items: center;
+        text-align: center;
+        padding: 1vh 1vw;
+        font-size: 1vw;
+        border-bottom: 1px solid var(--color-primary);
+    }
+
+    .orderItem div:last-child
+    {
+        border: none;
+    }
+
+    .order h2
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 1.5vw;
+        border-bottom: 1px solid;
+        padding-left: 2vw;
+        text-align: center;
+    }
+
+    .orderItem div svg
+    {
+        width: 2vw;
+        height: 2vh;
+        padding: 0.2vh 0.2vw;
+        border-radius: 0.5vw;
+        justify-self: center;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .orderItem div svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .orderItem div img
+    {
+        height: 15vh;
+        justify-self: center;
+    }
+
+    .orderItem div input
+    {
+        width: 2.5vw;
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        font-size: 1vw;
+        border-radius: 0.2vw;
+        justify-self: center;
+        text-align: center;
+    }
+
+    .orderItem div span:last-child
+    {
+        color: var(--color-primary);
+    }
+
+    .threeBlock
+    {
+        display: grid;
+        grid-auto-flow: column;
+        grid-gap: 1vw;
+    }
+
+    .orderContact
+    {
+        display: grid;
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderContact div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderContact div input
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 1vw;
+        border-radius: 0.2vw;
+        text-align: center;
+    }
+
+    .orderDelivery
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderDelivery div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderDelivery div select
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 1vw;
+        border-radius: 0.2vw;
+        text-align: center;
+    }
+
+    .orderPay
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderPay div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderPay div select
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 1vw;
+        border-radius: 0.2vw;
+        text-align: center;
+    }
+
+    .orderComfirm
+    {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: end;
+        grid-gap: 1vw;
+        font-size: 1.5vw;
+        margin-bottom: 2vh;
+        font-weight: 800;
+    }
+
+    .orderComfirm span:first-child
+    {
+        color: var(--color-text);
+    }
+
+    .orderComfirm .orderPrice
+    {
+        color: var(--color-primary) !important;
+    }
+
+    .orderComfirm button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 1vh 1vw;
+        font-size: 1vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .orderComfirm button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .afterOrder
+    {
+        display: none;
+        height: 80vh;
+        padding: 2vh 2vw;
+        font-size: 2vw;
+        font-weight: 800;
+        color: var(--color-text);
+        text-wrap: wrap;
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+        align-content: center;
+    }
+
+    .afterNumber
+    {
+        color: var(--color-primary);
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+    }
+
+    .order
+    {
+        display: grid;
+        padding: 0 4vw;
+        grid-gap: 1vw;
+    }
+
+    .orderItem
+    {
+        display: grid;
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+        margin-top: 2vh;
+    }
+
+    .orderItem div
+    {
+        display: grid;
+        grid-template-columns: 10% 20% 40% 10% 20%;
+        align-items: center;
+        text-align: center;
+        padding: 1vh 1vw;
+        font-size: 2.5vw;
+    }
+
+    .order h2
+    {
+        color: var(--color-primary);
+        font-weight: 800;
+        font-size: 2.5vw;
+        border-bottom: 1px solid;
+        text-align: center;
+    }
+
+    .orderItem div svg
+    {
+        width: 3vw;
+        height: 3vh;
+        padding: 0 1vw;
+        border-radius: 0.5vw;
+        justify-self: center;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .orderItem div svg:hover
+    {
+        cursor: pointer;
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .orderItem div img
+    {
+        height: 8vh;
+        justify-self: center;
+    }
+
+    .orderItem div input
+    {
+        width: 6vw;
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        font-size: 2.5vw;
+        border-radius: 0.2vw;
+        justify-self: center;
+        text-align: center;
+    }
+
+    .orderItem div span:last-child
+    {
+        color: var(--color-primary);
+    }
+
+    .threeBlock
+    {
+        display: grid;
+        grid-gap: 1vw;
+    }
+
+    .orderContact
+    {
+        display: grid;
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderContact div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderContact div input
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 2.5vw;
+        border-radius: 0.5vw;
+        text-align: center;
+    }
+
+    .orderDelivery
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderDelivery div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderDelivery div select
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 2.5vw;
+        border-radius: 0.2vw;
+        text-align: center;
+    }
+
+    .orderPay
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        border-radius: 0.5vw;
+    }
+
+    .orderPay div
+    {
+        display: grid;
+        justify-content: center;
+        padding: 1vh 1vw;
+    }
+
+    .orderPay div select
+    {
+        outline: none;
+        border: none;
+        padding: 0.5vh 0vw 0.5vh 0.5vw;
+        margin: 1vh 0;
+        font-size: 2.5vw;
+        border-radius: 0.5vw;
+        text-align: center;
+    }
+
+    .orderComfirm
+    {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: end;
+        grid-gap: 1vw;
+        font-size: 3.5vw;
+        margin: 2vh 0;
+        font-weight: 800;
+    }
+
+    .orderComfirm span:first-child
+    {
+        color: var(--color-text);
+    }
+
+    .orderComfirm .orderPrice
+    {
+        color: var(--color-primary) !important;
+    }
+
+    .orderComfirm button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 1vh 1vw;
+        font-size: 2.5vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .orderComfirm button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .afterOrder
+    {
+        display: none;
+        padding: 2vh 2vw;
+        font-size: 4vw;
+        font-weight: 800;
+        color: var(--color-text);
+        text-wrap: wrap;
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+        align-content: center;
+    }
+
+    .afterNumber
+    {
+        color: var(--color-primary);
+    }
+}

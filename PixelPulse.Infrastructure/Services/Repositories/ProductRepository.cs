@@ -31,7 +31,6 @@ public class ProductRepository : IProductRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_productCacheKey + $"{entity.Id}");
             _cache.Set(_productCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -51,7 +50,9 @@ public class ProductRepository : IProductRepository
 
     public IQueryable<Product> GetAll()
     {
-        return _context.Products.AsNoTracking();
+        return _context.Products
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(Product entity, CancellationToken cancellationToken = default)
@@ -63,7 +64,6 @@ public class ProductRepository : IProductRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_productCacheKey + $"{entity.Id}");
             _cache.Set(_productCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -136,9 +136,8 @@ public class ProductRepository : IProductRepository
             await transaction.CommitAsync(cancellationToken);
 
             foreach (var product in products)
-            {
                 _cache.Remove(_productCacheKey + $"{product.Id}");
-            }
+            
             return true;
         }
         catch (Exception ex)

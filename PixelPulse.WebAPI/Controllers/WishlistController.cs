@@ -34,4 +34,14 @@ public class WishlistController : ControllerBase
         
         return BadRequest();
     }
+    
+    [HttpGet("dellWishlist/{wishlistItemId}")]
+    public async Task<IActionResult> DellWishlistItem(int wishlistItemId)
+    {
+        if (await _wishlistService.RemoveWishlistItemAsync(wishlistItemId))
+        {
+            return Ok();
+        }
+        return BadRequest();
+    }
 }

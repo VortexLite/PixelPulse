@@ -47,14 +47,15 @@ public class CartItemRepository : ICartItemRepository
     public IQueryable<CartItem> GetById(int id)
     {
         return _context.CartItems
-            .AsNoTracking()
             .Where(i => i.Id == id);
     }
 
 
     public IQueryable<CartItem> GetAll()
     {
-        return _context.CartItems.AsNoTracking();
+        return _context.CartItems
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(CartItem entity, CancellationToken cancellationToken = default)
@@ -66,7 +67,6 @@ public class CartItemRepository : ICartItemRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_cartItemCacheKey + $"{entity.Id}");
             _cache.Set(_cartItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -113,17 +113,19 @@ public class CartItemRepository : ICartItemRepository
 
     public async Task<bool> DeleteCartItemsAsync(List<CartItemDTO> cartItemDtos, CancellationToken cancellationToken = default)
     {
+        if (cartItemDtos == null || cartItemDtos.Count == 0)
+            return false;
+        
         await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            _context.CartItems.RemoveRange(cartItemDtos.Adapt<CartItem>());
+            var cartItems = cartItemDtos.Adapt<CartItem>();
+            _context.CartItems.RemoveRange(cartItems);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
             foreach (var cartItem in cartItemDtos)
-            {
                 _cache.Remove(_cartItemCacheKey + $"{cartItem.Id}");
-            }
             
             return true;
         }

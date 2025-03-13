@@ -50,7 +50,9 @@ public class CategoryRepository : ICategoryRepository
 
     public IQueryable<Category> GetAll()
     {
-        return _context.Categories.AsNoTracking();
+        return _context.Categories
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(Category entity, CancellationToken cancellationToken = default)
@@ -62,7 +64,6 @@ public class CategoryRepository : ICategoryRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_categoryCacheKey + $"{entity.Id}");
             _cache.Set(_categoryCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -102,9 +103,8 @@ public class CategoryRepository : ICategoryRepository
             await transaction.CommitAsync(cancellationToken);
 
             foreach (var category in categories)
-            {
                 _cache.Set(_categoryCacheKey + $"{category.Id}", category, TimeSpan.FromMinutes(30));
-            }
+            
             return true;
         }
         catch (Exception ex)
@@ -124,9 +124,8 @@ public class CategoryRepository : ICategoryRepository
             await transaction.CommitAsync(cancellationToken);
             
             foreach (var category in categories)
-            {
                 _cache.Remove(_categoryCacheKey + $"{category.Id}");
-            }
+            
             return true;
         }
         catch (Exception ex)

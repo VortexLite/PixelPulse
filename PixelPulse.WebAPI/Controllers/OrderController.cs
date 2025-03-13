@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PixelPulse.Application.DTOs.Cart;
+using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.RefreshToken;
 using PixelPulse.Application.Interfaces.Service;
 
@@ -18,20 +17,27 @@ public class OrderController : ControllerBase
         _logger = logger;
         _orderService = orderService;
     }
-    
+
     [HttpPost("orderView")]
     public async Task<IActionResult> Order([FromBody] RefreshTokenRequest refreshToken)
     {
         return Ok(await _orderService.GetOrdersByRefreshToken(refreshToken.RefreshToken));
     }
-    
+
     [HttpPost("createOrder")]
-    public async Task<IActionResult> CreateOrder([FromBody] ListCartItemDTOsTokenRequest cartItemDtosTokenRequest)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDTO сreateOrder)
     {
-        if (await _orderService.CreateOrder(cartItemDtosTokenRequest))
-        {
+        if (await _orderService.CreateOrder(сreateOrder))
             return Ok();
-        }
+
+        return BadRequest();
+    }
+
+    [HttpGet("cancelOrder/{orderId}")]
+    public async Task<IActionResult> DellCart(int orderId)
+    {
+        if (await _orderService.CancelOrderAsync(orderId))
+            return Ok();
 
         return BadRequest();
     }

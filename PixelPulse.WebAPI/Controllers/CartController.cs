@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PixelPulse.Application.DTOs.Cart;
 using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.DTOs.RefreshToken;
 using PixelPulse.Application.Interfaces.Service;
@@ -45,6 +46,17 @@ public class CartController : ControllerBase
         {
             return Ok();
         }
+        return BadRequest();
+    }
+    
+    [HttpPost("updateCart")]
+    public async Task<IActionResult> UpdateCartItem([FromBody] UpdateCartItemRequest request)
+    {
+        if (await _cartService.UpdateQuantityAsync(request))
+        {
+            return Ok();
+        }
+        
         return BadRequest();
     }
 }

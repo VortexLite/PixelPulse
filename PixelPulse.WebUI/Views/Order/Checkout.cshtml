@@ -1,0 +1,128 @@
+@model PixelPulse.Application.DTOs.Order.CreateOrderDTO
+
+@{
+    ViewBag.Title = "Order";
+    Layout = "_Layout";
+}
+
+@section styles
+{
+    <link rel="stylesheet" href="~/css/order.css"/>
+}
+
+<main>
+    <form class="order" method="post" asp-action="Checkout">
+        <div class="orderItem">
+            <h2>Ваш товар</h2>
+            @foreach (var cartItem in Model.CartItemDtos)
+            {
+                <div>
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                    </svg>
+                    @if (cartItem.ImageData != null)
+                    {
+                        <img src="data:@cartItem.ImageType;base64,@cartItem.ImageData" class="productImage" alt="@cartItem.ProductName">
+                    }
+                    else
+                    {
+                        <img src="~/images/Null.webp" class="productImage" alt="@cartItem.ProductName">
+                    }
+                    <span>@cartItem.ProductName</span>
+                    <input type="number" value="@cartItem.Quantity">
+                    <span>@cartItem.Price ₴</span>
+                </div>
+            }
+            @for (int i = 0; i < Model.CartItemDtos.Count; i++)
+            {
+                <input type="hidden" asp-for="CartItemDtos[i].Id" />
+                <input type="hidden" asp-for="CartItemDtos[i].ProductId" />
+                <input type="hidden" asp-for="CartItemDtos[i].ProductName" />
+                <input type="hidden" asp-for="CartItemDtos[i].Quantity" />
+                <input type="hidden" asp-for="CartItemDtos[i].Price" />
+            }
+        </div>
+        <div class="threeBlock">
+            <div class="orderContact">
+                <h2>Ваші контактні дані</h2>
+                <div>
+                    <input type="hidden" asp-for="AppUserId" />
+                    <input type="number" asp-for="Phonenumber" placeholder="Phone">
+                    <input type="text" asp-for="Firstname" placeholder="Name">
+                    <input type="text" asp-for="Lastname" placeholder="Surname">
+                    <input type="email" asp-for="Email" placeholder="Email">
+                </div>
+            </div>
+            <div class="orderDelivery">
+                <h2>Доставка</h2>
+                <div>
+                    <input type="text" id="cityInput" placeholder="Введіть місто..." oninput="searchCities()">
+                    <select id="citySelect" onchange="loadDepartments()" asp-for="City">
+                        <option value="">Оберіть місто</option>
+                    </select>
+
+                    <select id="departmentSelect" asp-for="Department">
+                        <option value="">Оберіть відділення</option>
+                    </select>
+                </div>
+            </div>
+            <div class="orderPay">
+                <h2>Оплата</h2>
+                <div>
+                    <select asp-for="PaymentMethod">
+                        <option selected>Оплата при отриманні</option>
+                        <option>Онлайн оплата</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="orderComfirm">
+            <span>Разом: </span>
+            <span class="orderPrice">@Model.CartItemDtos.Sum(ci => ci.Price) ₴</span>
+            <button type="submit">Підтвердити замовлення</button>
+        </div>
+    </form>
+    <div class="afterOrder">
+        <span>Дякуємо за замовлення</span>
+        <span class="afterNumber">№ 1004994</span>
+        <span>Наш менеджер скоро з вами зв'яжеться для підтвердження замовлення</span>
+    </div>
+</main>
+
+<script>
+    async function searchCities() {
+        let query = document.getElementById("cityInput").value;
+        if (query.length < 2) return; // Мінімальна довжина запиту
+
+        let response = await fetch(`http://localhost:5144/api/Delivery/GetCities?search=${query}`);
+        let cities = await response.json();
+
+        let citySelect = document.getElementById("citySelect");
+        citySelect.innerHTML = '<option value="">Оберіть місто</option>'; 
+        
+        cities.forEach(city => {
+            let option = document.createElement("option");
+            option.value = city.ref;
+            option.textContent = city.description;
+            citySelect.appendChild(option);
+        });
+    }
+
+    async function loadDepartments() {
+        let cityRef = document.getElementById("citySelect").value;
+        if (!cityRef) return;
+
+        let response = await fetch(`http://localhost:5144/api/Delivery/GetDepartments?cityRef=${cityRef}`);
+        let departments = await response.json();
+
+        let departmentSelect = document.getElementById("departmentSelect");
+        departmentSelect.innerHTML = '<option value="">Оберіть відділення</option>';
+
+        departments.forEach(department => {
+            let option = document.createElement("option");
+            option.value = department.ref;
+            option.textContent = department.description;
+            departmentSelect.appendChild(option);
+        });
+    }
+</script>

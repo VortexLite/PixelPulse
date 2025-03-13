@@ -32,7 +32,9 @@ public class AccountController : Controller
     {
         return View();
     }
-    
+
+    #region user
+
     [HttpGet]
     public async Task<IActionResult> Personal_Information()
     {
@@ -74,6 +76,25 @@ public class AccountController : Controller
         
         return NoContent();
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Logout()
+    {
+        var refreshToken = Request.Cookies["refreshTokenKey"];
+        if (!string.IsNullOrEmpty(refreshToken))
+        {
+            var response = await _httpClient.PostAsJsonAsync(UserAddress + "logout", refreshToken);
+            if (response.IsSuccessStatusCode)
+            {
+                Response.Cookies.Delete("refreshTokenKey");
+            }
+        }
+        return RedirectToAction("Index", "Home");
+    }
+
+    #endregion
+
+    #region order
 
     [HttpGet]
     public async Task<IActionResult> Order()
@@ -94,6 +115,38 @@ public class AccountController : Controller
 
         return View();
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> CreateOrder(List<CartItemDTO> cartItemDtos)
+    {
+        var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", new ListCartItemDTOsTokenRequest
+        {
+            RefreshToken = Request.Cookies["refreshTokenKey"],
+            CartItemDtos = cartItemDtos
+        });
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Order");
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> CancelOrder(int orderId)
+    {
+        var response = await _httpClient.GetAsync(OrderAddress + "cancelOrder/" + orderId);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Order");
+        }
+        
+        return NoContent();
+    }
+
+    #endregion
+
+    #region cart
 
     [HttpGet]
     public async Task<IActionResult> Cart()
@@ -121,28 +174,16 @@ public class AccountController : Controller
         var response = await _httpClient.GetAsync(CartAddress + "dellCart/" + cartItemId);
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction(nameof(Cart));
+            return RedirectToAction("Cart");
         }
         
         return NoContent();
     }
-    
-    [HttpGet]
-    public async Task<IActionResult> CreateOrder(List<CartItemDTO> cartItemDtos)
-    {
-        var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", new ListCartItemDTOsTokenRequest
-        {
-            RefreshToken = Request.Cookies["refreshTokenKey"],
-            CartItemDtos = cartItemDtos
-        });
-        if (response.IsSuccessStatusCode)
-        {
-            return RedirectToAction("Order");
-        }
 
-        return RedirectToAction("Index", "Home");
-    }
-    
+    #endregion
+
+    #region wishlist
+
     [HttpGet]
     public async Task<IActionResult> Wishlist()
     {
@@ -164,6 +205,22 @@ public class AccountController : Controller
     }
     
     [HttpGet]
+    public async Task<IActionResult> DeleteWishlistItem(int wishlistItemId)
+    {
+        var response = await _httpClient.GetAsync(WishlistAddress + "dellWishlist/" + wishlistItemId);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Wishlist");
+        }
+        
+        return NoContent();
+    }
+
+    #endregion
+
+    #region review
+
+    [HttpGet]
     public async Task<IActionResult> Review()
     {
         var response = await _httpClient.PostAsJsonAsync(ReviewAddress + "reviewView", new RefreshTokenRequest
@@ -183,19 +240,6 @@ public class AccountController : Controller
         return View();
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Logout()
-    {
-        var refreshToken = Request.Cookies["refreshTokenKey"];
-        if (!string.IsNullOrEmpty(refreshToken))
-        {
-            var response = await _httpClient.PostAsJsonAsync(UserAddress + "logout", refreshToken);
-            if (response.IsSuccessStatusCode)
-            {
-                Response.Cookies.Delete("refreshTokenKey");
-            }
-        }
-        return RedirectToAction("Index", "Home");
-    }
+    #endregion
     
 }

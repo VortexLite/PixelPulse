@@ -50,7 +50,9 @@ public class WishlistItemRepository : IWishlistItemRepository
 
     public IQueryable<WishlistItem> GetAll()
     {
-        return _context.WishlistItems.AsNoTracking();
+        return _context.WishlistItems
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(WishlistItem entity, CancellationToken cancellationToken = default)
@@ -62,7 +64,6 @@ public class WishlistItemRepository : IWishlistItemRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_wishlistItemCacheKey + $"{entity.Id}");
             _cache.Set(_wishlistItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }

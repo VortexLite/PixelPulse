@@ -15,7 +15,7 @@ public class ReviewService : IReviewService
     private readonly IReviewRepository _reviewRepository;
     private readonly IMemoryCache _cache;
     
-    private const string _reviewCacheKey = "reviewItems_";
+    private const string _reviewCacheKey = "review_";
 
     public ReviewService(ILogger<ReviewService> logger, IUserService userService, IReviewRepository reviewRepository, IMemoryCache cache)
     {
@@ -28,14 +28,16 @@ public class ReviewService : IReviewService
     public async Task<List<ReviewDTO>?> GetReviewByRefreshToken(string token)
     {
         var user = await _userService.FindUserByRefreshToken(token);
-        if (!_cache.TryGetValue(_reviewCacheKey + $"{user.Id}", out List<ReviewDTO> cachedReviews))
+        if (!_cache.TryGetValue(_reviewCacheKey + "reviews" + $"{user.Id}", out List<ReviewDTO> cachedReviews))
         {
             var reviews = _reviewRepository.GetReviewsByUserId(user.Id);
             cachedReviews = await reviews
                 .ProjectToType<ReviewDTO>()
                 .ToListAsync();
             
-            _cache.Set(_reviewCacheKey + $"{user.Id}", cachedReviews, TimeSpan.FromHours(30));
+            _cache.Set(_reviewCacheKey + "reviews" + $"{user.Id}", cachedReviews, TimeSpan.FromMinutes(30));
+            foreach (var review in cachedReviews)
+                _cache.Set(_reviewCacheKey + $"{review.Id}", review, TimeSpan.FromMinutes(30));
         }
         
         return cachedReviews;

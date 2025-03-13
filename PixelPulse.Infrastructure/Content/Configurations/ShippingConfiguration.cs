@@ -15,10 +15,5 @@ public class ShippingConfiguration : IEntityTypeConfiguration<Shipping>
             .HasForeignKey<Shipping>(sh => sh.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        
-        builder.HasOne(sh => sh.Address)
-            .WithMany(a => a.Shippings)
-            .HasForeignKey(a => a.AddressId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

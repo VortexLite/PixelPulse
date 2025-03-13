@@ -50,7 +50,9 @@ public class OrderRepository : IOrderRepository
 
     public IQueryable<Order> GetAll()
     {
-        return _context.Orders.AsNoTracking();
+        return _context.Orders
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(Order entity, CancellationToken cancellationToken = default)
@@ -62,7 +64,6 @@ public class OrderRepository : IOrderRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_orderCacheKey + $"{entity.Id}");
             _cache.Set(_orderCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -99,7 +100,6 @@ public class OrderRepository : IOrderRepository
                 .ThenInclude(oi => oi.Product)
                     .ThenInclude(p => p.ProductImages)
             .Include(o => o.Shipping)
-                .ThenInclude(s => s.Address)
             .Where(o => o.AppUserId == userId);
     }
 }

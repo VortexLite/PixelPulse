@@ -404,8 +404,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems", (string)null);
                 });
@@ -487,9 +486,9 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("ImageData")
+                    b.Property<string>("ImageData")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageType")
                         .IsRequired()
@@ -600,8 +599,16 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -813,8 +820,8 @@ namespace PixelPulse.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("PixelPulse.Domain.Entities.Product", "Product")
-                        .WithOne("OrderItem")
-                        .HasForeignKey("PixelPulse.Domain.Entities.OrderItem", "ProductId")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -892,19 +899,15 @@ namespace PixelPulse.Infrastructure.Migrations
 
             modelBuilder.Entity("PixelPulse.Domain.Entities.Shipping", b =>
                 {
-                    b.HasOne("PixelPulse.Domain.Entities.Address", "Address")
+                    b.HasOne("PixelPulse.Domain.Entities.Address", null)
                         .WithMany("Shippings")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("PixelPulse.Domain.Entities.Order", "Order")
                         .WithOne("Shipping")
                         .HasForeignKey("PixelPulse.Domain.Entities.Shipping", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Address");
 
                     b.Navigation("Order");
                 });
@@ -1002,7 +1005,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
             modelBuilder.Entity("PixelPulse.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("OrderItem");
+                    b.Navigation("OrderItems");
 
                     b.Navigation("ProductImages");
 

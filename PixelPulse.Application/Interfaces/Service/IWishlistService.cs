@@ -7,4 +7,5 @@ public interface IWishlistService
 {
     Task<List<WishlistItemDTO>?> GetWishlistByRefreshTokenAsync(string token);
     Task<bool> AddWishlistItemAsync(ProductIdTokenRequest request);
+    Task<bool> RemoveWishlistItemAsync(int wishlistItemId);
 }

@@ -12,6 +12,7 @@ using PixelPulse.Application.Interfaces.Service;
 using PixelPulse.Application.Mappers;
 using PixelPulse.Application.Service.Cart;
 using PixelPulse.Application.Service.Order;
+using PixelPulse.Application.Service.OtherService;
 using PixelPulse.Application.Service.Product;
 using PixelPulse.Application.Service.Review;
 using PixelPulse.Application.Service.User;
@@ -46,6 +47,8 @@ config.Scan(typeof(RegisterMapper).Assembly);
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
 
+builder.Services.AddHttpClient();
+
 #region repositories
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -58,6 +61,8 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IShippingRepository, ShippingRepository>();
 #endregion
 
 #region services
@@ -67,6 +72,8 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IDeliveryeService, DeliveryeService>();
 #endregion
 
 

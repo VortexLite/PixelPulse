@@ -13,7 +13,7 @@ public class Product
     public Review? Review { get; set; }
     public WishlistItem? WishlistItem { get; set; }
     
-    public OrderItem? OrderItem { get; set; }
+    public List<OrderItem>? OrderItems { get; set; }
     public List<ProductImage>? ProductImages { get; set; }
     public List<ProductSpecification>? ProductSpecifications { get; set; }
 }

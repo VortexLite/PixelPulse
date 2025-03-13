@@ -50,7 +50,9 @@ public class OrderItemRepository : IOrderItemRepository
 
     public IQueryable<OrderItem> GetAll()
     {
-        return _context.OrderItems.AsNoTracking();
+        return _context.OrderItems
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(OrderItem entity, CancellationToken cancellationToken = default)
@@ -61,8 +63,7 @@ public class OrderItemRepository : IOrderItemRepository
             _context.OrderItems.Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
-
-            _cache.Remove(_orderItemCacheKey + $"{entity.Id}");
+            
             _cache.Set(_orderItemCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
@@ -102,9 +103,36 @@ public class OrderItemRepository : IOrderItemRepository
             await transaction.CommitAsync(cancellationToken);
 
             foreach (var orderItem in orderItems)
-            {
                 _cache.Set(_orderItemCacheKey + $"{orderItem.Id}", orderItem, TimeSpan.FromMinutes(30));
-            }
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+        }
+    }
+
+    public IQueryable<OrderItem> GetOrderItemsByOrderId(int orderId)
+    {
+        return _context.OrderItems
+            .AsNoTracking()
+            .Where(i => i.Id == orderId);
+    }
+
+    public async Task<bool> DeleteRangeAsync(List<OrderItem> orderItems, CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            _context.OrderItems.RemoveRange(orderItems);
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            foreach (var orderItem in orderItems)
+                _cache.Remove(_orderItemCacheKey + $"{orderItem.Id}");
+            
             return true;
         }
         catch (Exception ex)

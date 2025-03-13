@@ -7,6 +7,6 @@ public class Shipping
     public Order Order { get; set; }
     public string TrackingNumber { get; set; }
     public DateTime ShippedDate { get; set; }
-    public int AddressId { get; set; }
-    public Address Address { get; set; }
+    public string City { get; set; }
+    public string Department { get; set; }
 }

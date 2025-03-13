@@ -10,10 +10,15 @@
     <link rel="stylesheet" href="~/css/account.css"/>
 }
 
+@section script
+{
+    <script src="~/js/updateQuantityCartItem.js"></script>
+}
+
 <main>
     <ul class="customerTab">
         <li>
-            <a asp-action="">
+            <a asp-action="Personal_Information">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-width="2" d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
                 </svg>
@@ -29,12 +34,10 @@
             </a>
         </li>
         <li>
-            <a asp-action="Cart">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
-                </svg>
-                <span>Cart</span>
-            </a>
+            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+            </svg>
+            <span>Cart</span>
         </li>
         <li>
             <a asp-action="Wishlist">
@@ -74,14 +77,16 @@
                     </a>
                     @if (cartItem.ImageData != null)
                     {
-                        <img src="data:@cartItem.ImageType;base64,@Convert.ToBase64String(cartItem.ImageData)" class="productImage" alt="@cartItem.ProductName">
+                        <img src="data:@cartItem.ImageType;base64,@cartItem.ImageData" class="productImage" alt="@cartItem.ProductName">
                     }
                     else
                     {
                         <img src="~/images/Null.webp" class="productImage" alt="@cartItem.ProductName">
                     }
                     <span class="cartName">@cartItem.ProductName</span>
-                    <input type="number" name="counter" required value="@cartItem.Quantity">
+                    <input type="number" name="counter" required value="@cartItem.Quantity"
+                           min="1" data-cart-item-id="@cartItem.Id"
+                           oninput="updateQuantityCartItem(this)">
                     <span class="cartDiscount">@cartItem.OldPrice.ToString("N1") ₴</span>
                     <span class="cartPrice">@cartItem.Price.ToString("N1") ₴</span>
                 </div>

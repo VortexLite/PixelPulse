@@ -50,7 +50,9 @@ public class ReviewRepository : IReviewRepository
 
     public IQueryable<Review> GetAll()
     {
-        return _context.Reviews.AsNoTracking();
+        return _context.Reviews
+            .AsNoTracking()
+            .Take(100);
     }
 
     public async Task<bool> UpdateAsync(Review entity, CancellationToken cancellationToken = default)
@@ -62,7 +64,6 @@ public class ReviewRepository : IReviewRepository
             await _context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
             
-            _cache.Remove(_reviewCacheKey + $"{entity.Id}");
             _cache.Set(_reviewCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
             return true;
         }
