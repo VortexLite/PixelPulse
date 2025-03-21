@@ -21,14 +21,15 @@
 	    {
             <div class="productCard">
                 <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="pointer">
-                    @if (product.ImageData != null)
+                    @*@if (product.ImageData != null)
                     {
                         <img src="data:@product.ImageType;base64,@product.ImageData" class="productImage" alt="@product.Name">
                     }
                     else
                     {
                         <img src="/images/Null.webp" class="productImage" alt="@product.Name">
-                    }
+                    }*@
+                    <img src="@product.ImagePath" class="productImage" alt="@product.Name">
                     <div class="productInfo">
                         <p>@product.Name</p>
                     </div>

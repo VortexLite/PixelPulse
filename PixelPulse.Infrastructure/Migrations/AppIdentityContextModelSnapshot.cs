@@ -466,7 +466,7 @@ namespace PixelPulse.Infrastructure.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SupplierId")
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -486,11 +486,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageType")
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -849,11 +845,15 @@ namespace PixelPulse.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PixelPulse.Domain.Entities.Supplier", null)
+                    b.HasOne("PixelPulse.Domain.Entities.Supplier", "Supplier")
                         .WithMany("Products")
-                        .HasForeignKey("SupplierId");
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("PixelPulse.Domain.Entities.ProductImage", b =>

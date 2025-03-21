@@ -33,7 +33,23 @@ public class UserRepository : IUserRepository
         await using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            _context.Entry(user).CurrentValues.SetValues(updatedUserRequest);
+            if (!string.IsNullOrWhiteSpace(updatedUserRequest.FirstName))
+                user.FirstName = updatedUserRequest.FirstName;
+
+            if (!string.IsNullOrWhiteSpace(updatedUserRequest.LastName))
+                user.LastName = updatedUserRequest.LastName;
+
+            if (!string.IsNullOrWhiteSpace(updatedUserRequest.UserName))
+                user.UserName = updatedUserRequest.UserName;
+
+            if (!string.IsNullOrWhiteSpace(updatedUserRequest.Email))
+                user.Email = updatedUserRequest.Email;
+
+            if (!string.IsNullOrWhiteSpace(updatedUserRequest.PhoneNumber))
+                user.PhoneNumber = updatedUserRequest.PhoneNumber;
+            
+            _context.Users.Update(user);
+            //_context.Entry(user).CurrentValues.SetValues(updatedUserRequest);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
         }
@@ -43,5 +59,42 @@ public class UserRepository : IUserRepository
         }
 
         return user;
+    }
+
+    public IQueryable<AppUser> Get50UsersAsync(int page = 1)
+    {
+        int pageSize = 50;
+        return _userManager.Users
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await _userManager.Users.CountAsync();
+    }
+
+    public async Task<bool> DeleteUserAsync(AppUser entity, CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            _context.AppUsers.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+        }
+    }
+
+    public IQueryable<AppUser> GetUserById(string userId)
+    {
+        return _context.AppUsers
+            .Where(u => u.Id == userId);
     }
 }

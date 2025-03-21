@@ -1,0 +1,24 @@
+@model PixelPulse.Domain.Entities.AppUser?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/userUpdate.css"/>
+}
+
+<main>
+    <form asp-action="UpdateUserAPI" method="post">
+        <input type="text" asp-for="Id" placeholder="ID" disabled value="@Model.Id">
+        <input type="text" asp-for="FirstName" placeholder="Firstname" value="@Model.FirstName">
+        <input type="text" asp-for="LastName" placeholder="Lastname" value="@Model.LastName">
+        <input type="text" asp-for="UserName" placeholder="Username" value="@Model.UserName">
+        <input type="text" asp-for="Email" placeholder="Email" value="@Model.Email">
+        <input type="text" asp-for="PhoneNumber" placeholder="Phone" value="@Model.PhoneNumber">
+
+        <button type="submit">Зберегти</button>
+    </form>
+</main>

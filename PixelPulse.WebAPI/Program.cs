@@ -22,6 +22,7 @@ using PixelPulse.Domain.Settings;
 using PixelPulse.Infrastructure.Content.Data;
 using PixelPulse.Infrastructure.Content.Seeds;
 using PixelPulse.Infrastructure.Services.Auth;
+using PixelPulse.Infrastructure.Services.File;
 using PixelPulse.Infrastructure.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +64,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IShippingRepository, ShippingRepository>();
+builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
 #endregion
 
 #region services
@@ -74,6 +76,7 @@ builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IDeliveryeService, DeliveryeService>();
+builder.Services.AddScoped<IFileService, FileService>();
 #endregion
 
 

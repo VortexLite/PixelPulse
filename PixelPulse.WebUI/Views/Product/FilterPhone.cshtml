@@ -1,0 +1,270 @@
+@model PixelPulse.Application.DTOs.Filter.FilterPhoneDTO
+
+@{
+    ViewBag.Title = "Filter";
+    Layout = "_Layout";
+}
+
+@section styles
+{
+    <link rel="stylesheet" href="~/css/filters/phone.css"/>
+}
+
+@section script
+{
+    <script src="~/js/filterPhone.js"></script>
+}
+
+<main>
+    <div class="filterSection">
+        <h2>Фільтр</h2>
+        <span class="filterCount">Товарів в каталозі: </span>
+        <div class="filtering">
+            <span>Сортувати</span>
+            <select id="sortBy">
+                <option selected value="">найменуванням товару</option>
+                <option value="asc">зростанням ціни</option>
+                <option value="desc">зменшенням ціни</option>
+            </select>
+        </div>
+        <div>
+            <div class="filterName">
+                <h3>Ціна</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterPrice">
+                <span>від</span>
+                <input type="number" id="minPrice" value="0">
+                <span>до</span>
+                <input type="number" id="maxPrice" value="0">
+                <span>грн</span>
+                <button id="applyPrice">OK</button>
+            </div>
+
+            <div class="filterName">
+                <h3>Бренд</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterCheckBox">
+                <input type="text" name="" placeholder="Пошук">
+                <label>
+                    <input type="checkbox" name="brand" value="Apple">
+                    <span>Apple</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="brand" value="Xiaomi">
+                    <span>Xiaomi</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="brand" value="Oppo">
+                    <span>Oppo</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="brand" value="Poco">
+                    <span>Poco</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="brand" value="Honor">
+                    <span>Honor</span>
+                </label>
+            </div>
+
+            <div class="filterName">
+                <h3>Об'єм оперативної пам'яті</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterCheckBox">
+                <label>
+                    <input type="checkbox" name="ram" value="16">
+                    <span>16 ГБ і більше</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="12">
+                    <span>12 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="8">
+                    <span>8 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="6">
+                    <span>6 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="4">
+                    <span>4 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="3">
+                    <span>3 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="ram" value="2">
+                    <span>2 ГБ</span>
+                </label>
+            </div>
+
+            <div class="filterName">
+                <h3>Об'єм вбудованої пам'яті</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterCheckBox">
+                <label>
+                    <input type="checkbox" name="storage" value="1000">
+                    <span>1000 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="storage" value="512">
+                    <span>512 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="storage" value="256">
+                    <span>256 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="storage" value="128">
+                    <span>128 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="storage" value="64">
+                    <span>64 ГБ</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="storage" value="32">
+                    <span>32 ГБ</span>
+                </label>
+            </div>
+
+            <div class="filterName">
+                <h3>Процесор</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterCheckBox">
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 8 Elite">
+                    <span>Qualcomm Snapdragon 8 Elite</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 8 gen ">
+                    <span>Qualcomm Snapdragon 8 gen X</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 7 gen ">
+                    <span>Qualcomm Snapdragon 7 gen X</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 6 gen ">
+                    <span>Qualcomm Snapdragon 6 gen X</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 8">
+                    <span>Qualcomm Snapdragon 8xx</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 7">
+                    <span>Qualcomm Snapdragon 7xx</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="Qualcomm Snapdragon 6">
+                    <span>Qualcomm Snapdragon 6xx</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="processor" value="MediaTek Dimensity">
+                    <span>MediaTek Dimensity</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="Apple A">
+                    <span>Apple Axxx</span>
+                </label>
+            </div>
+
+            <div class="filterName">
+                <h3>Тип матриці</h3>
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                </svg>
+            </div>
+            <div class="filterCheckBox">
+                <label>
+                    <input type="checkbox" name="screenType" value="AMOLED">
+                    <span>AMOLED</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="screenType" value="OLED">
+                    <span>OLED</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="screenType" value="IPS">
+                    <span>IPS</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="filterProduct">
+        @if (Model.ProductMainDtos != null)
+        {
+            foreach (var product in Model.ProductMainDtos)
+            {
+                <div class="productCard">
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="pointer">
+                        @*@if (product.ImageData != null)
+                        {
+                            @:<img src="data:@product.ImageType;base64,@product.ImageData" class="productImage" alt="@product.Name">
+                        }
+                        else
+                        {
+                            @:<img src="/images/Null.webp" class="productImage" alt="@product.Name">
+                        }*@
+                        <img src="@product.ImagePath" class="productImage" alt="@product.Name">
+                        <div class="productInfo">
+                            <p>@product.Name</p>
+                        </div>
+                    </a>
+                    <div class="productReview">
+                        <span>
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-width="2" d="M11.083 5.104c.35-.8 1.485-.8 1.834 0l1.752 4.022a1 1 0 0 0 .84.597l4.463.342c.9.069 1.255 1.2.556 1.771l-3.33 2.723a1 1 0 0 0-.337 1.016l1.03 4.119c.214.858-.71 1.552-1.474 1.106l-3.913-2.281a1 1 0 0 0-1.008 0L7.583 20.8c-.764.446-1.688-.248-1.474-1.106l1.03-4.119A1 1 0 0 0 6.8 14.56l-3.33-2.723c-.698-.571-.342-1.702.557-1.771l4.462-.342a1 1 0 0 0 .84-.597l1.753-4.022Z"/>
+                                </svg>
+                            }
+                        </span>
+                        <span>
+                            <a asp-action="AddWishlist" asp-controller="Home" asp-route-id="@product.Id" class="pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                                </svg>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="productDiscount">
+                        <span>@product.OldPrice.ToString("N0") ₴</span>
+                        <span>-@((product.OldPrice - product.Price).ToString("N0")) ₴</span>
+                    </div>
+                    <div class="productFooter">
+                        <span class="priceProduct">@product.Price.ToString("N0") ₴</span>
+                        <button class="cartProduct">
+                            <a asp-action="AddCart" asp-controller="Home" asp-route-productId="@product.Id" class="pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+                                </svg>
+                            </a>
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</main>
+
+

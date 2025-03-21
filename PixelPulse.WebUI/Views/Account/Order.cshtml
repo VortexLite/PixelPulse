@@ -113,14 +113,15 @@
                         {
                             <tr class="customerOrdersDetails hidden">
                                 <td>
-                                    @if (orderItem.ImageData != null)
+                                    @*@if (orderItem.ImageData != null)
                                     {
                                         <img src="data:@orderItem.ImageType;base64,@orderItem.ImageData" class="productImage" alt="@orderItem.ProductName">
                                     }
                                     else
                                     {
                                         <img src="~/images/Null.webp" class="productImage" alt="@orderItem.ProductName">
-                                    }
+                                    }*@
+                                    <img src="@orderItem.ImagePath" class="productImage" alt="@orderItem.ProductName">
                                 </td>
                                 <td colspan="2">@orderItem.ProductName</td>
                                 <td>@orderItem.ProductPrice ₴</td>

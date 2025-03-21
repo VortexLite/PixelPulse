@@ -38,14 +38,15 @@
         {
             <div class="image-container">
                 <button class="prev">◀</button>
-                @if (Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData != null)
+                @*@if (Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData != null)
                 {
                     <img src="data:@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageType;base64,@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImageData" class="productImage" alt="@Model.Name">
                 }
                 else
                 {
                     <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
-                }
+                }*@
+                <img src="@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImagePath" class="productImage" alt="@Model.Name">
                 <button class="next">▶</button>
             </div>
 

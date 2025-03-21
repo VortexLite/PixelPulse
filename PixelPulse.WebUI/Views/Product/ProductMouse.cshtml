@@ -16,14 +16,15 @@
         {
             foreach (var image in Model.ProductImages)
             {
-                if (image.ImageData != null)
+                @*if (image.ImageData != null)
                 {
                     <img src="data:@image.ImageType;base64,@image.ImageData" class="productImage" alt="@Model.Name">
                 }
                 else
                 {
                     <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
-                }
+                }*@
+                <img src="@image.ImagePath" class="productImage" alt="@image.Product.Name">
             }
         }
         else

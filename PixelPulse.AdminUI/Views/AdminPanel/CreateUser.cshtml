@@ -1,0 +1,49 @@
+@model PixelPulse.Application.DTOs.Account.SignUp?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/userUpdate.css"/>
+}
+
+<main>
+    <form id="signUpForm">
+        <input type="text" id="Username" placeholder="Username" required>
+        <input type="email" id="Email" placeholder="Email" required>
+        <input type="password" id="Password" placeholder="Password" required>
+        <input type="password" id="ConfirmPassword" placeholder="RePassword" required>
+
+        <button type="submit">Зберегти</button>
+    </form>
+    
+    <script>
+        document.getElementById("signUpForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const data = {
+                username: document.getElementById("Username").value,
+                email: document.getElementById("Email").value,
+                password: document.getElementById("Password").value,
+                confirmPassword: document.getElementById("ConfirmPassword").value
+            };
+
+            const response = await fetch("http://localhost:5144/api/Auth/signUp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("Реєстрація успішна!");
+            } else {
+                alert("Помилка реєстрації!");
+            }
+        });
+    </script>
+</main>

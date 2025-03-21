@@ -65,14 +65,15 @@
             @foreach (var wishlistItem in Model)
             {
 	            <div class="productCard">
-		            @if (wishlistItem.ImageData != null)
+		            @*@if (wishlistItem.ImageData != null)
 		            {
 			            <img src="data:@wishlistItem.ImageType;base64,@wishlistItem.ImageData" class="productImage" alt="@wishlistItem.ProductName">
 		            }
 		            else
 		            {
 			            <img src="~/images/Null.webp" class="productImage" alt="@wishlistItem.ProductName">
-		            }
+		            }*@
+		            <img src="@wishlistItem.ImagePath" class="productImage" alt="@wishlistItem.ProductName">
 	                <div class="productInfo">
 	                    <p>@wishlistItem.ProductName</p>
 	                </div>

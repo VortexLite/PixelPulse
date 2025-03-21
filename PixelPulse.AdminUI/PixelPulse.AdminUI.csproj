@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PixelPulse.Application\PixelPulse.Application.csproj" />
+      <ProjectReference Include="..\PixelPulse.Domain\PixelPulse.Domain.csproj" />
+      <ProjectReference Include="..\PixelPulse.Infrastructure\PixelPulse.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

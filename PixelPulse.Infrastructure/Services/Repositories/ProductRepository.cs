@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using PixelPulse.Application.DTOs.Filter;
 using PixelPulse.Application.Interfaces.Repositories;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Infrastructure.Content.Data;
@@ -100,12 +101,11 @@ public class ProductRepository : IProductRepository
             .Where(i => i.Name == name);
     }
 
-    public IQueryable<Product>? GetProductWithImageById(int id)
+    public async Task<Product>? GetProductWithImageById(int id)
     {
-        return _context.Products
+        return await _context.Products
             .Include(p => p.ProductImages)
-            .AsNoTracking()
-            .Where(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public IQueryable<Product> GetProductsWithImageAndCategoriesById(int id)
@@ -137,6 +137,107 @@ public class ProductRepository : IProductRepository
 
             foreach (var product in products)
                 _cache.Remove(_productCacheKey + $"{product.Id}");
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+        }
+    }
+
+    public IQueryable<Product> GetFilteredProduct(FilterPhoneDTO filter)
+    {
+        var query = _context.Products.AsQueryable();
+        
+        if (filter.MinPrice.HasValue)
+        {
+            query = query.Where(p => p.Price == filter.MinPrice.Value);
+        }
+
+        if (filter.MaxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price == filter.MaxPrice.Value);
+        }
+
+        if (filter.Brands != null && filter.Brands.Any())
+        {
+            query = query.Where(p => filter.Brands.Contains(p.Supplier.Name));
+        }
+
+        if (filter.RAMSizes != null && filter.RAMSizes.Any())
+        {
+            query = query.Where(p => p.ProductSpecifications.Any(s => filter.RAMSizes.Contains(s.Name) && s.Name == "RAM"));
+        }
+
+        if (filter.StorageSizes != null && filter.StorageSizes.Any())
+        {
+            query = query.Where(p => p.ProductSpecifications.Any(s => filter.StorageSizes.Contains(s.Name) && s.Name == "Storage"));
+        }
+
+        if (filter.ScreenTypes != null && filter.ScreenTypes.Any())
+        {
+            query = query.Where(p => p.ProductSpecifications.Any(s => filter.ScreenTypes.Contains(s.Name) && s.Name == "ScreenType"));
+        }
+        
+        if (!string.IsNullOrEmpty(filter.SortBy))
+        {
+            query = filter.SortBy switch
+            {
+                "asc" => query.OrderBy(p => p.Price),
+                "desc" => query.OrderByDescending(p => p.Price),
+                _ => query
+            };
+        }
+        
+        return query;
+    }
+
+    public IQueryable<Product> GetProductTake50Async(int page = 1)
+    {
+        int pageSize = 50;
+        return _context.Products
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await _context.Users.CountAsync();
+    }
+
+    public async Task<bool> DeleteProductImage(ProductImage productImage, CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            _context.ProductImages.Remove(productImage);
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            
+            _cache.Remove(_productCacheKey + $"{productImage.Id}");
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteProductImages(List<ProductImage> productImages, CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            _context.ProductImages.RemoveRange(productImages);
+            await _context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            foreach (var productImage in productImages)
+                _cache.Remove(_productCacheKey + $"{productImage.Id}");
             
             return true;
         }

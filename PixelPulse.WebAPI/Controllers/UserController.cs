@@ -4,6 +4,7 @@ using PixelPulse.Application.DTOs.PersonalInformation;
 using PixelPulse.Application.DTOs.RefreshToken;
 using PixelPulse.Application.Interfaces.Authentication;
 using PixelPulse.Application.Interfaces.Service;
+using PixelPulse.Domain.Entities;
 
 namespace PixelPulse.WebAPI.Controllers;
 
@@ -41,5 +42,38 @@ public class UserController : ControllerBase
             BadRequest("Invalid request");
         
         return Ok(user);
+    }
+    
+    [HttpPost("getusers")]
+    public async Task<IActionResult> GetUsers([FromBody] int page)
+    {
+        var userdto = await _userService.Get50UsersAsync(page);
+        if (userdto == null)
+            return NotFound();
+        
+        return Ok(userdto);
+    }
+    
+    [HttpGet("dellUser/{userId}")]
+    public async Task<IActionResult> DeleteUserAsync(string userId)
+    {
+        if (await _userService.DeleteUserAsync(userId))
+        {
+            return Ok();
+        }
+        
+        return BadRequest();
+    }
+    
+    [HttpPost("updateUser")]
+    public async Task<IActionResult> UpdateUser(UserUpdateRequest request)
+    {
+        var user = await _userService.UpdateUser(request);
+        if (user != null)
+        {
+            return Ok(user);
+        }
+        
+        return BadRequest();
     }
 }

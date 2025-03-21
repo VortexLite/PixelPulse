@@ -1,0 +1,74 @@
+@model PixelPulse.Application.DTOs.Product.ProductAndCountDTO?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/product.css"/>
+}
+
+@section script
+{
+    <script>
+        function changePage(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("page", page);
+            window.location.href = url.toString();
+        }
+    </script>
+}
+
+<main>
+    <h1>Список товарів</h1>
+    <form class="controls">
+        <input type="text" id="search" placeholder="Пошук товару...">
+        <button>OK</button>
+        <a asp-action="CreateProduct">Додати користувача</a>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Опис</th>
+                <th>Стара ціна</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Категорія</th>
+                <th>Постачальник</th>
+                <th>Дія</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            @if (Model.Products != null)
+            {
+                foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product?.Name</td>
+                        <td class="description">@product?.Description</td>
+                        <td>@product.OldPrice</td>
+                        <td>@product.Price</td>
+                        <td>@product.Stock</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.SupplierId</td>
+                        <td class="funcBtn">
+                            <a asp-action="UpdateProduct" asp-route-productId="@product.Id">Редагування</a>
+                            <a asp-action="DeleteProduct" asp-route-productId="@product.Id">Видалити</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <a asp-action="ProductControl" asp-route-page="@i" class='@(i == Model.CurrentPage ? "active" : "")'>@i</a>
+        }
+    </div>
+</main>

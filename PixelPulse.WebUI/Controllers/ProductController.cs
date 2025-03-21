@@ -1,6 +1,8 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using PixelPulse.Application.DTOs.Filter;
 using PixelPulse.Application.DTOs.Product;
+using PixelPulse.Application.Interfaces.Service;
+using PixelPulse.Domain.Entities;
 
 namespace PixelPulse.Controllers;
 
@@ -9,7 +11,7 @@ public class ProductController : Controller
     private readonly ILogger<ProductController> _logger;
     private readonly HttpClient _httpClient;
     
-    private const string Address = "http://localhost:5144/api/Product/";
+    private const string ProductAddress = "http://localhost:5144/api/Product/";
 
     public ProductController(ILogger<ProductController> logger, HttpClient httpClient)
     {
@@ -19,7 +21,7 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var response = await _httpClient.GetFromJsonAsync<ProductCategoryDTO>(Address + $"GetDetailsProduct/{id}");
+        var response = await _httpClient.GetFromJsonAsync<ProductCategoryDTO>(ProductAddress + $"GetDetailsProduct/{id}");
         if (response == null)
             return NoContent();
         
@@ -34,5 +36,16 @@ public class ProductController : Controller
         };
             
         return View(viewName, response);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> FilterPhone()
+    {
+        var products = await _httpClient.GetFromJsonAsync<List<ProductMainDTO>>(ProductAddress + "GetProductsForMain");
+        var filterPhone = new FilterPhoneDTO
+        {
+            ProductMainDtos = products
+        };
+        return View(filterPhone);
     }
 }

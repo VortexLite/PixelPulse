@@ -1,0 +1,519 @@
+@media screen and (min-width: 1024px)
+{
+    main
+    {
+        display: grid;
+        padding: 2vh 10vw;
+        grid-template-columns: 30% 70%;
+        align-items: start;
+        background: var(--color-background-main);
+    }
+
+    .filterSection
+    {
+        display: grid;
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 1px solid var(--color-primary);
+        padding: 1vh 1vw;
+    }
+
+    .filterSection h2
+    {
+        color: var(--color-primary);
+        font-size: 1.2vw;
+    }
+
+    .filterSection h3
+    {
+        color: var(--color-primary);
+        font-size: 1vw;
+    }
+
+    .filterSection span
+    {
+        font-size: 0.9vw;
+    }
+
+    .filterCount
+    {
+        margin-bottom: 2vh;
+    }
+
+    .filtering select
+    {
+        font-size: 0.8vw;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--color-text);
+    }
+
+    .filtering option
+    {
+        background: #2b2b2d;
+        outline: none;
+    }
+
+    .filterPrice
+    {
+        display: grid;
+        grid-auto-flow: column;
+        justify-items: start;
+        align-items: center;
+    }
+
+    .filterPrice button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.5vh 1vw;
+        font-size: 0.9vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .filterPrice button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .filterPrice input
+    {
+        width: 4vw;
+        font-size: 0.9vw;
+        outline: none;
+        border: 1px solid var(--color-primary);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        padding: 0.2vh 0.5vw;
+        background: #2b2b2d;
+    }
+
+    .filterName
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+    }
+
+    .filterName svg
+    {
+        width: 2vw;
+        height: 2vh;
+        justify-self: end;
+    }
+
+    .filterCheckBox
+    {
+        display: grid;
+        grid-gap: 1vh;
+    }
+
+    .filterCheckBox label
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-content: start;
+    }
+
+    .filterCheckBox input[type="text"]
+    {
+        padding: 0.5vh 0.3vw;
+        font-size: 0.8vw;
+        outline: none;
+        border: none;
+        border-radius: 0.5vw;
+    }
+
+    .filterCheckBox input[type="checkbox"]
+    {
+        width: 2vw;
+        height: 2vh;
+
+    }
+
+    .filterProduct
+    {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(9vw, 1fr));
+        grid-gap: 1vh;
+        margin: 0 1vw;
+        padding: 1vh 1vw;
+        border-radius: 0.5vw;
+        border: 1px solid var(--color-primary);
+    }
+
+    .productCard
+    {
+        background: var(--color-background);
+        color: var(--color-text);
+        padding: 0.8vw;
+        border-radius: 0.5vw;
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    .productCard:hover
+    {
+        cursor: pointer;
+        transform: translateY(-1vh);
+        box-shadow: 0 0 0.26vw rgba(0,209,248,0.8);
+    }
+    
+    a
+    {
+        color: var(--color-text);
+    }
+
+    a:link
+    {
+        color: var(--color-text);
+    }
+
+    a:visited
+    {
+        color: var(--color-text);
+    }
+
+    .productImage
+    {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .productInfo
+    {
+        font-size: 0.75vw;
+    }
+
+    .productReview
+    {
+        padding-bottom: 2vh;
+    }
+
+    .productReview span
+    {
+        font-size: 1vw;
+    }
+
+    .productReview svg
+    {
+        width: 1.25vw;
+        height: 2.6vh;
+    }
+
+    .productDiscount
+    {
+        margin-bottom: 1.6vh;
+        font-size: 0.85vw;
+    }
+
+    .productDiscount span:first-child
+    {
+        color: gray;
+        text-decoration: line-through;
+    }
+
+    .productDiscount span:last-child
+    {
+        color: var(--color-text);
+        background: var(--color-primary);
+        padding: 0.052vw;
+        border-radius: 0.26vw;
+        margin-left: 1vw;
+    }
+
+    .productFooter
+    {
+        display: grid;
+        border-top: 0.052vw solid var(--color-primary);
+        grid-auto-flow: column;
+        padding-top: 1.6vh;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .priceProduct
+    {
+        font-size: 1vw;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .cartProduct
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: 0;
+        border-radius: 0.5vw;
+        align-self: center;
+        justify-self: center;
+        padding: 0.4vh 1.2vw;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .cartProduct:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .cartProduct svg
+    {
+        width: 1.25vw;
+        height: 2.6vh;
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        align-items: start;
+        background: var(--color-background-main);
+    }
+
+    .filterSection
+    {
+        display: grid;
+        color: var(--color-text);
+        padding: 1vh 1vw;
+    }
+
+    .filterSection h2
+    {
+        color: var(--color-primary);
+        font-size: 4vw;
+    }
+
+    .filterSection h3
+    {
+        color: var(--color-primary);
+        font-size: 3.5vw;
+    }
+
+    .filterSection span
+    {
+        font-size: 2vw;
+    }
+
+    .filterCount
+    {
+        margin-bottom: 1vh;
+    }
+
+    .filtering select
+    {
+        font-size: 2vw;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--color-text);
+    }
+
+    .filtering option
+    {
+        background: #2b2b2d;
+        outline: none;
+    }
+
+    .filterPrice
+    {
+        display: grid;
+        grid-auto-flow: column;
+        justify-items: start;
+        align-items: center;
+    }
+
+    .filterPrice button
+    {
+        background: var(--color-backgroundButton);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        border: 0;
+        padding: 0.5vh 1vw;
+        font-size: 2vw;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .filterPrice button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .filterPrice input
+    {
+        width: 10vw;
+        font-size: 2vw;
+        outline: none;
+        border: 1px solid var(--color-primary);
+        color: var(--color-text);
+        border-radius: 0.5vw;
+        padding: 0.2vh 0.5vw;
+        background: #2b2b2d;
+    }
+
+    .filterName
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+    }
+
+    .filterName svg
+    {
+        width: 4vw;
+        height: 4vh;
+        justify-self: end;
+    }
+
+    .filterCheckBox
+    {
+        display: grid;
+        grid-gap: 1vh;
+    }
+
+    .filterCheckBox label
+    {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-content: start;
+        font-size: 2vw;
+    }
+
+    .filterCheckBox input[type="text"]
+    {
+        padding: 0.5vh 0.3vw;
+        font-size: 2vw;
+        outline: none;
+        border: none;
+        border-radius: 0.5vw;
+    }
+
+    .filterCheckBox input[type="checkbox"]
+    {
+        width: 3vw;
+        height: 3vh;
+
+    }
+
+    .filterProduct
+    {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20vw, 1fr));
+        grid-gap: 1vh;
+        padding: 2vh 2vw;
+    }
+
+    .productCard
+    {
+        background: var(--color-background);
+        color: var(--color-text);
+        padding: 0.8vw;
+        border-radius: 0.5vw;
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    .productCard:hover
+    {
+        cursor: pointer;
+        transform: translateY(-1vh);
+        box-shadow: 0 0 0.26vw rgba(0,209,248,0.8);
+    }
+
+    .productImage
+    {
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .productInfo
+    {
+        font-size: 2vw;
+    }
+
+    .productReview span
+    {
+        font-size: 2.5vw;
+    }
+
+    .productReview svg
+    {
+        width: 3vw;
+        height: 2vh;
+    }
+
+    .productDiscount
+    {
+        margin-top: 1vh;
+        margin-bottom: 1vh;
+        font-size: 2vw;
+    }
+
+    .productDiscount span:first-child
+    {
+        color: gray;
+        text-decoration: line-through;
+    }
+
+    .productDiscount span:last-child
+    {
+        color: var(--color-text);
+        background: var(--color-primary);
+        padding: 0.052vw;
+        border-radius: 0.26vw;
+        margin-left: 2vw;
+    }
+
+    .productFooter
+    {
+        display: grid;
+        border-top: 0.052vw solid var(--color-primary);
+        grid-auto-flow: column;
+        justify-content: space-between;
+        align-items: center;
+
+    }
+
+    .priceProduct
+    {
+        font-size: 3vw;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .cartProduct
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: 0;
+        border-radius: 0.5vw;
+        align-self: center;
+        justify-self: center;
+        padding: 0 1.2vw;
+        margin: 0.2vh;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .cartProduct:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .cartProduct svg
+    {
+        width: 3vw;
+        height: 2vh;
+    }
+}

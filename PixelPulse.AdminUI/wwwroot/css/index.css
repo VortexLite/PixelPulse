@@ -1,0 +1,96 @@
+@media screen and (min-width: 1024px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        grid-auto-flow: column;
+        padding: 0 10vw;
+        height: 84vh;
+        align-content: center;
+    }
+
+    main a svg
+    {
+        width: 20vw;
+    }
+
+    main a
+    {
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    main a:hover
+    {
+        cursor: pointer;
+        transform: scale(1.1);
+        text-shadow: -0.1vw 0.05vw 0.3vw rgba(0,209,248,0.8);
+    }
+
+    main a:link
+    {
+        text-decoration: none;
+        color: var(--color-primary);
+    }
+
+    main a:visited
+    {
+        text-decoration: none;
+        color: var(--color-primary);
+    }
+
+    footer
+    {
+        display: grid;
+        grid-auto-flow: column;
+        grid-gap: 0.5vw;
+        background: var(--color-background);
+        justify-content: center;
+        justify-items: center;
+        align-items: center;
+        box-shadow: 0 0.5vw 1.5vw 0 rgba(0,209,248,1);
+        animation: pulseFooter 2s infinite;
+
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        height: 84vh;
+        align-content: center;
+        justify-content: center;
+    }
+
+    main a svg
+    {
+        width: 30vw;
+    }
+
+    main a
+    {
+        transition: transform 0.1s ease, box-shadow 0.1s ease-in-out
+    }
+
+    main a:hover
+    {
+        cursor: pointer;
+        transform: scale(1.1);
+        text-shadow: -0.1vw 0.05vw 0.3vw rgba(0,209,248,0.8);
+    }
+
+    main a:link
+    {
+        text-decoration: none;
+        color: var(--color-primary);
+    }
+
+    main a:visited
+    {
+        text-decoration: none;
+        color: var(--color-primary);
+    }
+}

@@ -1,0 +1,55 @@
+@model PixelPulse.Domain.Entities.Product?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/productUpdate.css"/>
+}
+
+<main>
+    <form asp-action="UpdateProductAPI" method="post" enctype="multipart/form-data">
+        <input type="text" asp-for="Id" placeholder="ID" disabled value="@Model?.Id">
+        <input type="hidden" asp-for="Id" value="@Model?.Id.ToString()">
+        <input type="text" asp-for="Name" placeholder="Name" value="@Model?.Name">
+        <input type="text" asp-for="Description" placeholder="Description" value="@Model?.Description">
+        <input type="text" asp-for="OldPrice" placeholder="OldPrice" value="@Model?.OldPrice">
+        <input type="text" asp-for="Price" placeholder="Price" value="@Model?.Price">
+        <input type="text" asp-for="Stock" placeholder="Stock" value="@Model?.Stock">
+        <input type="text" asp-for="CategoryId" placeholder="CategoryId" value="@Model?.CategoryId">
+        <input type="text" asp-for="SupplierId" placeholder="SupplierId" value="@Model?.SupplierId">
+        <input type="file" asp-for="ProductImages" placeholder="ProductImage" multiple>
+        
+        <button type="submit">Зберегти</button>
+    </form>
+    <div>
+
+        @if (Model?.ProductImages != null && Model.ProductImages.Any())
+        {
+            <h4>Завантажені зображення</h4>
+            <ul>
+                @foreach (var image in Model.ProductImages)
+                {
+                    <li>
+                        <img src='@("http://localhost:5056" + image.ImagePath)' alt="Product Image" width="150" />
+                        <form asp-action="DeleteImage" asp-route-imageId="@image.Id" method="post" style="display:inline;">
+                            <input type="hidden" name="imageId" value="@image.Id" />
+                            <button type="submit">Видалити</button>
+                        </form>
+                        @if (image.isMain == false)
+                        {
+                            <form asp-action="MainImage" method="post" style="display:inline;">
+                                <input type="hidden" name="ProductId" value="@Model.Id" />
+                                <input type="hidden" name="ImageId" value="@image.Id"/>
+                                <button type="submit">Зробити головною</button>
+                            </form>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</main>

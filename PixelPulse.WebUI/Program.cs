@@ -1,7 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
