@@ -1,6 +1,8 @@
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.Interfaces.Repositories;
 using PixelPulse.Domain.Entities;
 using PixelPulse.Infrastructure.Content.Data;
@@ -93,7 +95,7 @@ public class OrderRepository : IOrderRepository
         }
     }
 
-    public IQueryable<Order>? GetOrdersByUserId(string userId)
+    public IQueryable<Order> GetOrdersByUserId(string userId)
     {
         return _context.Orders
             .Include(o => o.OrderItems)
@@ -101,5 +103,28 @@ public class OrderRepository : IOrderRepository
                     .ThenInclude(p => p.ProductImages)
             .Include(o => o.Shipping)
             .Where(o => o.AppUserId == userId);
+    }
+
+    public IQueryable<Order> GetOrderWithItems(int page)
+    {
+        int pageSize = 50;
+        return _context.Orders
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+    }
+
+    public async Task<int> CountAsync()
+    {
+        return await _context.Orders.CountAsync();
+    }
+
+    public IQueryable<Order> GetOrderItemsById(int orderId)
+    {
+        return _context.Orders
+            .Include(o => o.OrderItems)
+            .Where(o => o.Id == orderId);
+            
     }
 }

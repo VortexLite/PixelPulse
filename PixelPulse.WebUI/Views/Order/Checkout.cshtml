@@ -11,7 +11,7 @@
 }
 
 <main>
-    <form class="order" method="post" asp-action="Checkout">
+    <form class="order" method="post" asp-action="CheckoutAPI">
         <div class="orderItem">
             <h2>Ваш товар</h2>
             @foreach (var cartItem in Model.CartItemDtos)

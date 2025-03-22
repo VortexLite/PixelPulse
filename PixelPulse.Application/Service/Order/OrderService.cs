@@ -24,7 +24,8 @@ public class OrderService : IOrderService
     private readonly ICartRepository _cartRepository;
     private readonly IMemoryCache _cache;
     
-    private const string _orderCacheKey = "orderItems_";
+    private const string _orderCacheKey = "order_";
+    private const string _orderItemCacheKey = "orderItems_";
 
     public OrderService(ILogger<OrderService> logger, IUserService userService, IOrderRepository orderRepository, IProductRepository productRepository, IOrderItemRepository orderItemRepository, IMemoryCache cache, IPaymentRepository paymentRepository, IShippingRepository shippingRepository, ICartItemRepository cartItemRepository, ICartRepository cartRepository)
     {
@@ -45,8 +46,8 @@ public class OrderService : IOrderService
         var user = await _userService.FindUserByRefreshToken(token);
         if (user == null)
             return null;
-
-        if (!_cache.TryGetValue(_orderCacheKey + "orders" + $"{user.Id}", out List<OrderDTO> cachedOrders))
+        
+        if (!_cache.TryGetValue(_orderItemCacheKey + "view", out List<OrderDTO> cachedOrders))
         {
             var orders = _orderRepository
                 .GetOrdersByUserId(user.Id);
@@ -54,10 +55,11 @@ public class OrderService : IOrderService
             cachedOrders = await orders
                 .ProjectToType<OrderDTO>()
                 .ToListAsync();
+            //cachedOrders = await _orderRepository.GetOrdersByUserId(user.Id);
             
-            _cache.Set(_orderCacheKey + "orders" + $"{user.Id}", cachedOrders, TimeSpan.FromMinutes(30));
+            _cache.Set(_orderCacheKey + "view", cachedOrders, TimeSpan.FromMinutes(30));
             foreach (var cachedOrder in cachedOrders)
-                _cache.Set(_orderCacheKey + "dto" + $"{cachedOrder.Id}", cachedOrder, TimeSpan.FromMinutes(30));
+                _cache.Set(_orderItemCacheKey + "dto" + $"{cachedOrder.Id}", cachedOrder, TimeSpan.FromMinutes(30));
             
         }
         
@@ -117,6 +119,9 @@ public class OrderService : IOrderService
         if (!await _cartRepository.DeleteAsync(cart))
             return null;
         
+        _cache.Remove("orderItems_view");
+        _cache.Set(_orderCacheKey + order.Id, order, TimeSpan.FromMinutes(30));
+        
         return order;
     }
 
@@ -147,6 +152,43 @@ public class OrderService : IOrderService
         order.Status = OrderStatus.Cancelled.ToString();
         await _orderRepository.UpdateAsync(order);
         
+        _cache.Remove(_orderCacheKey + order.Id);
+        
         return true;
+    }
+
+    public async Task<OrderAndCountDTO> GetrdersWithItemsTake50(int page)
+    {
+        var orders = await _orderRepository
+            .GetOrderWithItems(page)
+            .ProjectToType<OrderControlDTO>()
+            .ToListAsync();
+        
+        int totalItems = await _orderRepository.CountAsync();
+        var dto = new OrderAndCountDTO()
+        {
+            Orders = orders,
+            CurrentPage = page,
+            TotalPages = totalItems > 0 ? (int)Math.Ceiling((double)totalItems / 50) : 1,
+            TotalItems = totalItems,
+        };
+
+        return dto;
+    }
+
+    public async Task<OrderUpdateDTO?> GetOrderById(int orderId)
+    {
+        return await _orderRepository.GetOrderItemsById(orderId)
+            .ProjectToType<OrderUpdateDTO>()
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> UpdateOrder(OrderUpdateDTO orderUpdate)
+    {
+        if (orderUpdate == null)
+            return false;
+
+        var orders = orderUpdate.Adapt<Domain.Entities.Order>();
+        return await _orderRepository.UpdateAsync(orders);
     }
 }

@@ -1,0 +1,66 @@
+@model PixelPulse.Application.DTOs.Order.OrderUpdateDTO?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/orderUpdate.css"/>
+}
+
+<main>
+    <form method="post" asp-action="UpdateOrderAPI">
+        <input type="text" asp-for="Id" placeholder="ID" value="@Model?.Id" disabled>
+        <input type="text" asp-for="AppUserId" value="@Model?.AppUserId" placeholder="AppUserId" disabled />
+        <input type="date" asp-for="OrderDate" placeholder="OrderDate" value="@Model?.OrderDate.ToString("dd-MM-yyyy HH:mm")" disabled />
+        <input type="number" asp-for="TotalPrice" placeholder="TotalPrice" step="0.01" value="@Model?.TotalPrice" />
+        <select class="status" asp-for="Status">
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+        <h3>Order Items</h3>
+        <table id="orderItemsTable">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model?.OrderItems != null)
+            {
+                foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" value="@item.Id"/>
+                            <input type="hidden" value="@item.OrderId"/>
+                            <input type="text" value="@item.ProductId" required/>
+                        </td>
+                        <td>
+                            <input type="number" value="@item.Quantity" min="1" required/>
+                        </td>
+                        <td>
+                            <input type="number" value="@item.Price" step="0.01" required/>
+                        </td>
+                        <td>
+                            <a asp-action="DeleteOrderItem">❌</a>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+
+        <a asp-action="AddOrderItem">➕</a>
+
+        <button type="submit" >Зберегти</button>
+    </form>
+</main>

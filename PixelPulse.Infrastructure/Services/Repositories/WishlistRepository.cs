@@ -32,6 +32,7 @@ public class WishlistRepository : IWishlistRepository
             await transaction.CommitAsync(cancellationToken);
             
             _cache.Set(_wishlistCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
+            _cache.Remove("wishlistItem_view");
             return true;
         }
         catch (Exception ex)
@@ -65,6 +66,7 @@ public class WishlistRepository : IWishlistRepository
             await transaction.CommitAsync(cancellationToken);
             
             _cache.Set(_wishlistCacheKey + $"{entity.Id}", entity, TimeSpan.FromMinutes(30));
+            _cache.Remove("wishlistItem_view");
             return true;
         }
         catch (Exception ex)
@@ -84,6 +86,7 @@ public class WishlistRepository : IWishlistRepository
             await transaction.CommitAsync(cancellationToken);
             
             _cache.Remove(_wishlistCacheKey + $"{entity.Id}");
+            _cache.Remove("wishlistItem_view");
             return true;
         }
         catch (Exception ex)

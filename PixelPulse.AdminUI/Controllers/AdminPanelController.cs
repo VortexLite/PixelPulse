@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.PersonalInformation;
 using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.DTOs.User;
@@ -15,6 +16,7 @@ public class AdminPanelController : Controller
     
     private const string ProductAddress = "http://localhost:5144/api/Product/";
     private const string UserAddress = "http://localhost:5144/api/User/";
+    private const string OrderAddress = "http://localhost:5144/api/Order/";
 
     public AdminPanelController(ILogger<AdminPanelController> logger, HttpClient httpClient)
     {
@@ -205,6 +207,60 @@ public class AdminPanelController : Controller
         
         return NoContent();
     }
+
+    #endregion
+
+    #region order
+
+    public async Task<IActionResult> OrderControl(int page = 1)
+    {
+        var response = await _httpClient.GetFromJsonAsync<OrderAndCountDTO>(OrderAddress + $"getOrderTake50/{page}");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> CreateOrder()
+    {
+        return View();
+    }
+
+    public async Task<IActionResult> UpdateOrder(int orderId)
+    {
+        var response = await _httpClient.GetFromJsonAsync<OrderUpdateDTO>(OrderAddress + $"getOrder/{orderId}");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> UpdateOrderAPI(OrderUpdateDTO orderUpdateDto)
+    {
+        var response = await _httpClient.PostAsJsonAsync(ProductAddress + "updateOrder", orderUpdateDto);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("ProductControl");
+        }
+        
+        return NoContent();
+    }
+    
+    public async Task<IActionResult> DeleteOrder(int orderId)
+    {
+        var response = await _httpClient.GetAsync(ProductAddress + $"dellProduct/{orderId}");
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("ProductControl");
+        }
+        
+        return NoContent();
+    }
+    
+    public async Task<IActionResult> AddOrderItem()
+    {
+        return View();
+    }
+    
+    public async Task<IActionResult> DeleteOrderItem()
+    {
+        return View();
+    }
+
 
     #endregion
 }

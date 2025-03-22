@@ -60,7 +60,7 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Checkout(CreateOrderDTO createOrder)
+    public async Task<IActionResult> CheckoutAPI(CreateOrderDTO createOrder)
     {
         var response = await _httpClient.PostAsJsonAsync(OrderAddress + "createOrder", createOrder);
         if (response.IsSuccessStatusCode)

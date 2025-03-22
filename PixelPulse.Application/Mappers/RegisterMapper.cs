@@ -21,20 +21,24 @@ public class RegisterMapper : IRegister
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.OrderDate, src => src.OrderDate)
             .Map(dest => dest.Status, src => src.Status)
-            .Map(dest => dest.TotalItems, src => src.OrderItems.Sum(oi => oi.Quantity))
-            .Map(dest => dest.TotalPrice, src => src.OrderItems.Sum(item => item.Price * item.Quantity))
+            .Map(dest => dest.TotalItems, src => src.OrderItems != null ? src.OrderItems.Count : 0)
+            .Map(dest => dest.TotalPrice, src => src.TotalPrice)
+            .Map(dest => dest.Status, src => src.Status)
             .Map(dest => dest.Shipping, src => src.Shipping.Adapt<ShippingDTO>())
             .Map(dest => dest.OrderItems, src => src.OrderItems.Adapt<List<OrderItemDTO>>());
 
         config.NewConfig<OrderItem, OrderItemDTO>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.OrderId, src => src.OrderId)
-            .Map(dest => dest.ProductName, src => src.Product.Name)
-            .Map(dest => dest.ProductPrice, src => src.Product.Price)
+            .Map(dest => dest.ProductName, src => src.Product != null ? src.Product.Name : "")
+            .Map(dest => dest.ProductPrice, src => src.Product != null ? src.Product.Price : 0)
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.TotalPrice, src => src.Price * src.Quantity)
-            .Map(dest => dest.ImagePath,
-                src => src.Product.ProductImages.FirstOrDefault(img => img.isMain).ImagePath ?? "wwwroot/images/image.webp");
+            .Map(dest => dest.ImagePath, src => 
+                src.Product != null && src.Product.ProductImages != null &&
+                src.Product.ProductImages.Any(img => img.isMain)
+                    ? src.Product.ProductImages.First(img => img.isMain).ImagePath 
+                    : "wwwroot/images/image.webp");
 
         config.NewConfig<Shipping, ShippingDTO>()
             .Map(dest => dest.TrackingNumber, src => src.TrackingNumber)
@@ -48,8 +52,11 @@ public class RegisterMapper : IRegister
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.OldPrice, src => src.Product.OldPrice)
             .Map(dest => dest.Price, src => src.Product.Price)
-            .Map(dest => dest.ImagePath,
-                src => src.Product.ProductImages.FirstOrDefault(img => img.isMain).ImagePath ?? "wwwroot/images/image.webp");
+            .Map(dest => dest.ImagePath, src => 
+                src.Product != null && src.Product.ProductImages != null &&
+                src.Product.ProductImages.Any(img => img.isMain)
+                    ? src.Product.ProductImages.First(img => img.isMain).ImagePath 
+                    : "wwwroot/images/image.webp");
         
         config.NewConfig<WishlistItem, WishlistItemDTO>()
             .Map(dest => dest.Id, src => src.Id)
@@ -57,16 +64,22 @@ public class RegisterMapper : IRegister
             .Map(dest => dest.ProductName, src => src.Product.Name)
             .Map(dest => dest.OldPrice, src => src.Product.OldPrice)
             .Map(dest => dest.Price, src => src.Product.Price)
-            .Map(dest => dest.ImagePath,
-                src => src.Product.ProductImages.FirstOrDefault(img => img.isMain).ImagePath ?? "wwwroot/images/image.webp");
+            .Map(dest => dest.ImagePath, src => 
+                src.Product != null && src.Product.ProductImages != null &&
+                src.Product.ProductImages.Any(img => img.isMain)
+                    ? src.Product.ProductImages.First(img => img.isMain).ImagePath 
+                    : "wwwroot/images/image.webp");
         
         config.NewConfig<Review, ReviewDTO>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.ProductName, src => src.Product.Name)
             .Map(dest => dest.Comment, src => src.Comment ?? "No comment")
             .Map(dest => dest.Rating, src => src.Rating)
-            .Map(dest => dest.ImagePath,
-                src => src.Product.ProductImages.FirstOrDefault(img => img.isMain).ImagePath ?? "wwwroot/images/image.webp");
+            .Map(dest => dest.ImagePath, src => 
+                src.Product != null && src.Product.ProductImages != null &&
+                src.Product.ProductImages.Any(img => img.isMain)
+                    ? src.Product.ProductImages.First(img => img.isMain).ImagePath 
+                    : "wwwroot/images/image.webp");
         
         config.NewConfig<Product, ProductCategoryDTO>()
             .Map(dest => dest.Id, src => src.Id)

@@ -30,11 +30,11 @@ public class WishlistService : IWishlistService
         _wishlistItemRepository = wishlistItemRepository;
         _cache = cache;
     }
-
+    
     public async Task<List<WishlistItemDTO>?> GetWishlistByRefreshTokenAsync(string token)
     {
         var user = await _userService.FindUserByRefreshToken(token);
-        if (!_cache.TryGetValue(_wishlistItemRepository + "wishlistItems" + $"{user.Id}", out List<WishlistItemDTO> cachedWishlist))
+        if (!_cache.TryGetValue(_wishlistItemCacheKey + "view", out List<WishlistItemDTO> cachedWishlist))
         {
             var wishlistId = await _wishlistRepository
                 .FindWishlistByUserId(user.Id)
@@ -47,9 +47,9 @@ public class WishlistService : IWishlistService
                 .ProjectToType<WishlistItemDTO>()
                 .ToListAsync();
             
-            _cache.Set(_wishlistItemRepository + "wishlistItems" + $"{user.Id}", cachedWishlist, TimeSpan.FromMinutes(30));
+            _cache.Set(_wishlistItemCacheKey + "wishlistItems" + $"{user.Id}", cachedWishlist, TimeSpan.FromMinutes(30));
             foreach (var wishlistItem in cachedWishlist)
-                _cache.Set(_wishlistItemRepository + $"{wishlistItem.Id}", wishlistItem, TimeSpan.FromMinutes(30));
+                _cache.Set(_wishlistItemCacheKey + $"{wishlistItem.Id}", wishlistItem, TimeSpan.FromMinutes(30));
         }
         
         return cachedWishlist;
@@ -76,7 +76,7 @@ public class WishlistService : IWishlistService
                 WishlistId = wishlist.Id,
                 ProductId = request.ProductId
             };
-        if (wishlistItem.WishlistId == 0)
+        if (wishlistItem.Id == 0)
             await _wishlistItemRepository.CreateAsync(wishlistItem);
         
         return true;

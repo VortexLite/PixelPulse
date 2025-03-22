@@ -1,0 +1,228 @@
+@media screen and (min-width: 1024px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        padding: 0 10vw;
+        align-content: center;
+    }
+
+    h1
+    {
+        color: var(--color-primary);
+    }
+
+    table
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        box-sizing: border-box;
+        border-collapse: collapse;
+        margin-top: 5vh;
+    }
+
+    th
+    {
+        color: var(--color-primary);
+        font-size: 1.2vw;
+        font-weight: bold;
+    }
+
+    th, td
+    {
+        border: 1px solid var(--color-primary);
+        padding: 10px;
+        text-align: left;
+        word-break: break-word;
+    }
+
+    .controls input
+    {
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        outline: none;
+        border: 0;
+        font-size: 0.9vw;
+    }
+
+    .controls button
+    {
+        color: var(--color-text);
+        background: var(--color-primary);;
+        border: none;
+        border-radius: 0.5vw;
+        width: 3vw;
+        height: 3.5vh;
+        font-size: 1vw;
+    }
+
+    .customerOrdersDetails
+    {
+        display: table-row;
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+    }
+
+    .customerOrdersDetails.active
+    {
+        opacity: 1;
+        transform: scaleY(1);
+        visibility: visible;
+    }
+
+    .hidden
+    {
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        visibility: hidden;
+        display: none;
+    }
+
+    .funcBtn button
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: none;
+        border-radius: 0.5vw;
+        font-size: 1vw;
+        padding: 0.5vh 1vw;
+        margin: 0.3vw;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .funcBtn button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .pagination button
+    {
+        margin: 2vh 0;
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: none;
+        border-radius: 0.5vw;
+        font-size: 1vw;
+        padding: 0.5vh 1vw;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .pagination button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+}
+
+@media screen and (max-width: 767px)
+{
+    main
+    {
+        display: grid;
+        background: var(--color-background-main);
+        align-content: center;
+    }
+
+    h1
+    {
+        color: var(--color-primary);
+    }
+
+    table
+    {
+        color: var(--color-text);
+        border: 1px solid var(--color-primary);
+        box-sizing: border-box;
+        text-align: center;
+        border-collapse: collapse;
+        margin-top: 3vh;
+        overflow-y: visible;
+        width: 350vw;
+    }
+
+    th
+    {
+        color: var(--color-primary);
+        font-size: 4vw;
+        font-weight: bold;
+    }
+
+    th, td
+    {
+        border: 1px solid var(--color-primary);
+        padding: 10px;
+        text-align: left;
+        word-break: break-word;
+    }
+
+    tr:hover
+    {
+        background: var(--color-backgroundButton);
+    }
+
+    .controls input
+    {
+        padding: 0.5vh 0.5vw;
+        border-radius: 0.5vw;
+        outline: none;
+        border: 0;
+        font-size: 4vw;
+    }
+
+    .controls button
+    {
+        color: var(--color-text);
+        background: var(--color-primary);;
+        border: none;
+        border-radius: 0.5vw;
+        font-size: 4vw;
+        padding: 0.6vh 4vw;
+    }
+
+    td button
+    {
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: none;
+        border-radius: 0.5vw;
+        font-size: 4vw;
+        padding: 0.5vh 1vw;
+        margin: 1vw;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    td button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+
+    .pagination button
+    {
+        margin: 2vh 0;
+        color: var(--color-text);
+        background: var(--color-backgroundButton);
+        border: none;
+        border-radius: 0.5vw;
+        font-size: 1vw;
+        padding: 0.5vh 1vw;
+        cursor: pointer;
+        transition: box-shadow 0.1s ease-in-out, background 0.1s ease-in-out;
+    }
+
+    .pagination button:hover
+    {
+        background: var(--color-backgroundButtonHover);
+        box-shadow: 0 0 0.5vw 0 rgba(0,209,248,1);
+    }
+}

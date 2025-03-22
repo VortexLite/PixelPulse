@@ -42,4 +42,25 @@ public class OrderController : ControllerBase
 
         return BadRequest();
     }
+
+    [HttpGet("getOrderTake50/{page}")]
+    public async Task<IActionResult> GetOrderTake50(int page)
+    {
+        return Ok(await _orderService.GetrdersWithItemsTake50(page));
+    }
+    
+    [HttpGet("getOrder/{orderId}")]
+    public async Task<IActionResult> GetOrder(int orderId)
+    {
+        return Ok(await _orderService.GetOrderById(orderId));
+    }
+    
+    [HttpPost("updateOrder")]
+    public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateDTO orderUpdateDto)
+    {
+        if (await _orderService.UpdateOrder(orderUpdateDto))
+            return Ok();
+        
+        return BadRequest();
+    }
 }

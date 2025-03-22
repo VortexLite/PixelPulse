@@ -194,7 +194,7 @@ public class ProductRepository : IProductRepository
         return query;
     }
 
-    public IQueryable<Product> GetProductTake50Async(int page = 1)
+    public IQueryable<Product> GetProductTake50Async(int page)
     {
         int pageSize = 50;
         return _context.Products

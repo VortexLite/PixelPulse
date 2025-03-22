@@ -10,5 +10,5 @@ public class Order
     public string Status { get; set; }
     public Payment? Payment { get; set; }
     public Shipping? Shipping { get; set; }
-    public List<OrderItem> OrderItems { get; set; }
+    public List<OrderItem>? OrderItems { get; set; }
 }

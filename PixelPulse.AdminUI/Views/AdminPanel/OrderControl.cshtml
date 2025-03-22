@@ -1,0 +1,101 @@
+@model PixelPulse.Application.DTOs.Order.OrderAndCountDTO?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/order.css"/>
+}
+
+@section script
+{
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const orderRows = document.querySelectorAll(".order-row");
+
+            orderRows.forEach(row => {
+                row.addEventListener("click", function () {
+                    let nextRow = row.nextElementSibling;
+
+                    while (nextRow && nextRow.classList.contains("customerOrdersDetails")) {
+                        nextRow.classList.toggle("active");
+                        nextRow.classList.toggle("hidden");
+                        nextRow = nextRow.nextElementSibling;
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function changePage(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("page", page);
+            window.location.href = url.toString();
+        }
+    </script>
+}
+
+<main>
+    <h1>Список замовлень</h1>
+    <form class="controls">
+        <input type="text" id="search" placeholder="Пошук замовлень...">
+        <button>OK</button>
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>AppUserId</th>
+            <th>Дата замовлення</th>
+            <th>Сума</th>
+            <th>Статус</th>
+            <th>Дія</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+        @foreach (var order in Model.Orders)
+        {
+            <tr class="order-row">
+                <td>@order.Id</td>
+                <td>@order.AppUser</td>
+                <td>@order.OrderDate</td>
+                <td>@order.TotalPrice</td>
+                <td>Shipping</td>
+                <td class="funcBtn">
+                    <a asp-action="UpdateOrder" asp-route-orderId="@order.Id">Редагування</a>
+                    <a asp-action="DeleteOrder" asp-route-orderId="@order.Id">Видалити</a>
+                </td>
+            </tr>
+            @foreach (var item in order.OrderItems)
+            {
+                <tr class="customerOrdersDetails hidden">
+                    <td>ID</td>
+                    <td>Назва</td>
+                    <td>Кількість</td>
+                    <td>Сума</td>
+                    <th colspan="2">Дія</th>
+                </tr>
+                <tr class="customerOrdersDetails hidden">
+                    <td>@item.Id</td>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price</td>
+                    <td colspan="2" class="funcBtn">
+                        <a asp-action="UpdateOrderItemOrder" asp-route-ordertId="@item.Id">Редагування</a>
+                        <a asp-action="DeleteOrderItem" asp-route-orderId="@item.Id">Видалити</a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+    <div class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <a asp-action="OrderControl" asp-route-page="@i" class='@(i == Model.CurrentPage ? "active" : "")'>@i</a>
+        }
+    </div>
+</main>
