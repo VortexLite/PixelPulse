@@ -24,6 +24,7 @@ using PixelPulse.Infrastructure.Content.Seeds;
 using PixelPulse.Infrastructure.Services.Auth;
 using PixelPulse.Infrastructure.Services.File;
 using PixelPulse.Infrastructure.Services.Repositories;
+using PixelPulse.Infrastructure.Services.ViewStatistic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IDeliveryeService, DeliveryeService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IViewStatistic, ViewStatistic>();
 #endregion
 
 

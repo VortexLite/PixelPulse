@@ -1,0 +1,17 @@
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/viewstat.css"/>
+}
+
+<main>
+    <a asp-action="OrderStatisticsView">Статистика замовлень</a>
+    <a asp-action="ProductSalesSummaryView">Статистика продажів товарів</a>
+    <a asp-action="UserWishlistStatsView">Кількість товарів у списку бажань</a>
+    <a asp-action="TopSuppliersByRevenueView">Топ постачальників за прибутком</a>
+    <a asp-action="MonthlySalesSummaryView" >Статистика продажів по місяцях</a>
+</main>

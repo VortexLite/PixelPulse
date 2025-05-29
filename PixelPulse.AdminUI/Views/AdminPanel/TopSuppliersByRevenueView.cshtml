@@ -1,0 +1,31 @@
+@model List<PixelPulse.Application.DTOs.ViewSQL.TopSuppliersByRevenueView>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/viewstat.css"/>
+}
+
+<main>
+    <table>
+        <thead>
+        <tr>
+            <th>Постачальник</th>
+            <th>Загальна сума виручки</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td>@data.SupplierName</td>
+                <td>@data.TotalSupplierRevenue</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</main>

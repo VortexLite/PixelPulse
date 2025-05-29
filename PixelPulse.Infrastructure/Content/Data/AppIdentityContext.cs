@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PixelPulse.Application.DTOs.ViewSQL;
 using PixelPulse.Domain.Entities;
-using PixelPulse.Domain.Settings;
 using PixelPulse.Infrastructure.Content.Configurations;
 
 namespace PixelPulse.Infrastructure.Content.Data;
@@ -26,6 +26,14 @@ public class AppIdentityContext(DbContextOptions<AppIdentityContext> options) : 
     public DbSet<Wishlist> Wishlists { get; set; }
     public DbSet<WishlistItem> WishlistItems { get; set; }
     public DbSet<ProductSpecification> ProductSpecifications { get; set; }
+    
+    
+    public DbSet<OrderStatisticsView> OrderStatisticsView { get; set; }
+    public DbSet<MonthlySalesSummaryView> MonthlySalesSummaryViews { get; set; }
+    public DbSet<ProductSalesSummaryView> ProductSalesSummaryViews { get; set; }
+    public DbSet<TopSuppliersByRevenueView> TopSuppliersByRevenueViews { get; set; }
+    public DbSet<UserWishlistStatsView> UserWishlistStatsViews { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,5 +57,26 @@ public class AppIdentityContext(DbContextOptions<AppIdentityContext> options) : 
         modelBuilder.ApplyConfiguration(new WishlistConfiguration());
         modelBuilder.ApplyConfiguration(new WishlistItemConfiguration());
         modelBuilder.ApplyConfiguration(new ProductSpecificationConfiguration());
+        
+        modelBuilder
+                .Entity<OrderStatisticsView>()
+                .HasNoKey()
+                .ToView("vw_OrderStatistics");
+        
+        modelBuilder.Entity<ProductSalesSummaryView>()
+            .HasNoKey()
+            .ToView("vw_ProductSalesSummary");
+        
+        modelBuilder.Entity<UserWishlistStatsView>()
+            .HasNoKey()
+            .ToView("vw_UserWishlistStats");
+        
+        modelBuilder.Entity<TopSuppliersByRevenueView>()
+            .HasNoKey()
+            .ToView("vw_TopSuppliersByRevenue");
+        
+        modelBuilder.Entity<MonthlySalesSummaryView>()
+            .HasNoKey()
+            .ToView("vw_MonthlySalesSummary");
     }
 }

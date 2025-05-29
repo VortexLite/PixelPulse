@@ -123,4 +123,15 @@ public class ProductController : ControllerBase
         
         return BadRequest();
     }
+    
+    [HttpPost("createProduct")]
+    public async Task<IActionResult> CreateProduct([FromForm] ProductUpdateRequest request)
+    {
+        if (await _productService.CreateProductWithImage(request))
+        {
+            return Ok();
+        }
+        
+        return BadRequest("Failed to create product");
+    }
 }

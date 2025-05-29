@@ -13,5 +13,5 @@ public class ProductUpdateRequest
     public int CategoryId { get; set; }
     public int SupplierId { get; set; }
 
-    public List<IFormFile> ProductImages { get; set; }
+    public List<IFormFile>? ProductImages { get; set; }
 }

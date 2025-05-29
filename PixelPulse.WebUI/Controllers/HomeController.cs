@@ -24,6 +24,10 @@ public class HomeController : Controller
    public async Task<IActionResult> Index()
     {
         var products = await _httpClient.GetFromJsonAsync<List<ProductMainDTO>>(ProductAddress + "GetProductsForMain");
+        var refreshtoken = Request.Cookies["refreshTokenKey"];
+        if (refreshtoken != null)
+            ViewBag.RefreshToken = refreshtoken;
+        
         return View(products);
     }
     

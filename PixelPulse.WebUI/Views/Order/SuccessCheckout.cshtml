@@ -1,7 +1,7 @@
-@model PixelPulse.Domain.Entities.Order?
+@model PixelPulse.Domain.Entities.Shipping
 
 @{
-    ViewBag.Title = "SuccessOrder";
+    ViewBag.Title = "Підтвердження замовлення";
     Layout = "_Layout";
 }
 
@@ -14,7 +14,7 @@
     <div class="wrap">
         <img src="/images/success.webp" alt="Success">
         <span class="thanksOrder">Дякую за замовлення!</span>
-        <span class="thanksOrder2">Ваше замовлення <span class="orderNumber">№@Model?.Shipping?.TrackingNumber</span> успішно оформлене</span>
+        <span class="thanksOrder2">Ваше замовлення <span class="orderNumber">№@Model.TrackingNumber</span> успішно оформлене</span>
         <span class="thanksOrder2">Дякую що обрали нас</span>
         <div class="btn">
             <a class="reviewOrder" asp-action="Order" asp-controller="Account">

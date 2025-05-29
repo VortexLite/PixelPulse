@@ -1,0 +1,35 @@
+@model List<PixelPulse.Application.DTOs.ViewSQL.OrderStatisticsView>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/viewstat.css"/>
+}
+
+<main>
+    <table>
+        <thead>
+        <tr>
+            <th>Ім'я</th>
+            <th>Прізвище</th>
+            <th>Загально замовлень</th>
+            <th>Загальна сума</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+        @foreach (var data in Model)
+        {
+            <tr>
+                <td>@data.FirstName</td>
+                <td>@data.LastName</td>
+                <td>@data.TotalOrders</td>
+                <td>@data.TotalSpent</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</main>

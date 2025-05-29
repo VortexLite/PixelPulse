@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.RefreshToken;
@@ -27,9 +29,17 @@ public class OrderController : ControllerBase
     [HttpPost("createOrder")]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDTO сreateOrder)
     {
-        var order = await _orderService.CreateOrder(сreateOrder);
-        if (order != null)
-            return Ok(order);
+        var shipping = await _orderService.CreateOrder(сreateOrder);
+        if (shipping != null)
+        {
+            var json = JsonSerializer.Serialize(shipping, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                //WriteIndented = true
+            });
+            return Ok(json);
+        }
+            //return Ok(orderDTO);
 
         return BadRequest();
     }

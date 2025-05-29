@@ -66,7 +66,7 @@ public class OrderService : IOrderService
         return cachedOrders;
     }
     
-    public async Task<Domain.Entities.Order?> CreateOrder(CreateOrderDTO createOrder)
+    public async Task<OrderSuccessfulDTO?> CreateOrder(CreateOrderDTO createOrder)
     {
         var totalPrice = createOrder.CartItemDtos.Sum(ci => ci.Price);
         
@@ -122,7 +122,7 @@ public class OrderService : IOrderService
         _cache.Remove("orderItems_view");
         _cache.Set(_orderCacheKey + order.Id, order, TimeSpan.FromMinutes(30));
         
-        return order;
+        return new OrderSuccessfulDTO { Shipping = shipping };
     }
 
     public async Task<bool> CancelOrderAsync(int orderId)

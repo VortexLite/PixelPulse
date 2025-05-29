@@ -66,18 +66,19 @@ public class OrderController : Controller
         if (response.IsSuccessStatusCode)
         {
             var responseString = await response.Content.ReadAsStringAsync();
-            var order = JsonSerializer.Deserialize<Order>(responseString, new JsonSerializerOptions
+            var document = JsonDocument.Parse(responseString);
+            var shipping = JsonSerializer.Deserialize<Shipping>(responseString, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
-            return RedirectToAction("SuccessCheckout", order);
+            return RedirectToAction("SuccessCheckout", shipping);
         }
 
         return NoContent();
     }
     
-    public async Task<IActionResult> SuccessCheckout(Order order)
+    public async Task<IActionResult> SuccessCheckout(Shipping shiping)
     {
-        return View(order);
+        return View(shiping);
     }
 }

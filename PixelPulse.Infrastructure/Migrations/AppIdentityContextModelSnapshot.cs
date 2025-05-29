@@ -229,6 +229,107 @@ namespace PixelPulse.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PixelPulse.Application.DTOs.ViewSQL.MonthlySalesSummaryView", b =>
+                {
+                    b.Property<int>("TotalOrders")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalRevenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("YearMonth")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_MonthlySalesSummary", (string)null);
+                });
+
+            modelBuilder.Entity("PixelPulse.Application.DTOs.ViewSQL.OrderStatisticsView", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalOrders")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalSpent")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_OrderStatistics", (string)null);
+                });
+
+            modelBuilder.Entity("PixelPulse.Application.DTOs.ViewSQL.ProductSalesSummaryView", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalQuantitySold")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalRevenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_ProductSalesSummary", (string)null);
+                });
+
+            modelBuilder.Entity("PixelPulse.Application.DTOs.ViewSQL.TopSuppliersByRevenueView", b =>
+                {
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SupplierName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalSupplierRevenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_TopSuppliersByRevenue", (string)null);
+                });
+
+            modelBuilder.Entity("PixelPulse.Application.DTOs.ViewSQL.UserWishlistStatsView", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WishlistCount")
+                        .HasColumnType("int");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vw_UserWishlistStats", (string)null);
+                });
+
             modelBuilder.Entity("PixelPulse.Domain.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -432,8 +533,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Payments", (string)null);
                 });
@@ -620,8 +720,7 @@ namespace PixelPulse.Infrastructure.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Shipping", (string)null);
                 });
@@ -829,8 +928,8 @@ namespace PixelPulse.Infrastructure.Migrations
             modelBuilder.Entity("PixelPulse.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("PixelPulse.Domain.Entities.Order", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("PixelPulse.Domain.Entities.Payment", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -904,8 +1003,8 @@ namespace PixelPulse.Infrastructure.Migrations
                         .HasForeignKey("AddressId");
 
                     b.HasOne("PixelPulse.Domain.Entities.Order", "Order")
-                        .WithOne("Shipping")
-                        .HasForeignKey("PixelPulse.Domain.Entities.Shipping", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -997,10 +1096,6 @@ namespace PixelPulse.Infrastructure.Migrations
             modelBuilder.Entity("PixelPulse.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
-
-                    b.Navigation("Payment");
-
-                    b.Navigation("Shipping");
                 });
 
             modelBuilder.Entity("PixelPulse.Domain.Entities.Product", b =>

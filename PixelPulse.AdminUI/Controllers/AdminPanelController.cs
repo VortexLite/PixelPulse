@@ -5,6 +5,7 @@ using PixelPulse.Application.DTOs.Order;
 using PixelPulse.Application.DTOs.PersonalInformation;
 using PixelPulse.Application.DTOs.Product;
 using PixelPulse.Application.DTOs.User;
+using PixelPulse.Application.DTOs.ViewSQL;
 using PixelPulse.Domain.Entities;
 
 namespace PixelPulse.AdminUI.Controllers;
@@ -17,6 +18,7 @@ public class AdminPanelController : Controller
     private const string ProductAddress = "http://localhost:5144/api/Product/";
     private const string UserAddress = "http://localhost:5144/api/User/";
     private const string OrderAddress = "http://localhost:5144/api/Order/";
+    private const string ViewStatAddress = "http://localhost:5144/api/ViewStatistic/";
 
     public AdminPanelController(ILogger<AdminPanelController> logger, HttpClient httpClient)
     {
@@ -135,6 +137,38 @@ public class AdminPanelController : Controller
     public async Task<IActionResult> CreateProduct()
     {
         return View();
+    }
+    
+    public async Task<IActionResult> CreateProducAPI(ProductUpdateRequest request)
+    {
+        var content = new MultipartFormDataContent();
+        content.Add(new StringContent(request.Id.ToString()), "Id");
+        content.Add(new StringContent(request.Name), "Name");
+        content.Add(new StringContent(request.Description), "Description");
+        content.Add(new StringContent(request.OldPrice.ToString()), "OldPrice");
+        content.Add(new StringContent(request.Price.ToString()), "Price");
+        content.Add(new StringContent(request.Stock.ToString()), "Stock");
+        content.Add(new StringContent(request.CategoryId.ToString()), "CategoryId");
+        content.Add(new StringContent(request.SupplierId.ToString()), "SupplierId");
+
+        if (request.ProductImages != null)
+        {
+            foreach (var image in request.ProductImages)
+            {
+                var stream = new MemoryStream();
+                await image.CopyToAsync(stream);
+                stream.Position = 0;
+                content.Add(new StreamContent(stream), "ProductImages", image.FileName);
+            }
+        }
+        
+        var response = await _httpClient.PostAsync(ProductAddress + "createProduct", content);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("ProductControl");
+        }
+        
+        return NoContent();
     }
 
     public async Task<IActionResult> UpdateProduct(int productId)
@@ -261,6 +295,45 @@ public class AdminPanelController : Controller
         return View();
     }
 
+
+    #endregion
+
+    #region viewstat
+
+    public async Task<IActionResult> ViewStatistic()
+    {
+        return View();
+    }
+    
+    public async Task<IActionResult> MonthlySalesSummaryView()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<MonthlySalesSummaryView>>(ViewStatAddress + "MonthySalesSummaryView");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> OrderStatisticsView()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<OrderStatisticsView>>(ViewStatAddress + "OrderStatisticsView");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> ProductSalesSummaryView()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<ProductSalesSummaryView>>(ViewStatAddress + "ProductSalesSummaryView");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> TopSuppliersByRevenueView()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<TopSuppliersByRevenueView>>(ViewStatAddress + "TopSuppliersByRevenueView");
+        return View(response);
+    }
+    
+    public async Task<IActionResult> UserWishlistStatsView()
+    {
+        var response = await _httpClient.GetFromJsonAsync<List<UserWishlistStatsView>>(ViewStatAddress + "UserWishlistStatsView");
+        return View(response);
+    }
 
     #endregion
 }

@@ -8,7 +8,7 @@ namespace PixelPulse.Application.Interfaces.Service;
 public interface IOrderService
 {
     Task<List<OrderDTO>?> GetOrdersByRefreshToken(string token);
-    Task<Order?> CreateOrder(CreateOrderDTO createOrder);
+    Task<OrderSuccessfulDTO> CreateOrder(CreateOrderDTO createOrder);
     Task<bool> CancelOrderAsync(int orderId);
     Task<OrderAndCountDTO> GetrdersWithItemsTake50(int page);
     Task<OrderUpdateDTO?> GetOrderById(int orderId);

@@ -1,0 +1,33 @@
+@model List<PixelPulse.Application.DTOs.ViewSQL.MonthlySalesSummaryView>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section style
+{
+    <link rel="stylesheet" href="~/css/viewstat.css"/>
+}
+
+<main>
+    <table>
+        <thead>
+        <tr>
+            <th>Рік-місяць</th>
+            <th>Загально замовлень</th>
+            <th>Загальний дохід</th>
+        </tr>
+        </thead>
+        <tbody id="userTableBody">
+            @foreach (var data in Model)
+            {
+                <tr>
+                    <td>@data.YearMonth</td>
+                    <td>@data.TotalOrders</td>
+                    <td>@data.TotalRevenue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</main>

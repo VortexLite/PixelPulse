@@ -10,10 +10,5 @@ public class ShippingConfiguration : IEntityTypeConfiguration<Shipping>
     {
         builder.ToTable("Shipping");
         
-        builder.HasOne(sh => sh.Order)
-            .WithOne(a => a.Shipping)
-            .HasForeignKey<Shipping>(sh => sh.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
     }
 }

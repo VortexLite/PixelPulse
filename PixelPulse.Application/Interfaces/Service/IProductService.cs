@@ -17,4 +17,5 @@ public interface IProductService
     Task<bool> DeleteProduct(int productId);
     Task<bool> MainProductImage(ProductImageIdDTO dto);
     Task<bool> DeleteProductImage(int imageId);
+    Task<bool> CreateProductWithImage(ProductUpdateRequest request);
 }

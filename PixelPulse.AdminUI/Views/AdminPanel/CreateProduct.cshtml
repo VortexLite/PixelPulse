@@ -1,7 +1,7 @@
 @model PixelPulse.Domain.Entities.Product
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Створити товар";
     Layout = "_Layout";
 }
 
@@ -11,16 +11,16 @@
 }
 
 <main>
-    <form>
+    <form asp-action="CreateProducAPI" method="post" enctype="multipart/form-data">
         <input type="text" asp-for="Id" placeholder="ID" disabled value="1">
-        <input type="text" asp-for="Name" placeholder="Name" value="Samsung Galaxy S24 Ultra 12/256GB Titanium Black (SM-S928BZKG)">
-        <input type="text" asp-for="Description" placeholder="Description" value="Samsung Galaxy S24 Ultra вражає своїм AMOLED-дисплеєм діагоналлю 6,8 дюйма, який вирізняється високою роздільною здатністю 3120x1440 пікселів і плавною частотою оновлення 120 Гц. Яскравість екрану досягає пікових 2600 ніт, а захист забезпечує міцне скло Corning Gorilla Glass Armor. Продуктивність пристрою забезпечує потужний процесор Qualcomm Snapdragon 8 Gen 3 з вісьмома ядрами, що працює на частоті 3,3 ГГц. Фотографічні можливості Samsung Galaxy S24 Ultra вражають розмаїттям: основна камера складається з чотирьох модулів, включно з 200 Мп ширококутним сенсором, 12 Мп надширококутним з кутом огляду 120 градусів, а також двома телефото-об'єктивами - 10 Мп з 3-кратним і 50 Мп з 5-кратним оптичним зумом. Фронтальна 12 Мп камера доповнює набір. Пристрій здатний записувати відео у форматі 8K за 30 кадрів на секунду, що відкриває нові горизонти для мобільної відеозйомки. Ємний акумулятор на 5000 мАг підтримує швидку зарядку потужністю 45 Вт і зручну бездротову зарядку 15 Вт. Міцний корпус зі скла і титану не тільки надає преміального вигляду, а й забезпечує захист від води і пилу за стандартом IP68. При розмірах 162,3 x 79 x 8,6 мм і вазі 233 г, Samsung Galaxy S24 Ultra поєднує в собі міць флагмана та елегантний дизайн, працюючи під управлінням Android 14 і підтримуючи використання двох SIM-карт.">
-        <input type="text" asp-for="OldPrice" placeholder="OldPrice" value="57999.00">
-        <input type="text" asp-for="Price" placeholder="Price" value="36950.00">
-        <input type="text" asp-for="Stock" placeholder="Stock" value="55">
-        <input type="text" asp-for="CategoryId" placeholder="CategoryId" value="1">
-        <input type="text" asp-for="SupplierId" placeholder="SupplierId" value="1">
-        <input type="file" asp-for="ProductImages" placeholder="ProductImage" multiple>
+        <input type="text" asp-for="Name" placeholder="Назва">
+        <input type="text" asp-for="Description" placeholder="Опис">
+        <input type="text" asp-for="OldPrice" placeholder="Стара ціна">
+        <input type="text" asp-for="Price" placeholder="Ціна">
+        <input type="text" asp-for="Stock" placeholder="Кількість">
+        <input type="text" asp-for="CategoryId" placeholder="Категорія">
+        <input type="text" asp-for="SupplierId" placeholder="Постачальник">
+        <input type="file" asp-for="ProductImages" placeholder="Фото" multiple>
 
         <button type="submit">Зберегти</button>
     </form>

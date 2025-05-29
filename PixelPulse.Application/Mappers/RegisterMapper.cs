@@ -24,7 +24,6 @@ public class RegisterMapper : IRegister
             .Map(dest => dest.TotalItems, src => src.OrderItems != null ? src.OrderItems.Count : 0)
             .Map(dest => dest.TotalPrice, src => src.TotalPrice)
             .Map(dest => dest.Status, src => src.Status)
-            .Map(dest => dest.Shipping, src => src.Shipping.Adapt<ShippingDTO>())
             .Map(dest => dest.OrderItems, src => src.OrderItems.Adapt<List<OrderItemDTO>>());
 
         config.NewConfig<OrderItem, OrderItemDTO>()

@@ -110,6 +110,7 @@ public class ProductService : IProductService
         
         product.Name = request.Name;
         product.Description = request.Description;
+        product.OldPrice = request.OldPrice;
         product.Price = request.Price;
         product.Stock = request.Stock;
         product.CategoryId = request.CategoryId;
@@ -179,5 +180,38 @@ public class ProductService : IProductService
     {
         var productImage = await _productImageRepository.GetById(imageId).FirstOrDefaultAsync();
         return await _productImageRepository.DeleteAsync(productImage);
+    }
+    
+    public async Task<bool> CreateProductWithImage(ProductUpdateRequest request)
+    {
+        var product = new Domain.Entities.Product
+        {
+            Name = request.Name,
+            Description = request.Description,
+            OldPrice = request.OldPrice,
+            Price = request.Price,
+            Stock = request.Stock,
+            CategoryId = request.CategoryId,
+            SupplierId = request.SupplierId
+        };
+
+        if (request.ProductImages != null && request.ProductImages.Count > 0)
+        {
+            var imageList = new List<ProductImage>();
+            foreach (var file in request.ProductImages)
+            {
+                var imagePath = await _fileService.SaveFileAsync(file, "images");
+                imageList.Add(new ProductImage
+                {
+                    ProductId = product.Id, 
+                    isMain = false,
+                    ImagePath = imagePath
+                });
+            }
+            
+            product.ProductImages = imageList;
+        }
+        
+        return await _productRepository.CreateAsync(product);
     }
 }

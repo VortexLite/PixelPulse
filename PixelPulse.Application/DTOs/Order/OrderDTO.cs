@@ -9,6 +9,5 @@ public class OrderDTO
     public int TotalItems { get; set; }
     public int TotalPrice { get; set; }
     public string Status { get; set; }
-    public ShippingDTO? Shipping { get; set; }
     public List<OrderItemDTO> OrderItems { get; set; }
 }

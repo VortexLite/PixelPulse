@@ -12,9 +12,5 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
 
         builder.Property(p => p.Amount)
             .HasColumnType("decimal(18,2)");
-        
-        builder.HasOne(p => p.Order)
-            .WithOne(o => o.Payment)
-            .HasForeignKey<Payment>(p => p.OrderId);
     }
 }

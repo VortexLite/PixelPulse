@@ -1,7 +1,7 @@
 @model PixelPulse.Application.DTOs.Product.ProductCategoryDTO?
 
 @{
-    ViewBag.Title = "Phone";
+    ViewBag.Title = "Деталі";
     Layout = "_Layout";
 }
 
@@ -22,12 +22,12 @@
 
         prevBtn.addEventListener("click", () => {
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            imgElement.src = images[currentIndex];
+            imgElement.src = images[currentIndex].imagePath;
         });
 
         nextBtn.addEventListener("click", () => {
             currentIndex = (currentIndex + 1) % images.length;
-            imgElement.src = images[currentIndex];
+            imgElement.src = images[currentIndex].imagePath;
         });
     </script>
 }
@@ -46,7 +46,7 @@
                 {
                     <img src="/images/Null.webp" class="productImage" alt="@Model.Name">
                 }*@
-                <img src="@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImagePath" class="productImage" alt="@Model.Name">
+                <img src="@Model.ProductImages.FirstOrDefault(pi => pi.isMain == true).ImagePath" class="productImage" id="productImage" alt="@Model.Name">
                 <button class="next">▶</button>
             </div>
 

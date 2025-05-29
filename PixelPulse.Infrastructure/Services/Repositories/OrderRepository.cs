@@ -101,7 +101,6 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                     .ThenInclude(p => p.ProductImages)
-            .Include(o => o.Shipping)
             .Where(o => o.AppUserId == userId);
     }
 
